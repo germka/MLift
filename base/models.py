@@ -7,6 +7,8 @@ from django.utils import timezone
 
 class TicketStatus(models.Model):
     status = models.CharField(max_length=50)
+    def __str__(self):
+        return 'Заявка %s' % (self.status)
 
 
 class TicketType(models.Model):
@@ -15,6 +17,8 @@ class TicketType(models.Model):
 
 class ManageComp(models.Model):
     comp_name = models.CharField(max_length=50)
+    def __str__(self):
+        return 'УК %s' % (self.comp_name)
 
 
 class Object(models.Model):
@@ -49,7 +53,7 @@ class Ticket(models.Model):
         return ticket_duration
 
     def __str__(self):
-        return '%s %s' % (self.ticket_date, self.ticket_status)
+        return 'Открыта: %s, статус: %s' % (self.ticket_date.strftime("%Y/%m/%d %H:%M"), self.ticket_status)
 
 
 class Comments(models.Model):
@@ -57,4 +61,4 @@ class Comments(models.Model):
     comment_date =  models.DateTimeField('date published')
     comment_content = models.CharField(max_length=500)
     def __str__(self):
-        return '%s %s' % (self.comment_date, self.comment_content)
+        return '%s %s' % (self.comment_date.strftime("%Y/%m/%d %H:%M"), self.comment_content)
