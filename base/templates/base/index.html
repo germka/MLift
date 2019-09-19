@@ -1,0 +1,9 @@
+{% if latest_ticket_list %}
+    <ul>
+    {% for ticket in latest_ticket_list %}
+        <li><a href="{% url 'base:ticket_detail' ticket.id %}">Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет заявок</p>
+{% endif %}

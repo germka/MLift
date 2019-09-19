@@ -26,7 +26,8 @@ SECRET_KEY = 'hec^6-to58b4zw=-wm^wlk)i)+c4td1o+05#oadat#-5-7$wjc'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '94.250.252.46'
+    '94.250.252.46',
+    'germka.fvds.ru'
 ]
 
 
