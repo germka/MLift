@@ -20,13 +20,19 @@ class ManageComp(models.Model):
     def __str__(self):
         return 'УК %s' % (self.comp_name)
 
+class ObjStr(models.Model):
+    street = models.CharField(max_length=50)
+
+class ObjType(models.Model):
+    type_name = models.CharField(max_length=15)
 
 class Object(models.Model):
-    obj_str = models.CharField(max_length=50)
-    obj_buid = models.IntegerField()
+    obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE)
+    obj_build = models.IntegerField(null=True)
     obj_par = models.IntegerField()
     obj_number = models.IntegerField()
-    manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE)
+    obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True)
+    manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True)
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
 

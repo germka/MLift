@@ -1,8 +1,9 @@
-<p><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</b></p>
-<p><b>Статус:</b> {{ ticket.ticket_status }} <b>Время простоя:</b> {{ ticket.ticket_duration }}</p>
+<H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</b></H1>
+<p><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</p>
+<p><b>Статус:</b> {{ ticket.ticket_status }} 
+<b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</p>
 
-<p>{{ ticket.ticket_content }}
-{% lorem %}</p>
+<p>{{ ticket.ticket_content }}</p>
 
 <p><b>Комментарии:</b></p>
 <ul>
