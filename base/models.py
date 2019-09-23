@@ -13,6 +13,8 @@ class TicketStatus(models.Model):
 
 class TicketType(models.Model):
     type_name = models.CharField(max_length=50)
+    def __str__(self):
+        return 'Тип заявки: %s' % (self.type_name)
 
 
 class ManageComp(models.Model):
@@ -22,9 +24,13 @@ class ManageComp(models.Model):
 
 class ObjStr(models.Model):
     street = models.CharField(max_length=50)
+    def __str__(self):
+        return 'ул. %s' % (self.street)
 
 class ObjType(models.Model):
     type_name = models.CharField(max_length=15)
+    def __str__(self):
+        return 'тип лифта: %s' % (self.type_name)
 
 class Object(models.Model):
     obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE)

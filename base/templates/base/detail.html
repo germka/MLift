@@ -1,15 +1,24 @@
 <H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</b></H1>
 <p><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</p>
-<p><b>Статус:</b> {{ ticket.ticket_status }} 
-<b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</p>
-
+<p><b>Статус:</b> {{ ticket.ticket_status }}</p>
+<p><b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</p>
+<p><b>Содержание:</b></p>
 <p>{{ ticket.ticket_content }}</p>
 
 <p><b>Комментарии:</b></p>
 <ul>
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
-    <li>№{{ comment.id }} от {{ comment.comment_date }} : {{ comment.comment_content }}</li>
+    <li>№{{ forloop.counter }} от {{ comment.comment_date }} : {{ comment.comment_content }}</li>
 {% empty %}
     <p style='color:grey'>Пока нет ни одного комментария</p>
 {% endfor %}
+
+<form action="{% url 'base:ticket_detail' ticket.id %}" method="post">
+{% if errormessage %}<p style="color:red"><b>{{ errormessage }}</b></p>{% endif %}
+{% if message %}<p style="color:grey"><b>{{ message }}</b></p>{% endif %}
+{% csrf_token %}
+<p><textarea name="comment_content" required placeholder="Текст комментария" cols="80" rows="5"></textarea></p>
+<p><input type="submit" value="Отправить"></p>
+</form>
+
 </ul>
