@@ -9,4 +9,6 @@ urlpatterns = [
     path('<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
     # Создание заявки
     path('newticket/', views.new_ticket, name='new_ticket'),
+    # Закрытие заявки
+    path('<int:ticket_id>/closed/', views.ticket_close, name='ticket_close'),
 ]

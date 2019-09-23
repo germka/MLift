@@ -72,6 +72,6 @@ class Comments(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     comment_date =  models.DateTimeField('date published')
     comment_content = models.CharField(max_length=500)
-    comment_user = models.CharField(max_length=50)
+    comment_user = models.CharField(max_length=50, null=True)
     def __str__(self):
         return '%s %s' % (self.comment_date.strftime("%Y/%m/%d %H:%M"), self.comment_content)

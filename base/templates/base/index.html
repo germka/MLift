@@ -1,3 +1,4 @@
+<p>Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></p>
 <H1>Список заявок</H1>
 {% if ticket_list %}
     <ul>
@@ -17,9 +18,9 @@
         {% endif %}
 
         <span class="current">
-            Page {{ ticket_list.number }} of {{ ticket_list.paginator.num_pages }}.
+            Страница {{ ticket_list.number }} из {{ ticket_list.paginator.num_pages }}.
         </span>
-                                                                        
+
         {% if ticket_list.has_next %}
             <a href="?page={{ ticket_list.next_page_number }}" title="На следующую страницу">></a>
             <a href="?page={{ ticket_list.paginator.num_pages }}" title="На последнюю страницу">&raquo;</a>

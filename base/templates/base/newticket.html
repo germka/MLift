@@ -1,3 +1,5 @@
+<p>Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</p>
+
 <H1>Форма подачи заявки</H1>
 <p>Заявка №{{ ticket_number|add:"2" }}</p>
 {% if error_message %}<p style="color:red"><strong>{{ error_message }}</strong></p>{% endif %}
