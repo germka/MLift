@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
+
 <p>Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></p>
 <H1>Список заявок</H1>
 {% if ticket_list %}

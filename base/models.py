@@ -55,14 +55,21 @@ class Ticket(models.Model):
         Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=3))
         return 'ticket closed'
 
-    def duration_save (self):
+    def duration_save(self):
         if self.ticket_status == TicketStatus.objects.get(pk=3):
             Ticket.objects.filter(pk=self.id).update(ticket_duration=timezone.now() - self.ticket_date)
             return 'duration saved'
 
-    def duration_get (self):
+    def duration_get(self):
         ticket_duration=timezone.now() - self.ticket_date
         return ticket_duration
+
+    def status(self):
+        status = TicketStatus.objects.get(pk=self.ticket_status.id)
+        return status
+    status.admin_order_field = 'ticket_status'
+    status.boolean = False
+    status.short_description = 'Статус заявки'
 
     def __str__(self):
         return 'Открыта: %s, статус: %s' % (self.ticket_date.strftime("%Y/%m/%d %H:%M"), self.ticket_status)
