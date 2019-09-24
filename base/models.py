@@ -18,9 +18,14 @@ class TicketType(models.Model):
 
 
 class ManageComp(models.Model):
-    comp_name = models.CharField(max_length=50)
+    comp_name = models.CharField(max_length=100)
     def __str__(self):
         return 'УК %s' % (self.comp_name)
+
+class ObjArea(models.Model):
+    area_name = models.CharField(max_length=15)
+    def __str__(self):
+        return 'Район %s' % (self.area_name)
 
 class ObjStr(models.Model):
     street = models.CharField(max_length=50)
@@ -33,12 +38,22 @@ class ObjType(models.Model):
         return 'тип лифта: %s' % (self.type_name)
 
 class Object(models.Model):
+    obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True)
     obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE)
-    obj_build = models.IntegerField(null=True)
-    obj_par = models.IntegerField()
-    obj_number = models.IntegerField()
+    obj_build = models.CharField(max_length=15, null=True)
+    obj_build_housing = models.IntegerField(null=True)
+    obj_par = models.IntegerField(null=True)
+    obj_number = models.CharField(max_length=15, null=True)
+    obj_factory_number = models.CharField(max_length=15, null=True)
     obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True)
+    obj_carrying = models.IntegerField(null=True)
+    obj_aperture = models.IntegerField(null=True)
+    obj_manufacturer = models.CharField(max_length=50, null=True)
     manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True)
+    obj_communication = models.BooleanField(null=True)
+    obj_manufacture = models.DateTimeField('object manufacture date', null=True)
+    obj_exp_start = models.DateTimeField('start exploitation date', null=True)
+    obj_inspection = models.DateTimeField('last inspection date', null=True)
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
 
