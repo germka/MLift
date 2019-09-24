@@ -23,19 +23,28 @@ class ManageComp(models.Model):
         return 'УК %s' % (self.comp_name)
 
 class ObjArea(models.Model):
-    area_name = models.CharField(max_length=15)
+    area_name = models.CharField(max_length=50)
     def __str__(self):
         return 'Район %s' % (self.area_name)
+
 
 class ObjStr(models.Model):
     street = models.CharField(max_length=50)
     def __str__(self):
         return 'ул. %s' % (self.street)
 
+
 class ObjType(models.Model):
     type_name = models.CharField(max_length=15)
     def __str__(self):
         return 'тип лифта: %s' % (self.type_name)
+
+
+class ObjManufacturer(models.Model):
+    manufacturer = models.CharField(max_length=50)
+    def __str__(self):
+        return 'Производитель %s' % (self.manufacturer)
+
 
 class Object(models.Model):
     obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True)
@@ -48,7 +57,7 @@ class Object(models.Model):
     obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True)
     obj_carrying = models.IntegerField(null=True)
     obj_aperture = models.IntegerField(null=True)
-    obj_manufacturer = models.CharField(max_length=50, null=True)
+    obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.CASCADE, null=True)
     manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True)
     obj_communication = models.BooleanField(null=True)
     obj_manufacture = models.DateTimeField('object manufacture date', null=True)
