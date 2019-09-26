@@ -35,7 +35,7 @@ class ObjStr(models.Model):
 
 
 class ObjType(models.Model):
-    type_name = models.CharField(max_length=15)
+    type_name = models.CharField(max_length=20)
     def __str__(self):
         return 'тип лифта: %s' % (self.type_name)
 
@@ -51,24 +51,24 @@ class Object(models.Model):
     obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE)
     obj_build = models.CharField(max_length=15, null=True)
     obj_build_housing = models.IntegerField(null=True)
-    obj_par = models.IntegerField(null=True)
-    obj_number = models.CharField(max_length=15, null=True)
-    obj_factory_number = models.CharField(max_length=15, null=True)
+    obj_par = models.IntegerField('Номер парадной',null=True)
+    obj_number = models.CharField('Номер объекта',max_length=15, null=True)
+    obj_factory_number = models.CharField('Заводской номер',max_length=15, null=True)
     obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True)
-    obj_carrying = models.IntegerField(null=True)
-    obj_aperture = models.IntegerField(null=True)
+    obj_carrying = models.IntegerField('Грузоподъемность',null=True)
+    obj_aperture = models.IntegerField('Пролет',null=True)
     obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.CASCADE, null=True)
     manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True)
-    obj_communication = models.BooleanField(null=True)
-    obj_manufacture = models.DateTimeField('object manufacture date', null=True)
-    obj_exp_start = models.DateTimeField('start exploitation date', null=True)
-    obj_inspection = models.DateTimeField('last inspection date', null=True)
+    obj_communication = models.BooleanField('Наличие связи',null=True)
+    obj_manufacture = models.DateTimeField('Дата производства', null=True)
+    obj_exp_start = models.DateTimeField('Дата начала эксплуатации', null=True)
+    obj_inspection = models.DateTimeField('Дата последней инспекции', null=True)
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
 
 
 class Ticket(models.Model):
-    ticket_date = models.DateTimeField('date published')
+    ticket_date = models.DateTimeField('Дата публикации')
     ticket_user = models.IntegerField()
     ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE)
     ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE)
@@ -101,7 +101,7 @@ class Ticket(models.Model):
 
 class Comments(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    comment_date =  models.DateTimeField('date published')
+    comment_date =  models.DateTimeField('Дата публикации')
     comment_content = models.CharField(max_length=500)
     comment_user = models.CharField(max_length=50, null=True)
     def __str__(self):

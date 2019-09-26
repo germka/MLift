@@ -35,7 +35,42 @@ class TicketAdmin(admin.ModelAdmin):
     inlines = [CommentsInLine]
 
 admin.site.register(Ticket,TicketAdmin)
-admin.site.register(Object)
+
+#admin.site.register(Object)
+class ObjectAdmin(admin.ModelAdmin):
+    list_display = ('id','obj_number','obj_str', 'obj_build')
+    list_filter = ['obj_area','obj_str','obj_build']
+    search_fields = ['obj_number','obj_area','obj_str', 'obj_build']
+    fieldsets = [
+        ('Адрес', {'fields':
+            [
+            'obj_area',
+            'obj_str',
+            'obj_build',
+            'obj_build_housing',
+            'obj_par',
+            'manage_comp',
+            ]}),
+        ('Характеристики', {'fields':
+            [
+            'obj_number',
+            'obj_factory_number',
+            'obj_type',
+            'obj_carrying',
+            'obj_aperture',
+            'obj_manufacturer',
+            'obj_communication',
+            ]}),
+        ('Даты', {'fields':
+            [
+            'obj_manufacture',
+            'obj_exp_start',
+            'obj_inspection',
+            ]}),
+    ]
+
+admin.site.register(Object,ObjectAdmin)
+
 admin.site.register(ManageComp)
 admin.site.register(ObjStr)
 admin.site.register(ObjType)
