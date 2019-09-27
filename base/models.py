@@ -20,7 +20,7 @@ class TicketType(models.Model):
 class ManageComp(models.Model):
     comp_name = models.CharField('Обслуживающая компания', max_length=100)
     def __str__(self):
-        return 'УК %s' % (self.comp_name)
+        return '%s' % (self.comp_name)
 
 class ObjArea(models.Model):
     area_name = models.CharField('Район', max_length=50)
@@ -31,7 +31,7 @@ class ObjArea(models.Model):
 class ObjStr(models.Model):
     street = models.CharField('Улица', max_length=50)
     def __str__(self):
-        return 'ул. %s' % (self.street)
+        return '%s' % (self.street)
 
 
 class ObjType(models.Model):

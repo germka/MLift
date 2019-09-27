@@ -4,11 +4,11 @@ from .models import Comments, Ticket, Object, ManageComp, ObjStr, ObjType
 
 # Register your models here.
 
-admin.site.register(Comments)
-#admin.site.register(Ticket)
+
 class CommentsInLine(admin.TabularInline):
     model = Comments
     extra = 0
+
 
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('ticket_date','ticket_content', 'status')
@@ -34,9 +34,7 @@ class TicketAdmin(admin.ModelAdmin):
     ]
     inlines = [CommentsInLine]
 
-admin.site.register(Ticket,TicketAdmin)
 
-#admin.site.register(Object)
 class ObjectAdmin(admin.ModelAdmin):
     list_display = ('id','obj_number','obj_str', 'obj_build')
     list_filter = ['obj_area','obj_str','obj_build']
@@ -69,8 +67,9 @@ class ObjectAdmin(admin.ModelAdmin):
             ]}),
     ]
 
+admin.site.register(Comments)
 admin.site.register(Object,ObjectAdmin)
-
+admin.site.register(Ticket,TicketAdmin)
 admin.site.register(ManageComp)
 admin.site.register(ObjStr)
 admin.site.register(ObjType)
