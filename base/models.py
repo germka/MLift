@@ -8,7 +8,7 @@ from django.utils import timezone
 class TicketStatus(models.Model):
     status = models.CharField(max_length=50)
     def __str__(self):
-        return 'Заявка %s' % (self.status)
+        return 'Заявка %sа' % (self.status)
 
 
 class TicketType(models.Model):
@@ -18,63 +18,63 @@ class TicketType(models.Model):
 
 
 class ManageComp(models.Model):
-    comp_name = models.CharField(max_length=100)
+    comp_name = models.CharField('Обслуживающая компания', max_length=100)
     def __str__(self):
         return 'УК %s' % (self.comp_name)
 
 class ObjArea(models.Model):
-    area_name = models.CharField(max_length=50)
+    area_name = models.CharField('Район', max_length=50)
     def __str__(self):
-        return 'Район %s' % (self.area_name)
+        return '%s' % (self.area_name)
 
 
 class ObjStr(models.Model):
-    street = models.CharField(max_length=50)
+    street = models.CharField('Улица', max_length=50)
     def __str__(self):
         return 'ул. %s' % (self.street)
 
 
 class ObjType(models.Model):
-    type_name = models.CharField(max_length=20)
+    type_name = models.CharField('Тип лифта', max_length=20)
     def __str__(self):
-        return 'тип лифта: %s' % (self.type_name)
+        return '%s' % (self.type_name)
 
 
 class ObjManufacturer(models.Model):
-    manufacturer = models.CharField(max_length=50)
+    manufacturer = models.CharField('Завод производитель', max_length=50)
     def __str__(self):
-        return 'Производитель %s' % (self.manufacturer)
+        return '%s' % (self.manufacturer)
 
 
 class Object(models.Model):
-    obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True)
-    obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE)
-    obj_build = models.CharField(max_length=15, null=True)
-    obj_build_housing = models.IntegerField(null=True)
-    obj_par = models.IntegerField('Номер парадной',null=True)
-    obj_number = models.CharField('Номер объекта',max_length=15, null=True)
+    obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True, verbose_name='Район')
+    obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
+    obj_build = models.CharField('Строение', max_length=15, null=True)
+    obj_build_housing = models.IntegerField('Корпус', null=True)
+    obj_par = models.IntegerField('Номер парадной', null=True)
+    obj_number = models.CharField('Номер объекта', max_length=15, null=True)
     obj_factory_number = models.CharField('Заводской номер',max_length=15, null=True)
-    obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True)
-    obj_carrying = models.IntegerField('Грузоподъемность',null=True)
-    obj_aperture = models.IntegerField('Пролет',null=True)
-    obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.CASCADE, null=True)
-    manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True)
-    obj_communication = models.BooleanField('Наличие связи',null=True)
+    obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True, verbose_name='Тип объекта')
+    obj_carrying = models.IntegerField('Грузоподъемность', null=True)
+    obj_aperture = models.IntegerField('Пролет', null=True)
+    obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.CASCADE, null=True,verbose_name='Завод производитель')
+    manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True, verbose_name='Управляющая компания')
+    obj_communication = models.BooleanField('Наличие связи', null=True)
     obj_manufacture = models.DateTimeField('Дата производства', null=True)
     obj_exp_start = models.DateTimeField('Дата начала эксплуатации', null=True)
     obj_inspection = models.DateTimeField('Дата последней инспекции', null=True)
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
-
+    
 
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
-    ticket_user = models.IntegerField()
-    ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE)
-    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE)
-    ticket_content = models.CharField(max_length=1000)
-    ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1)
-    ticket_duration = models.DurationField()
+    ticket_user = models.IntegerField('Автор')
+    ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки')
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки')
+    ticket_content = models.CharField('Содержание' ,max_length=1000)
+    ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')
+    ticket_duration = models.DurationField('Время простоя')
     def close(self):
         Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=3))
         return 'ticket closed'
@@ -100,9 +100,9 @@ class Ticket(models.Model):
 
 
 class Comments(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='Номер заявки')
     comment_date =  models.DateTimeField('Дата публикации')
-    comment_content = models.CharField(max_length=500)
-    comment_user = models.CharField(max_length=50, null=True)
+    comment_content = models.CharField('Содержание', max_length=500)
+    comment_user = models.CharField('Пользователь', max_length=50, null=True)
     def __str__(self):
         return '%s %s' % (self.comment_date.strftime("%Y/%m/%d %H:%M"), self.comment_content)

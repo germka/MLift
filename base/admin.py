@@ -18,14 +18,14 @@ class TicketAdmin(admin.ModelAdmin):
         (None, {'fields':
             [
             'ticket_user',
-            'ticket_status',
+            ('ticket_status',
+            'ticket_type'),
             'ticket_object',
-            'ticket_type',
             ]}),
         ('Дата и Длительность', {'fields':
             [
-            'ticket_date',
-            'ticket_duration',
+            ('ticket_date',
+            'ticket_duration'),
             ]}),
         ('Содержание', {'fields':
             [
@@ -46,26 +46,26 @@ class ObjectAdmin(admin.ModelAdmin):
             [
             'obj_area',
             'obj_str',
-            'obj_build',
+            ('obj_build',
             'obj_build_housing',
-            'obj_par',
+            'obj_par'),
             'manage_comp',
             ]}),
         ('Характеристики', {'fields':
             [
             'obj_number',
             'obj_factory_number',
-            'obj_type',
+            ('obj_type',
             'obj_carrying',
-            'obj_aperture',
+            'obj_aperture'),
             'obj_manufacturer',
             'obj_communication',
             ]}),
         ('Даты', {'fields':
             [
-            'obj_manufacture',
+            ('obj_manufacture',
             'obj_exp_start',
-            'obj_inspection',
+            'obj_inspection'),
             ]}),
     ]
 
