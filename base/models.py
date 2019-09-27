@@ -71,10 +71,10 @@ class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
     ticket_user = models.IntegerField('Автор')
     ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки')
-    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки')
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки', null=True)
     ticket_content = models.CharField('Содержание' ,max_length=1000)
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')
-    ticket_duration = models.DurationField('Время простоя')
+    ticket_duration = models.DurationField('Время простоя', null=True)
     def close(self):
         Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=3))
         return 'ticket closed'

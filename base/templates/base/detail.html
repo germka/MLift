@@ -1,5 +1,6 @@
 <p>Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</p>
-<H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</b></H1>
+<H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} на объект: {{ ticket_object.obj_number }}</b></H1>
+<p>По адресу: {{ ticket_object.obj_area }} р-н, {{ ticket_object.obj_str }}, строение {{ ticket_object.obj_build }}, парадная {{ ticket_object.obj_par }}</p>
 <p><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</p>
 <p><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</p>
 {% if ticket.ticket_status.id == 1 %}

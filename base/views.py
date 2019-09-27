@@ -21,10 +21,14 @@ def ticket_index(request):
     return render(request, 'base/index.html', context)
 
 
+
+
 def ticket_detail(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
+    ticket_object = Object.objects.get(pk=ticket.ticket_object.id)
     context = {
         'ticket': ticket,
+        'ticket_object': ticket_object,
     }
     if request.method == 'GET':
         return render(request, 'base/detail.html', context)
@@ -45,6 +49,8 @@ def ticket_detail(request, ticket_id):
         else:
             context['errormessage'] = "Комментарий не должен быть пустым"
         return render(request, 'base/detail.html', context)
+
+
 
 
 def new_ticket(request):
@@ -69,32 +75,67 @@ def new_ticket(request):
 
     if request.method == 'POST':
         status = TicketStatus.objects.get(pk=1)
+        new_content = request.POST['ticket_content']
+        ticket_object_filter = Object.objects.all()
+#--obj filters
         try:
-            new_content = request.POST['ticket_content']
-            new_objstr = ObjStr.objects.get(street=request.POST['obj_str']).id
             new_objarea = ObjArea.objects.get(area_name=request.POST['obj_area']).id
-            new_objbuild = request.POST['obj_build']
-            new_objpar = request.POST['obj_par']
+        except(KeyError, ObjArea.DoesNotExist):
+            context['error_message'] = "Значение области введено не верно"
+        else:
+            ticket_object_filter = ticket_object_filter.filter(obj_area=new_objarea)
+
+
+        try:
+            new_objstr = ObjStr.objects.get(street=request.POST['obj_str']).id
+        except(KeyError, ObjStr.DoesNotExist):
+            context['error_message'] = "Значение улицы введено не верно"
+        else:
+            ticket_object_filter = ticket_object_filter.filter(obj_str=new_objstr)
+
+
+        new_objbuild = request.POST['obj_build']
+        if new_objbuild == '':
+            context['error_message'] = "Значение номена строения не верно"
+        else:
+            ticket_object_filter = ticket_object_filter.filter(obj_build=new_objbuild)
+
+
+        new_objpar = request.POST['obj_par']
+        if new_objpar == '':
+            context['error_message'] = "Значение номера парадной не верно"
+        else:
+            ticket_object_filter = ticket_object_filter.filter(obj_par=new_objpar)
+
+
+        try:
             new_objtype = ObjType.objects.get(type_name=request.POST['obj_type']).id
-            new_date = request.POST['ticket_date']
-            if new_date == "":
-                new_date = timezone.now()
-            try:
-                new_ticketobject = Object.objects.filter(obj_str=new_objstr, obj_area=new_objarea, obj_build=new_objbuild, obj_par=new_objpar, obj_type=new_objtype).get()
-            except (KeyError, Object.DoesNotExist):
-                context['error_message'] = "Объект с заданными параметрами не найден"
-                return render(request, 'base/newticket.html', context)
-            else:
-                ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_object=Object.objects.get(pk=new_ticketobject.id))
-        except (KeyError, Ticket.DoesNotExist):
+        except(KeyError, ObjType.DoesNotExist):
+            context['error_message'] = "Значение типа лифта не верно"
+        else:
+            ticket_object_filter = ticket_object_filter.filter(obj_type=new_objtype)
+
+
+        new_date = request.POST['ticket_date']
+        if new_date == "":
+            new_date = timezone.now()
+#--make ticket
+        try:
+            ticket_object_filter.get()
+        except (KeyError, Object.DoesNotExist):
+            context['error_message'] = "Объект с заданными параметрами не найден"
             return render(request, 'base/newticket.html', context)
         else:
-            if content == "":
-                context['error_message'] = "Содержание не может быть пустым"
-                return render(request, 'base/newticket.html', context)
-            else:
-                ticket.save()
-                return HttpResponseRedirect(reverse('base:index'))
+            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_object=Object.objects.get(pk=ticket_object_filter.get().id))
+#--last check
+        if new_content == "":
+            context['error_message'] = "Содержание не может быть пустым"
+            return render(request, 'base/newticket.html', context)
+        else:
+            ticket.save()
+            return HttpResponseRedirect(reverse('base:ticket_index'))
+
+
 
 def ticket_close(request, ticket_id):
     try:
