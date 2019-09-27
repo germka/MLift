@@ -49,11 +49,11 @@ class ObjManufacturer(models.Model):
 class Object(models.Model):
     obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True, verbose_name='Район')
     obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
-    obj_build = models.CharField('Строение', max_length=15, null=True)
-    obj_build_housing = models.IntegerField('Корпус', null=True)
+    obj_build = models.CharField('Дом', max_length=15, null=True)
+    obj_build_housing = models.CharField('Корпус', max_length=2, null=True)
     obj_par = models.IntegerField('Номер парадной', null=True)
-    obj_number = models.CharField('Номер объекта', max_length=15, null=True)
-    obj_factory_number = models.CharField('Заводской номер',max_length=15, null=True)
+    obj_number = models.CharField('Номер лифта', max_length=15, null=True)
+    obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True)
     obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True, verbose_name='Тип объекта')
     obj_carrying = models.IntegerField('Грузоподъемность', null=True)
     obj_aperture = models.IntegerField('Пролет', null=True)
@@ -70,17 +70,21 @@ class Object(models.Model):
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
     ticket_user = models.IntegerField('Автор')
-    ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки')
+    ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки', null=True)
+    ticket_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
+    ticket_build = models.CharField('Дом', max_length=15, default='-')
+    ticket_build_housing = models.CharField('Корпус', max_length=2, null=True)
+    ticket_par = models.IntegerField('Парадная')
     ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки', null=True)
     ticket_content = models.CharField('Содержание' ,max_length=1000)
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')
     ticket_duration = models.DurationField('Время простоя', null=True)
     def close(self):
-        Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=3))
+        Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=2))
         return 'ticket closed'
 
     def duration_save(self):
-        if self.ticket_status == TicketStatus.objects.get(pk=3):
+        if self.ticket_status == TicketStatus.objects.get(pk=2):
             Ticket.objects.filter(pk=self.id).update(ticket_duration=timezone.now() - self.ticket_date)
             return 'duration saved'
 

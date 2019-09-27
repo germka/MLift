@@ -58,6 +58,7 @@ def new_ticket(request):
     obj_area = ObjArea.objects.order_by('area_name')
     obj_str = ObjStr.objects.order_by('street')
     obj_build = Object.objects.values('obj_build').order_by('obj_build').distinct()
+    obj_buildhousing = Object.objects.values('obj_build_housing').order_by('obj_build_housing').distinct()
     obj_type = ObjType.objects.order_by('type_name')
     objects_query = Object.objects.all()
     ticket_number = Ticket.objects.count()
@@ -66,6 +67,7 @@ def new_ticket(request):
         'obj_area': obj_area,
         'obj_str': obj_str,
         'obj_build': obj_build,
+        'obj_buildhousing':obj_buildhousing,
         'obj_type': obj_type,
         'objects_query': objects_query,
         'ticket_number': ticket_number,
@@ -76,58 +78,47 @@ def new_ticket(request):
     if request.method == 'POST':
         status = TicketStatus.objects.get(pk=1)
         new_content = request.POST['ticket_content']
-        ticket_object_filter = Object.objects.all()
-#--obj filters
-        try:
-            new_objarea = ObjArea.objects.get(area_name=request.POST['obj_area']).id
-        except(KeyError, ObjArea.DoesNotExist):
-            context['error_message'] = "Значение области введено не верно"
-        else:
-            ticket_object_filter = ticket_object_filter.filter(obj_area=new_objarea)
 
+#--obj filters
 
         try:
             new_objstr = ObjStr.objects.get(street=request.POST['obj_str']).id
         except(KeyError, ObjStr.DoesNotExist):
-            context['error_message'] = "Значение улицы введено не верно"
-        else:
-            ticket_object_filter = ticket_object_filter.filter(obj_str=new_objstr)
+            context['error_message'] = "Значение улицы не заполнено"
 
 
         new_objbuild = request.POST['obj_build']
         if new_objbuild == '':
-            context['error_message'] = "Значение номена строения не верно"
-        else:
-            ticket_object_filter = ticket_object_filter.filter(obj_build=new_objbuild)
+            context['error_message'] = "Значение номера дома не заполнено"
+
+
+        new_objbuildhousing = request.POST['obj_build_housing']
 
 
         new_objpar = request.POST['obj_par']
         if new_objpar == '':
-            context['error_message'] = "Значение номера парадной не верно"
-        else:
-            ticket_object_filter = ticket_object_filter.filter(obj_par=new_objpar)
+            context['error_message'] = "Значение номера парадной не введено"
 
 
         try:
             new_objtype = ObjType.objects.get(type_name=request.POST['obj_type']).id
         except(KeyError, ObjType.DoesNotExist):
             context['error_message'] = "Значение типа лифта не верно"
-        else:
-            ticket_object_filter = ticket_object_filter.filter(obj_type=new_objtype)
 
 
         new_date = request.POST['ticket_date']
         if new_date == "":
             new_date = timezone.now()
+
 #--make ticket
+
         try:
-            ticket_object_filter.get()
+            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, ticket_build_housing=new_objbuildhousing, ticket_par=new_objpar)
         except (KeyError, Object.DoesNotExist):
-            context['error_message'] = "Объект с заданными параметрами не найден"
-            return render(request, 'base/newticket.html', context)
-        else:
-            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_object=Object.objects.get(pk=ticket_object_filter.get().id))
+            context['error_message'] = "Ошибка в параметрах"
+
 #--last check
+
         if new_content == "":
             context['error_message'] = "Содержание не может быть пустым"
             return render(request, 'base/newticket.html', context)
@@ -140,9 +131,12 @@ def new_ticket(request):
 def ticket_close(request, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
+        ticket_object = Object.objects.get(pk=ticket.ticket_object.id)
         context = {
-            'ticket':ticket,
+            'ticket': ticket,
+            'ticket_object': ticket_object,
         }
+
     except (KeyError, TicketDoesNotExist):
         context['ticket_message'] = "Ошибка закрытия - заявка не существует"
     else:

@@ -7,29 +7,23 @@
 {% csrf_token %}
 
 <fieldset>
-<legend>Выберите объект</legend>
-<p><input list="comp_name" name="comp_name" placeholder="Управляющая компания" size="35">
-<datalist id="comp_name">
-{% for company_name in manage_comp %}
-    <option>{{ company_name }}</option>
-{% endfor %}
-</datalist>
-<input list="obj_area" name="obj_area" placeholder="Район" size="35"></p>
-<datalist id="obj_area">
-{% for area_name in obj_area %}
-    <option>{{ area_name }}</option>
-{% endfor %}
-</datalist>
+<legend>Выберите адрес</legend>
 <p><input list="obj_str" name="obj_str" placeholder="Улица" size="35">
 <datalist id="obj_str">
 {% for street_name in obj_str %}
     <option>{{ street_name }}</option>
 {% endfor %}
 </datalist>
-<input list="obj_build" name="obj_build" placeholder="Строение" size="35"></p>
+<input list="obj_build" name="obj_build" placeholder="Дом" size="35">
 <datalist id="obj_build">
 {% for obj in obj_build %}
     <option>{{ obj.obj_build }}</option>
+{% endfor %}
+</datalist>
+<input list="obj_buildhousing" name="obj_buildhousing" placeholder="Корпус" size="35"></p>
+<datalist id="obj_buildhousing">
+{% for obj in obj_buildhousing %}
+    <option>{{ obj.obj_build_housing }}</option>
 {% endfor %}
 </datalist>
 <p><input list="obj_par" name="obj_par" placeholder="Парадная" size="35">
@@ -42,12 +36,6 @@
 <datalist id="obj_type">
 {% for objtype in obj_type %}
     <option>{{ objtype }}</option>
-{% endfor %}
-</datalist>
-<p><input list="obj_number" name="obj_name" placeholder="Номер объекта" size="35"></p>
-<datalist id="obj_number">
-{% for obj in objects_query|dictsort:'obj_number' %}
-    <option>{{ obj.obj_number }}</option>
 {% endfor %}
 </datalist>
 </fieldset>

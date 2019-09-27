@@ -20,6 +20,10 @@ class TicketAdmin(admin.ModelAdmin):
             'ticket_user',
             ('ticket_status',
             'ticket_type'),
+            ('ticket_str',
+            'ticket_build',
+            'ticket_build_housing',
+            'ticket_par'),
             'ticket_object',
             ]}),
         ('Дата и Длительность', {'fields':
