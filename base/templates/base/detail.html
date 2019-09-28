@@ -20,6 +20,12 @@
 {% endfor %}
 </datalist>
 {% endif %}
+<input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20">
+<datalist id="obj_exact">
+{% for type in object_exact %}
+<option>{{ type }}</option>
+{% endfor %}
+</datalist>
 {% if error_message %}<p style='color:red'><b> {{ error_message }} </b></p>{% endif %}
 <input type="submit" value="Закрыть заявку">
 </form>
