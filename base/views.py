@@ -36,16 +36,21 @@ def ticket_detail(request, ticket_id):
         context['no_object_message'] = "Лифт пока не определен"
     else:
         context['ticket_object'] = ticket_object
+
     try:
-        ticket_object_exact = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build, obj_build_housing=ticket.ticket_build_housing, obj_par=ticket.ticket_par)
+        ticket_object_exact = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build, 
+        #obj_build_housing=ticket.ticket_build_housing, 
+        obj_par=ticket.ticket_par)
     except:
         context['error_message'] = "Объект с таким адресом не найден"
     else:
         try:
             ticket.ticket_object = ticket_object_exact.get()
-        except (KeyError, Object.DoesNotExist):
+        except (KeyError, Object.MultipleObjectsReturned):
             context['exact_message'] = "Выберите тип лифта"
-            context['object_exact'] = ticket_object_exact.values_list('obj_type').order_by('obj_type').distinct()
+            context['object_exact'] = ticket_object_exact
+        except (KeyError, Object.DoesNotExist):
+            context['error_message'] = "Адрес не верный, ни одного лифта не найдено"
         else:
             context['exact_message'] = "Лифт определен"
 

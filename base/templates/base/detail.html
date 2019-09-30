@@ -1,11 +1,15 @@
 <p>Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</p>
 <H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</b></H1>
-<p>По адресу: 
+<p><b>По адресу:</b>
 {% if ticket.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
 ул {{ ticket.ticket_str }}, 
 дом {{ ticket.ticket_build }}, 
 {% if ticket.ticket_build_housing %} корпус {{ ticket.ticket_build_housing }}, {% endif %}
-парадная {{ ticket.ticket_par }}</p>
+парадная {{ ticket.ticket_par }},
+{% if ticket.ticket_object.obj_type %}
+тип лифта: {{ ticket.ticket_object.obj_type }}.
+{% endif %}
+</p>
 <p><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</p>
 <p><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</p>
 {% if ticket.ticket_status.id == 1 %}
@@ -13,17 +17,11 @@
 {% csrf_token %}
 {% if exact_message %}<p> {{ exact_message }} </p> {% endif %}
 {% if object_exact %}
-<input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="35">
-<datalist id="obj_exact">
-{% for type in object_exact %}
-<option>{{ type }}</option>
-{% endfor %}
-</datalist>
 {% endif %}
 <input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20">
-<datalist id="obj_exact">
-{% for type in object_exact %}
-<option>{{ type }}</option>
+<datalist id="object_exact">
+{% for obj in object_exact %}
+<option>{{ obj.obj_type }}</option>
 {% endfor %}
 </datalist>
 {% if error_message %}<p style='color:red'><b> {{ error_message }} </b></p>{% endif %}

@@ -4,15 +4,21 @@
 <p>Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></p>
 <H1>Список заявок</H1>
 {% if ticket_list %}
-    <ul>
+    <table>
     {% for ticket in ticket_list %}
-        <li><a href="{% url 'base:ticket_detail' ticket.id %}">Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}</a></li>
+        <tr>
+        <tr><td><a href="{% url 'base:ticket_detail' ticket.id %}">Заявка №{{ ticket.id }}</a></td><td>от {{ ticket.ticket_date }}</td></li>
+        <td>{{ ticket.ticket_area }}</td><td>{{ ticket.ticket_str }}, {{ ticket.ticket_build }}, 
+        {% if ticket.ticket_build_housing %}{{ ticket.ticket_build_housing }}{% endif %}
+        {% if ticket.ticket_object.obj_type %}{{ ticket.ticket_object.obj_type }}{% endif %}
+        {{ ticket.ticket_content }}</td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>Нет заявок</p>
 {% endif %}
-
+</br>
 <div class="pagination">
     <span class="step-links">
         {% if ticket_list.has_previous %}
