@@ -1,3 +1,77 @@
-li a {
-    color: green;
+body {
+    background: lightblue;
+    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    font-size: 10pt;
 }
+
+.header {
+    position: relative;
+    text-align: center;
+    margin: 20px;
+}
+
+.index_table {
+    max-width: 1024px;
+    margin: auto;
+    display: block;
+    position: relative;
+}
+
+.ticket_row {
+    position: relative;
+    padding: 4px;
+    height: 25px;
+    padding: 3px;
+    border-color: white;
+    border-width: 1px;
+    background-color: white;
+    margin: 1px;
+    border-radius: 6px;
+}
+
+.ticket_row span {
+    vertical-align: middle;
+    vertical-align: -webkit-baseline-middle;
+}
+
+.ticket_index_table {
+    display: inline-block;
+    position: relative;
+}
+
+.ticket_numdate {
+    width: 28%;
+    min-width: 285px;
+}
+
+.ticket_adress {
+    width: 28%;
+    min-width: 285px;
+}
+
+.ticket_content {
+    width: 42%;
+    min-width: 440px;
+    position: absolute;
+    right: 0;
+    top: 8px;
+}
+
+.ticket_status {
+    min-width: 100px;
+    position: absolute;
+    right: 0;
+}
+
+.red_text {
+    color: darkred;
+}
+
+.pagination {
+    max-width: 1024px;
+    margin: auto;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
