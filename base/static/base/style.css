@@ -1,9 +1,5 @@
-body {
-<<<<<<< HEAD
+body { 
     background-color: #79aec8;
-=======
-    background: lightblue;
->>>>>>> 347a2421b29e923fb03b1d994f70bd2497321d60
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     font-size: 10pt;
 }
@@ -41,10 +37,7 @@ body {
 .ticket_index_table {
     display: inline-block;
     position: relative;
-<<<<<<< HEAD
     margin-left: 8px;
-=======
->>>>>>> 347a2421b29e923fb03b1d994f70bd2497321d60
 }
 
 .ticket_numdate {
@@ -58,13 +51,8 @@ body {
 }
 
 .ticket_content {
-<<<<<<< HEAD
     width: 40.6%;
     min-width: 415px;
-=======
-    width: 42%;
-    min-width: 440px;
->>>>>>> 347a2421b29e923fb03b1d994f70bd2497321d60
     position: absolute;
     right: 0;
     top: 8px;
@@ -73,11 +61,7 @@ body {
 .ticket_status {
     min-width: 100px;
     position: absolute;
-<<<<<<< HEAD
     right: 5px;
-=======
-    right: 0;
->>>>>>> 347a2421b29e923fb03b1d994f70bd2497321d60
 }
 
 .red_text {
