@@ -1,38 +1,42 @@
-<p>Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</p>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
-<H1>Форма подачи заявки</H1>
-<p>Заявка №{{ ticket_number|add:"1" }}</p>
+<div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
+
+<div class="index_table">
+<H1 class="header">Форма подачи заявки</H1>
+<div>Заявка №{{ ticket_number|add:"1" }}</div>
 {% if error_message %}<p style="color:red"><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="{% url 'base:new_ticket' %}" method="post">
 {% csrf_token %}
 
 <fieldset>
 <legend>Выберите адрес</legend>
-<p><input list="obj_str" name="obj_str" placeholder="Улица" size="35">
+<div class="new_ticket_row"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="35"></div>
 <datalist id="obj_str">
 {% for street_name in obj_str %}
     <option>{{ street_name }}</option>
 {% endfor %}
 </datalist>
-<input list="obj_build" name="obj_build" placeholder="Дом" size="35">
+<div class="new_ticket_row"><input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="35"></div>
 <datalist id="obj_build">
 {% for obj in obj_build %}
     <option>{{ obj.obj_build }}</option>
 {% endfor %}
 </datalist>
-<input list="obj_buildhousing" name="obj_buildhousing" placeholder="Корпус" size="35"></p>
+<div class="new_ticket_row"><input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="35"></div>
 <datalist id="obj_buildhousing">
 {% for obj in obj_buildhousing %}
     <option>{{ obj.obj_build_housing }}</option>
 {% endfor %}
 </datalist>
-<p><input list="obj_par" name="obj_par" placeholder="Парадная" size="35">
+<div class="new_ticket_row"><input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="35"></div>
 <datalist id="obj_par">
 {% for obj in objects_query|dictsort:'obj_par' %}
     <option>{{ obj.obj_par }}</option>
 {% endfor %}
 </datalist>
-<input list="obj_type" name="obj_type" placeholder="Тип лифта" size="35"></p>
+<div class="new_ticket_row"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="35"></div>
 <datalist id="obj_type">
 {% for objtype in obj_type %}
     <option>{{ objtype }}</option>
@@ -42,8 +46,12 @@
 
 <fieldset>
 <legend>Заявка</legend>
-<p><input type="datetime-local" name="ticket_date"> - Автоматически если не заполнять</p>
-<p><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5"></textarea></p>
+<div class="new_ticket_row"><input type="datetime-local" name="ticket_date"> - Автоматически если не заполнять</div>
+<div class="new_ticket_row"><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5"></textarea></div>
 </fieldset>
-<p><input type="submit" value="Отправить"></p>
+<input class="send_button" type="submit" value="Отправить">
 </form>
+</div>
+
+{% load static %}
+<script type="text/javascript" src="{% static 'base/filter.js' %}"></script>

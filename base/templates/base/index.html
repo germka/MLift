@@ -1,7 +1,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
-<p>Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></p>
+<div class="menu">Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></div>
+
+<div class="index_table">
 
 <H1 class="header">Список заявок</H1>
 
@@ -24,7 +26,6 @@
 </div>
 
 {% if ticket_list %}
-<div class="index_table">
     {% for ticket in ticket_list %}
         <div class="ticket_row_{{ forloop.counter }} ticket_row"><span class="ticket_numdate ticket_index_table"><a href="{% url 'base:ticket_detail' ticket.id %}">Заявка №{{ ticket.id }}</a> от {{ ticket.ticket_date }}</span>
         <span class="ticket_area ticket_index_table">{{ ticket.ticket_area }}</span><span class="ticket_adress ticket_index_table">{{ ticket.ticket_str }}, {{ ticket.ticket_build }}, 
@@ -33,7 +34,6 @@
         <span class="ticket_content ticket_index_table">{{ ticket.ticket_content }}<span class="ticket_status ticket_index_table {% if ticket.ticket_status.id == 1 %}red_text{% endif %}">{{ ticket.ticket_status }}</span></span>
         </div>
     {% endfor %}
-</div>
 {% else %}
     <p>Нет заявок</p>
 {% endif %}
@@ -54,4 +54,6 @@
             <a href="?page={{ ticket_list.paginator.num_pages }}" title="На последнюю страницу">&raquo;</a>
         {% endif %}
     </span>
+</div>
+
 </div>

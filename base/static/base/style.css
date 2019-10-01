@@ -1,17 +1,24 @@
-body { 
-    background-color: #79aec8;
+body {
+    background-color: lightgray;
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     font-size: 10pt;
+    margin: 0;
+}
+
+.menu {
+    position: absolute;
+    top: 20px;
 }
 
 .header {
     position: relative;
     text-align: center;
-    margin: 20px;
 }
 
 .index_table {
+    background-color: #79aec8;
     max-width: 1024px;
+    height: 100%;
     margin: auto;
     display: block;
     position: relative;
@@ -19,7 +26,6 @@ body {
 
 .ticket_row {
     position: relative;
-    padding: 4px;
     height: 25px;
     padding: 3px;
     border-color: white;
@@ -70,9 +76,36 @@ body {
 
 .pagination {
     max-width: 1024px;
+    width: fit-content;
     margin: auto;
     display: block;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
+.new_ticket_row {
+    position: relative;
+    padding: 4px;
+    border-color: white;
+    border-width: 1px;
+    background-color: white;
+    margin: 1px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.new_ticket_row input, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    border-color: EEE;
+    border-width: 1pt;
+    border-style: dotted;
+}
+
+.new_ticket_row textarea {
+    width: 100%;
+}
+
+.send_button {
+    margin: 5px;
+}

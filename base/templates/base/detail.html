@@ -1,6 +1,10 @@
-<p>Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</p>
-<H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</b></H1>
-<p><b>По адресу:</b>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}"> 
+
+<div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
+<div class="index_table">
+<div class="header"><H1><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</b></H1></div>
+<div class="ticket_row"><b>По адресу:</b>
 {% if ticket.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
 ул {{ ticket.ticket_str }}, 
 дом {{ ticket.ticket_build }}, 
@@ -9,45 +13,49 @@
 {% if ticket.ticket_object.obj_type %}
 тип лифта: {{ ticket.ticket_object.obj_type }}.
 {% endif %}
-</p>
-<p><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</p>
-<p><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</p>
+</div>
+<div class="ticket_row"><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</div>
+<div class="ticket_row"><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</div>
+
 {% if ticket.ticket_status.id == 1 %}
 <form action="{% url 'base:ticket_close' ticket.id %}" method="post">
 {% csrf_token %}
-{% if exact_message %}<p> {{ exact_message }} </p> {% endif %}
+
+{% if exact_message %}<div class="ticket_row">{{ exact_message }}</div>{% endif %}
+
 {% if object_exact %}
+    <div class="new_ticket_row"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20">
+    <datalist id="object_exact">
+    {% for obj in object_exact %}
+        <option>{{ obj.obj_type }}</option>
+    {% endfor %}
+    </datalist>
 {% endif %}
-<input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20">
-<datalist id="object_exact">
-{% for obj in object_exact %}
-<option>{{ obj.obj_type }}</option>
-{% endfor %}
-</datalist>
+
 {% if error_message %}<p style='color:red'><b> {{ error_message }} </b></p>{% endif %}
-<input type="submit" value="Закрыть заявку">
+<input type="submit" value="Закрыть заявку"></div>
 </form>
 {% endif %}
 
 
-<p><b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</p>
-<p><b>Содержание:</b></p>
-<p>{{ ticket.ticket_content }}</p>
+<div class="ticket_row"><b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</div>
+<div class="ticket_row"><b>Содержание:</b>{{ ticket.ticket_content }}</div>
 
-<p><b>Комментарии:</b></p>
-<ul>
+<div><b>Комментарии:</b></div>
+<div>
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
-    <li><b>№{{ forloop.counter }}</b> от <b>{{ comment.comment_user }}</b> оставлен <b>{{ comment.comment_date }}</b></br>{{ comment.comment_content }}</li>
+    <div class="new_ticket_row"><span class="comment_num">№{{ forloop.counter }}</span> от <span class="comment_user">{{ comment.comment_user }}</span> оставлен <span class="comment_date">{{ comment.comment_date }}</span></br><span class="comment_date">{{ comment.comment_content }}</span></div>
 {% empty %}
-    <p style='color:grey'>Пока нет ни одного комментария</p>
+    <span class="">Пока нет ни одного комментария</p>
 {% endfor %}
+</div>
 
 <form action="{% url 'base:ticket_detail' ticket.id %}" method="post">
 {% if errormessage %}<p style="color:red"><b>{{ errormessage }}</b></p>{% endif %}
 {% if message %}<p style="color:grey"><b>{{ message }}</b></p>{% endif %}
 {% csrf_token %}
-<p><textarea name="comment_content" required placeholder="Текст комментария" cols="80" rows="5"></textarea></p>
-<p><input type="submit" value="Отправить"></p>
+<div class="new_ticket_row"><textarea name="comment_content" required placeholder="Текст комментария" cols="60" rows="2"></textarea></div>
+<input class="send_button" type="submit" value="Отправить">
 </form>
 
-</ul>
+</div>
