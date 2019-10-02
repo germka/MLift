@@ -99,35 +99,39 @@ def new_ticket(request):
     if request.method == 'POST':
         status = TicketStatus.objects.get(pk=1)
         new_content = request.POST['ticket_content']
+        context['content_value'] = new_content
 
 #--obj filters
-        #--street filter
+
+#--street handler
+
         try:
             new_objstr = ObjStr.objects.get(street=request.POST['obj_str'])
         except(KeyError, ObjStr.DoesNotExist):
             context['error_message'] = "Значение улицы не заполнено"
         else:
             context['str_value'] = new_objstr
-#--obj_build datalist
-            context['obj_build'] = Object.objects.filter(obj_str=new_objstr).values('obj_build').order_by('obj_build').distinct()
-            context['content_value'] = new_content
+            filter_context = Object.objects.filter(obj_str=new_objstr)
 
-        #--build filter
+            context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
+
+#--build handler
         try:
             new_objbuild = request.POST['obj_build']
         except (KeyError, MultiValueDictKeyError):
             context['error_message'] = "Дом не выбран"
         else:
             context['build_value'] = new_objbuild
-#--obj_buildhousing datalist
-            obj_buildhousing = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild).values('obj_build_housing').order_by('obj_build_housing').distinct()
+            filter_context = filter_context.filter(obj_build=new_objbuild)
+            obj_buildhousing = filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct() #--obj_buildhousing datalist
             if obj_buildhousing.count()>0:
                 if obj_buildhousing[0]['obj_build_housing'] == None:
                     context['obj_buildhousing'] = None
                 else:
                     context['obj_buildhousing'] = obj_buildhousing
 
-        #--build_housing filter
+#--build_housing handler
+
         if context['obj_buildhousing'] != None:
             try:
                 new_objbuildhousing = request.POST['obj_buildhousing']
@@ -135,37 +139,31 @@ def new_ticket(request):
                 context['error_message'] = "Корпус не выбран"
             else:
                 context['build_housing_value'] = new_objbuildhousing
-                obj_par = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing).values('obj_par').order_by('obj_par').distinct()
+                filter_context = filter_context.filter(obj_build_housing=new_objbuildhousing)
         else:
             new_objbuildhousing = None
-#--obj_par datalist
-            obj_par = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild).values('obj_par').order_by('obj_par').distinct()
 
         if obj_par.count()>0:
             if obj_par[0]['obj_par'] == None:
                 context['obj_par'] = None
             else:
-                context['obj_par'] = obj_par
+                context['obj_par'] = filter_context.values('obj_par').order_by('obj_par').distinct()	#--obj_par datalist
 
-#--obj_par filter
+#--obj_par handler
+
         try:
             new_objpar = request.POST['obj_par']
         except (KeyError, MultiValueDictKeyError):
             context['error_message'] = "Парадная не выбрана"
         else:
-            if context['obj_par'] != None and new_objpar != '':
-                context['par_value'] = new_objpar
-                if context['obj_buildhousing'] == None:
-                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_par=new_objpar)
-                else:
-                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing, obj_par=new_objpar)
-            else:
-                if context['obj_buildhousing'] == None:
-                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild)
-                else:
-                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing)
+            if context['obj_par'] != None and new_objpar != 'None' and new_objpar != '':
+                filter_context = filter_context.filter(obj_par=new_objpar)
+            context['par_value'] = new_objpar
+            context['obj_type'] = filter_context	#--obj_type datalist
 
-        #--obj_type filter
+
+#--obj_type handler
+
         try:
             new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
         except(KeyError, ObjType.DoesNotExist):
