@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 #from django.views import generic
 from django.core.paginator import Paginator
 #from django.template import loader
@@ -78,22 +79,18 @@ def ticket_detail(request, ticket_id):
 
 
 def new_ticket(request):
-    manage_comp = ManageComp.objects.order_by('comp_name')
-    obj_area = ObjArea.objects.order_by('area_name')
     obj_str = ObjStr.objects.order_by('street')
     obj_build = Object.objects.values('obj_build').order_by('obj_build').distinct()
     obj_buildhousing = Object.objects.values('obj_build_housing').order_by('obj_build_housing').distinct()
+    obj_par = Object.objects.values('obj_par').order_by('obj_par').distinct()
     obj_type = ObjType.objects.order_by('type_name')
-    objects_query = Object.objects.all()
     ticket_number = Ticket.objects.count()
     context = {
-        'manage_comp': manage_comp,
-        'obj_area': obj_area,
         'obj_str': obj_str,
         'obj_build': obj_build,
         'obj_buildhousing':obj_buildhousing,
         'obj_type': obj_type,
-        'objects_query': objects_query,
+        'obj_par': obj_par,
         'ticket_number': ticket_number,
     }
     if request.method == 'GET':
@@ -104,38 +101,82 @@ def new_ticket(request):
         new_content = request.POST['ticket_content']
 
 #--obj filters
-
+        #--street filter
         try:
             new_objstr = ObjStr.objects.get(street=request.POST['obj_str'])
         except(KeyError, ObjStr.DoesNotExist):
             context['error_message'] = "Значение улицы не заполнено"
+        else:
+            context['str_value'] = new_objstr
+#--obj_build datalist
+            context['obj_build'] = Object.objects.filter(obj_str=new_objstr).values('obj_build').order_by('obj_build').distinct()
+            context['content_value'] = new_content
 
-
-        new_objbuild = request.POST['obj_build']
-        if new_objbuild == '':
-            context['error_message'] = "Значение номера дома не заполнено"
-
-
+        #--build filter
         try:
-            new_objbuildhousing = request.POST['obj_build_housing']
-        except:
-            new_objbuildhousing = ''
+            new_objbuild = request.POST['obj_build']
+        except (KeyError, MultiValueDictKeyError):
+            context['error_message'] = "Дом не выбран"
+        else:
+            context['build_value'] = new_objbuild
+#--obj_buildhousing datalist
+            obj_buildhousing = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild).values('obj_build_housing').order_by('obj_build_housing').distinct()
+            if obj_buildhousing.count()>0:
+                if obj_buildhousing[0]['obj_build_housing'] == None:
+                    context['obj_buildhousing'] = None
+                else:
+                    context['obj_buildhousing'] = obj_buildhousing
 
+        #--build_housing filter
+        if context['obj_buildhousing'] != None:
+            try:
+                new_objbuildhousing = request.POST['obj_buildhousing']
+            except (KeyError, MultiValueDictKeyError):
+                context['error_message'] = "Корпус не выбран"
+            else:
+                context['build_housing_value'] = new_objbuildhousing
+                obj_par = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing).values('obj_par').order_by('obj_par').distinct()
+        else:
+            new_objbuildhousing = None
+#--obj_par datalist
+            obj_par = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild).values('obj_par').order_by('obj_par').distinct()
 
-        new_objpar = request.POST['obj_par']
-        if new_objpar == '':
-            context['error_message'] = "Значение номера парадной не введено"
+        if obj_par.count()>0:
+            if obj_par[0]['obj_par'] == None:
+                context['obj_par'] = None
+            else:
+                context['obj_par'] = obj_par
 
+#--obj_par filter
+        try:
+            new_objpar = request.POST['obj_par']
+        except (KeyError, MultiValueDictKeyError):
+            context['error_message'] = "Парадная не выбрана"
+        else:
+            if context['obj_par'] != None and new_objpar != '':
+                context['par_value'] = new_objpar
+                if context['obj_buildhousing'] == None:
+                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_par=new_objpar)
+                else:
+                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing, obj_par=new_objpar)
+            else:
+                if context['obj_buildhousing'] == None:
+                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild)
+                else:
+                    context['obj_type'] = Object.objects.filter(obj_str=new_objstr, obj_build=new_objbuild, obj_build_housing=new_objbuildhousing)
 
+        #--obj_type filter
         try:
             new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
         except(KeyError, ObjType.DoesNotExist):
             context['error_message'] = "Значение типа лифта не верно"
 
-
+        #--set current date
         new_date = request.POST['ticket_date']
         if new_date == "":
             new_date = timezone.now()
+
+        return render(request, 'base/newticket.html', context)
 
 #--make ticket
 
@@ -158,15 +199,18 @@ def new_ticket(request):
 def ticket_close(request, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
-        ticket_object = Object.objects.get(pk=ticket.ticket_object.id)
         context = {
             'ticket': ticket,
-            'ticket_object': ticket_object,
         }
-
-    except (KeyError, TicketDoesNotExist):
+    except (KeyError, Ticket.DoesNotExist):
         context['ticket_message'] = "Ошибка закрытия - заявка не существует"
     else:
-        ticket.close()
-        context['ticket_message'] = "Заявка успешно закрыта"
+        try:
+            ticket_object = Object.objects.get(pk=ticket.ticket_object.id)
+            context['ticket_object'] = ticket_object
+        except:
+            context['ticket_message'] = "Лифт по этой заявке не указан либо не найден"
+        else:
+            ticket.close()
+            context['ticket_message'] = "Заявка успешно закрыта"
     return render(request, 'base/detail.html', context)

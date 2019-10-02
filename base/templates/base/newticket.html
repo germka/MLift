@@ -7,39 +7,48 @@
 <H1 class="header">Форма подачи заявки</H1>
 <div>Заявка №{{ ticket_number|add:"1" }}</div>
 {% if error_message %}<p style="color:red"><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="{% url 'base:new_ticket' %}" method="post">
+<form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post">
 {% csrf_token %}
 
 <fieldset>
 <legend>Выберите адрес</legend>
-<div class="new_ticket_row"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="35"></div>
+<div class="new_ticket_row"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="35" autocomplete="off"
+{% if str_value %}value="{{str_value}}"{% endif %}></div>
 <datalist id="obj_str">
 {% for street_name in obj_str %}
     <option>{{ street_name }}</option>
 {% endfor %}
 </datalist>
-<div class="new_ticket_row"><input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="35"></div>
+<div class="new_ticket_row"><input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="35" autocomplete="off"
+{% if build_value %}value="{{build_value}}"{% endif %}></div>
 <datalist id="obj_build">
 {% for obj in obj_build %}
     <option>{{ obj.obj_build }}</option>
 {% endfor %}
 </datalist>
-<div class="new_ticket_row"><input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="35"></div>
+{% if obj_buildhousing %}
+<div class="new_ticket_row"><input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="35" autocomplete="off"
+{% if build_housing_value %}value="{{build_housing_value}}"{% endif %}></div>
 <datalist id="obj_buildhousing">
 {% for obj in obj_buildhousing %}
     <option>{{ obj.obj_build_housing }}</option>
 {% endfor %}
 </datalist>
-<div class="new_ticket_row"><input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="35"></div>
+{% endif %}
+{% if obj_par %}
+<div class="new_ticket_row"><input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="35" autocomplete="off"
+{% if par_value %}value="{{par_value}}"{% endif %}></div>
 <datalist id="obj_par">
-{% for obj in objects_query|dictsort:'obj_par' %}
-    <option>{{ obj.obj_par }}</option>
+{% for par in obj_par %}
+    <option>{{ par.obj_par }}</option>
 {% endfor %}
 </datalist>
-<div class="new_ticket_row"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="35"></div>
+{% endif %}
+<div class="new_ticket_row"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="35" autocomplete="off"
+></div>
 <datalist id="obj_type">
-{% for objtype in obj_type %}
-    <option>{{ objtype }}</option>
+{% for type in obj_type %}
+    <option>{{ type.obj_type }}</option>
 {% endfor %}
 </datalist>
 </fieldset>
@@ -47,9 +56,10 @@
 <fieldset>
 <legend>Заявка</legend>
 <div class="new_ticket_row"><input type="datetime-local" name="ticket_date"> - Автоматически если не заполнять</div>
-<div class="new_ticket_row"><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5"></textarea></div>
+<div class="new_ticket_row"><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5" autocomplete="off"
+{% if content_value %}value="{{content_value}}"{% endif %}></textarea></div>
 </fieldset>
-<input class="send_button" type="submit" value="Отправить">
+<input id="send_button" class="send_button" type="submit" value="Отправить">
 </form>
 </div>
 
