@@ -124,6 +124,7 @@ def new_ticket(request):
 #--obj_build handler
 
         if 'obj_build' in request.POST:
+
             if request.POST['obj_build'] == '':
                 context['help_message'] = "Выберите номер дома"
             else:
@@ -134,12 +135,16 @@ def new_ticket(request):
                 else:
                     context['build_value'] = new_objbuild
                     filter_context = filter_context.filter(obj_build=new_objbuild)
-                    obj_buildhousing = filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct() #--obj_buildhousing datalist
-                    if obj_buildhousing.count()>0:
-                        if obj_buildhousing[0]['obj_build_housing'] == None:
-                            context['obj_buildhousing'] = None
-                        else:
-                            context['obj_buildhousing'] = obj_buildhousing
+
+#--obj_build_housing check if exists
+
+        obj_buildhousing = filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct() #--obj_buildhousing filtered datalist
+
+        if obj_buildhousing.count()>0:
+            if obj_buildhousing[0]['obj_build_housing'] == None:
+                context['obj_buildhousing'] = None
+            else:
+                context['obj_buildhousing'] = obj_buildhousing
 
 #--obj_build_housing handler
 
@@ -158,7 +163,10 @@ def new_ticket(request):
         else:
             new_objbuildhousing = None
 
-        obj_par = filter_context.values('obj_par').order_by('obj_par').distinct()
+#--obj_par check if exists
+
+        obj_par = filter_context.values('obj_par').order_by('obj_par').distinct() #--obj_par filtered datalist
+
         if obj_par.count()>0:
             if obj_par[0]['obj_par'] == None:
                 context['obj_par'] = None
@@ -187,12 +195,22 @@ def new_ticket(request):
 
         if 'obj_type' in request.POST:
             if request.POST['obj_type'] == '':
-                context['help_message'] = "Выберите тип лифта"
+                context['help_message'] = "Выберите тип лифта (из зарегистрированных)"
             else:
                 try:
                     new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
                 except(KeyError, ObjType.DoesNotExist):
                     context['error_message'] = "Значение типа лифта не верно"
+        else:
+            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
+#                context['help_message'] = "!!!"# request.POST['obj_buildhousing']
+                if context['obj_buildhousing'] == None:
+                    if context['obj_par'] == None or request.POST['obj_par'] != '':
+                        context['help_message'] = "Выберите тип лифта (из списка)"
+                elif 'obj_buildhousing' in request.POST:
+                    if request.POST['obj_buildhousing'] != '':
+                        if context['obj_par'] == None or request.POST['obj_par'] != '':
+                            context['help_message'] = "Выберите тип лифта (из списка)"
 
 #--ticket_date handler
 
@@ -201,26 +219,27 @@ def new_ticket(request):
         else:
             new_date = timezone.now()	#--set current date
 
-        return render(request, 'base/newticket.html', context)
+#        return render(request, 'base/newticket.html', context)
 
 #--make ticket
 
-        try:
-            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, ticket_build_housing=new_objbuildhousing, ticket_par=new_objpar)
-        except (KeyError, Object.DoesNotExist):
-            context['error_message'] = "Ошибка в параметрах"
-        except (KeyError, Ticket.DoesNotExist):
-            context['error_message'] = "Заявка не создалась"
+        if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
+            if 'obj_str' != '' and 'obj_build' != '' and ('obj_par' != '' or 'obj_type' != ''):
+                if new_content == '':	#--last check
+                    context['error_message'] = "Содержание не может быть пустым"
+                else:
+                    try:
+                        ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, ticket_build_housing=new_objbuildhousing, ticket_par=new_objpar)
+                    except (KeyError, Object.DoesNotExist):
+                        context['error_message'] = "Ошибка адреса либо типа лифта"
+                    except (KeyError, Ticket.DoesNotExist):
+                        context['error_message'] = "Заявка не создалась"
+                    ticket.save()
+                    return HttpResponseRedirect(reverse('base:ticket_index'))
 
-#--last check
+#--return
 
-        if new_content == "":
-            context['error_message'] = "Содержание не может быть пустым"
-            return render(request, 'base/newticket.html', context)
-        else:
-            ticket.save()
-            return HttpResponseRedirect(reverse('base:ticket_index'))
-
+        return render(request, 'base/newticket.html', context)
 
 
 def ticket_close(request, ticket_id):

@@ -6,11 +6,10 @@
 <div class="index_table">
 <H1 class="header">Форма подачи заявки</H1>
 <div>Заявка №{{ ticket_number|add:"1" }}</div>
-{% if error_message %}<p style="color:red"><strong>{{ error_message }}</strong></p>{% endif %}
+
 <form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post">
 {% csrf_token %}
 
-{% if help_message %}{{ help_message }}{% endif %}
 <fieldset>
 <legend>Выберите адрес</legend>
 <div class="new_ticket_row"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="35" autocomplete="off"
@@ -70,7 +69,7 @@
 <div class="new_ticket_row"><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5" autocomplete="off"
 {% if content_value %}value="{{content_value}}"{% endif %}></textarea></div>
 </fieldset>
-<input id="send_button" class="send_button" type="submit" value="Отправить">
+<input id="send_button" class="send_button" type="submit" value="Отправить"> {% if help_message %}<span>{{ help_message }}</span>{% endif %} {% if error_message %}<span style="color:red"><strong>{{ error_message }}</strong></span>{% endif %}
 </form>
 </div>
 

@@ -45,6 +45,7 @@ if (date_checker.checked == false) {
 }
 
 //functions
+//str
 str.onchange = function() {
     build.disabled=false;
     new_ticket_form.submit();
@@ -76,7 +77,7 @@ str.onclick = function() {
     type.value = '';
     type.disabled=true;
 }
-
+//build
 build.onchange = function() {
     if (build_housing) {
         build_housing.disabled=false;
@@ -107,7 +108,7 @@ build.onclick = function() {
     type.value = '';
     type.disabled=true;
 }
-
+//housing
 if (build_housing) {
     build_housing.onchange = function() {
         if (par) {
@@ -134,7 +135,7 @@ if (build_housing) {
     }
 }
 
-
+//par
 if (par) {
     par.onchange = function() {
         type.disabled=false;
@@ -154,6 +155,16 @@ if (par) {
         type.disabled=true;
     }
 }
+
+type.onclick = function() {
+    if (type.value) {
+        type.placeholder=type.value;
+    } else {
+        type.placeholder="Тип лифта"
+    }
+    type.value = '';
+}
+
 
 date_checker.onchange = function() {
     if (date_checker.checked == false) {
