@@ -22,6 +22,9 @@ if (build_housing) {
     build_housing.disabled=true;
     type.disabled=true;
     }
+    if (build_housing.value == '') {
+        type.disabled=true;
+    }
 }
 
 if (build_housing && par) {
