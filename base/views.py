@@ -203,6 +203,7 @@ def new_ticket(request):
                     context['error_message'] = "Значение типа лифта не верно"
         else:
             if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
+<<<<<<< HEAD
 #                context['help_message'] = "!!!"# request.POST['obj_buildhousing']
                 if context['obj_buildhousing'] == None:
                     if context['obj_par'] == None or request.POST['obj_par'] != '':
@@ -211,6 +212,11 @@ def new_ticket(request):
                     if request.POST['obj_buildhousing'] != '':
                         if context['obj_par'] == None or request.POST['obj_par'] != '':
                             context['help_message'] = "Выберите тип лифта (из списка)"
+=======
+                if context['obj_buildhousing'] == None or request.POST['obj_buildhousing'] != '':
+                    if context['obj_par'] == None or request.POST['obj_par'] != '':
+                        context['help_message'] = "Выберите тип лифта (из возможных)"
+>>>>>>> 78e4e7160943a2bd850ed176ccb9a51daf2e0dfc
 
 #--ticket_date handler
 
