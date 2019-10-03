@@ -10,6 +10,7 @@
 <form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post">
 {% csrf_token %}
 
+{% if help_message %}{{ help_message }}{% endif %}
 <fieldset>
 <legend>Выберите адрес</legend>
 <div class="new_ticket_row"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="35" autocomplete="off"
@@ -46,16 +47,26 @@
 {% endif %}
 <div class="new_ticket_row"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="35" autocomplete="off"
 ></div>
+
+{% if obj_type.first.type_name %} {% comment %} default obj_type list {% endcomment %}
 <datalist id="obj_type">
-{% for type in obj_type %}
-    <option>{{ type.obj_type }}</option>
+{% for obj in obj_type %}
+    <option>{{ obj.type_name }}</option>
 {% endfor %}
 </datalist>
+{% endif %}
+{% if obj_type.first.obj_type %} {% comment %} filtered obj_type list {% endcomment %}
+<datalist id="obj_type">
+{% for obj in obj_type %}
+    <option>{{ obj.obj_type }}</option>
+{% endfor %}
+</datalist>
+{% endif %}
 </fieldset>
 
 <fieldset>
 <legend>Заявка</legend>
-<div class="new_ticket_row"><input type="datetime-local" name="ticket_date"> - Автоматически если не заполнять</div>
+<div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время</label></div>
 <div class="new_ticket_row"><textarea name="ticket_content" required placeholder="Текст заявки" cols="80" rows="5" autocomplete="off"
 {% if content_value %}value="{{content_value}}"{% endif %}></textarea></div>
 </fieldset>
