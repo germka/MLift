@@ -7,6 +7,7 @@ par = document.getElementById('par')
 type = document.getElementById('type')
 date_checker = document.getElementById('date_checker')
 ticket_date = document.getElementById('ticket_date')
+ticket_content = document.getElementById('ticket_content')
 
 //disabling all forms except obj_str
 function form_init() {
@@ -53,21 +54,49 @@ function form_init() {
         ticket_date.disabled=true;
     };
 };
-form_init();
+/*form_init();*/
 
 //functions
-function field_change() {
+str.onchange = function field_change() {
     var $form = $( "#new_ticket_form" ),
-        str = $form.find( "input[name='obj_str']" ).val(),
-        build = $form.find( "input[name='obj_build']" ).val(),
-        build_housing = $form.find( "input[name='obj_buildhousing']" ).val(),
-        par = $form.find( "input[name='obj_par']" ).val(),
-        type = $form.find( "input[name='obj_type']" ).val(),
-        content = $form.find( "input[name='ticket_content_']" ).val(),
-        date = $form.find( "input[name='ticket_date']" ).val(),
-        token = $form.find( "input[name='csrfmiddlewaretoken']" ).val(),
-        url = $form.attr( "action" );
-    var posting = $.post( url, { csrfmiddlewaretoken: token, obj_str: obj_str, ticket_content: "", } );
+    url = $form.attr( "action" ),
+    token = $form.find( "input[name='csrfmiddlewaretoken']" ).val(),
+    post_data = { csrfmiddlewaretoken: token, };
+
+    if (str.value != '') {
+        new_str = $form.find( "input[name='obj_str']" ).val();
+        post_data['obj_str'] = new_str;
+    };
+    if (build.value != '') {
+        build = $form.find( "input[name='obj_build']" ).val();
+        post_data['obj_build'] = new_build;
+    };
+    if (build_housing) {
+        if (build_housing.value != '') {
+            new_buildhousing = $form.find( "input[name='obj_buildhousing']" ).val();
+            post_data['obj_buildhousing'] = new_buildhousing;
+        };
+    };
+    if (par) {
+        if (par.value != '') {
+            new_par = $form.find( "input[name='obj_par']" ).val();
+            post_data['obj_par'] = new_par;
+        };
+    };
+    if (type.value != '') {
+        new_type = $form.find( "input[name='obj_type']" ).val();
+        post_data['obj_type'] = new_type;
+    };
+    if (ticket_content.value != '') {
+        new_content = $form.find( "input[name='ticket_content_']" ).val();
+        post_data['ticket_content'] = new_content;
+    };
+    if (ticket_date.value != '') {
+        new_date = $form.find( "input[name='ticket_date']" ).val();
+        post_data['ticket'] = new_date;
+    };
+
+    var posting = $.post( url, post_data );
 
     posting.done(function( data ) {
         var content = $( data ).find( "#new_ticket_form" );
@@ -76,10 +105,10 @@ function field_change() {
 };
 
 //str
-str.onchange = function() {
+/*str.onchange = function() {
     build.disabled=false;
     new_ticket_form.submit();
-}
+}*/
 str.onclick = function() {
     if (str.value) {
         str.placeholder=str.value;

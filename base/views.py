@@ -202,21 +202,21 @@ def new_ticket(request):
                     new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
                 except(KeyError, ObjType.DoesNotExist):
                     context['error_message'] = "Значение типа лифта не верно"
-        else:
-            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
-                if context['obj_buildhousing'] == None:
-                    if context['obj_par'] == None:
-                        context['help_message'] = "Выберите тип лифта (из списка)"
-                    elif 'obj_par' in request.POST:
-                        if request.POST['obj_par'] != '':
-                            context['help_message'] = "Выберите тип лифта (из списка)"
-                elif 'obj_buildhousing' in request.POST:
-                    if request.POST['obj_buildhousing'] != '':
-                        if context['obj_par'] == None:
-                            context['help_message'] = "Выберите тип лифта (из списка)"
-                        elif 'obj_par' in request.POST:
-                            if request.POST['obj_par'] != '':
-                                context['help_message'] = "Выберите тип лифта (из списка)"
+#        else:
+#            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
+#                if context['obj_buildhousing'] == None:
+#                    if context['obj_par'] == None:
+#                        context['help_message'] = "Выберите тип лифта (из списка)"
+#                    elif 'obj_par' in request.POST:
+#                        if request.POST['obj_par'] != '':
+#                            context['help_message'] = "Выберите тип лифта (из списка)"
+#                elif 'obj_buildhousing' in request.POST:
+#                    if request.POST['obj_buildhousing'] != '':
+#                        if context['obj_par'] == None:
+#                            context['help_message'] = "Выберите тип лифта (из списка)"
+#                        elif 'obj_par' in request.POST:
+#                            if request.POST['obj_par'] != '':
+#                                context['help_message'] = "Выберите тип лифта (из списка)"
 
 #--ticket_date handler
 
