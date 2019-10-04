@@ -41,6 +41,11 @@ if (par) {
     } else {
         type.disabled=true;
     }
+    if (build.value == '') {
+        if (!build_housing) {
+            par.disabled = true;
+        }
+    }
 }
 
 if (date_checker.checked == false) {

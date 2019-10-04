@@ -54,7 +54,8 @@ def ticket_detail(request, ticket_id):
             context['error_message'] = "Адрес не верный, ни одного лифта не найдено"
         else:
             context['exact_message'] = "Лифт определен"
-
+#            context['object_exact'] = ticket.ticket_object
+#!!!-----FIX THAT-----!!!
     if request.method == 'GET':
         return render(request, 'base/detail.html', context)
     if request.method == 'POST':
@@ -204,12 +205,18 @@ def new_ticket(request):
         else:
             if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
                 if context['obj_buildhousing'] == None:
-                    if context['obj_par'] == None or request.POST['obj_par'] != '':
+                    if context['obj_par'] == None:
                         context['help_message'] = "Выберите тип лифта (из списка)"
+                    elif 'obj_par' in request.POST:
+                        if request.POST['obj_par'] != '':
+                            context['help_message'] = "Выберите тип лифта (из списка)"
                 elif 'obj_buildhousing' in request.POST:
                     if request.POST['obj_buildhousing'] != '':
-                        if context['obj_par'] == None or request.POST['obj_par'] != '':
+                        if context['obj_par'] == None:
                             context['help_message'] = "Выберите тип лифта (из списка)"
+                        elif 'obj_par' in request.POST:
+                            if request.POST['obj_par'] != '':
+                                context['help_message'] = "Выберите тип лифта (из списка)"
 
 #--ticket_date handler
 
