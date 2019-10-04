@@ -99,8 +99,9 @@ def new_ticket(request):
 
     if request.method == 'POST':
         status = TicketStatus.objects.get(pk=1)
-        new_content = request.POST['ticket_content']
-        context['content_value'] = new_content
+        if 'ticket_content' in request.POST:
+            new_content = request.POST['ticket_content']
+            context['content_value'] = new_content
 
 #--obj filters
 
@@ -125,7 +126,6 @@ def new_ticket(request):
 #--obj_build handler
 
         if 'obj_build' in request.POST:
-
             if request.POST['obj_build'] == '':
                 context['help_message'] = "Выберите номер дома"
             else:
@@ -222,17 +222,21 @@ def new_ticket(request):
 
         if 'ticket_date' in request.POST:
             new_date = request.POST['ticket_date']
+            try:
+                new_date.ctime()
+            except:
+                new_date = ''
         else:
             new_date = timezone.now()	#--set current date
-
-#        return render(request, 'base/newticket.html', context)
 
 #--make ticket
 
         if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
-            if 'obj_str' != '' and 'obj_build' != '' and ('obj_par' != '' or 'obj_type' != ''):
+            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '' and (request.POST['obj_par'] != '' or request.POST['obj_type'] != ''):
                 if new_content == '':	#--last check
                     context['error_message'] = "Содержание не может быть пустым"
+                elif new_date == '' :
+                    context['error_messsage'] = "Время введено не верно"
                 else:
                     try:
                         ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, ticket_build_housing=new_objbuildhousing, ticket_par=new_objpar)
