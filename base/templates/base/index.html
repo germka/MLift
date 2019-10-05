@@ -1,29 +1,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
-
+<header class="header"><div class="header_midle"><span class="header_text">Список заявок</span></div></header>
 <div class="menu">Меню: <a href="{% url 'base:new_ticket' %}">Создать заявку</a></div>
-
+<div class="demo-ribbon"></div>
 <div class="index_table">
-
-<H1 class="header">Список заявок</H1>
-
-<div class="pagination">
-    <span class="step-links">
-        {% if ticket_list.has_previous %}
-            <a href="?page=1" title="На первую страницу">&laquo;</a>
-            <a href="?page={{ ticket_list.previous_page_number }}" title="На предыдущую страницу"><</a>
-        {% endif %}
-
-        <span class="current">
-            Страница {{ ticket_list.number }} из {{ ticket_list.paginator.num_pages }}.
-        </span>
-
-        {% if ticket_list.has_next %}
-            <a href="?page={{ ticket_list.next_page_number }}" title="На следующую страницу">></a>
-            <a href="?page={{ ticket_list.paginator.num_pages }}" title="На последнюю страницу">&raquo;</a>
-        {% endif %}
-    </span>
-</div>
 
 {% if ticket_list %}
     {% for ticket in ticket_list %}

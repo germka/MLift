@@ -1,10 +1,11 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
+<header class="header"><div class="header_midle"><span class="header_text">Создание заявки</span></div></header>
 <div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
+<div class="demo-ribbon"></div> 
 
 <div class="index_table">
-<H1 class="header">Форма подачи заявки</H1>
 <div>Заявка №{{ ticket_number|add:"1" }}</div>
 
 <form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post">
