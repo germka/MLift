@@ -70,7 +70,7 @@ body {
     position: relative;
     height: 25px;
     padding: 3px;
-    margin: 9px;
+    margin: 4px;
     box-shadow: 0 0px 1px 0 rgba(0,0,0,.14), 1px 1px 2px 0 rgba(0,0,0,.12), 1px 2px 3px -1px rgba(0,0,0,.2);
 }
 
@@ -147,4 +147,8 @@ body {
 
 .send_button {
     margin: 5px;
+}
+
+.comments {
+    padding: 15px 0 0 30px;
 }

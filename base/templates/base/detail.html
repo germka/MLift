@@ -12,27 +12,39 @@
 дом {{ ticket.ticket_build }}, 
 {% if ticket.ticket_build_housing %} корпус {{ ticket.ticket_build_housing }}, {% endif %}
 парадная {{ ticket.ticket_par }},
-{% if ticket.ticket_object.obj_type %}
-тип лифта: {{ ticket.ticket_object.obj_type }}.
+{% if ticket.ticket_obj_type %}
+тип лифта: {{ ticket.ticket_obj_type }}.
 {% endif %}
 </div>
 <div class="ticket_row"><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</div>
 <div class="ticket_row"><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</div>
 
 {% if ticket.ticket_status.id == 1 %}
-<form action="{% url 'base:ticket_close' ticket.id %}" method="post">
+<form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post">
 {% csrf_token %}
 
-{% if exact_message %}<div class="ticket_row">{{ exact_message }}</div>{% endif %}
+{% if exact_message %}
+    <div class="ticket_row">{{ exact_message }} 
+        {% if exact_preview.obj_number %}Номер лифта: {{ exact_preview.obj_number }}.{% endif %}
+        {% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
+    </div>
+{% endif %}
 
 {% if object_exact %}
-    <div class="new_ticket_row"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20">
-    <datalist id="object_exact">
-    {% for obj in object_exact %}
-        <option>{{ obj.obj_type }}</option>
-    {% endfor %}
-    </datalist>
+    {% if object_exact.obj_type %}
+        {{ object_exact.obj_type }}
+    {% else %}
+    <div class="new_ticket_row"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of">
+        <datalist id="object_exact">
+        {% for obj in object_exact %}
+            <option>{{ obj.obj_type }}</option>
+        {% endfor %}
+        </datalist>
     </div>
+    {% endif %}
+{% endif %}
+
+{% if ticket.ticket_status_id != '2' %}
     <input type="submit" value="Закрыть заявку">
 {% endif %}
 
@@ -44,7 +56,7 @@
 <div class="ticket_row"><b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</div>
 <div class="ticket_row"><b>Содержание:</b>{{ ticket.ticket_content }}</div>
 
-<div><b>Комментарии:</b></div>
+<div class="comments"><b>Комментарии:</b>
 <div>
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
     <div class="new_ticket_row"><span class="comment_num">№{{ forloop.counter }}</span> от <span class="comment_user">{{ comment.comment_user }}</span> оставлен <span class="comment_date">{{ comment.comment_date }}</span></br><span class="comment_date">{{ comment.comment_content }}</span></div>
@@ -60,5 +72,6 @@
 <div class="new_ticket_row"><textarea name="comment_content" required placeholder="Текст комментария" cols="60" rows="2"></textarea></div>
 <input class="send_button" type="submit" value="Отправить">
 </form>
+</div>
 
 </div>

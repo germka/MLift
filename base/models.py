@@ -75,6 +75,7 @@ class Ticket(models.Model):
     ticket_build = models.CharField('Дом', max_length=15, default='-')
     ticket_build_housing = models.CharField('Корпус', max_length=2, null=True)
     ticket_par = models.IntegerField('Парадная')
+    ticket_obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, verbose_name='Тип лифта', null=True)
     ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки', null=True)
     ticket_content = models.CharField('Содержание' ,max_length=1000)
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')

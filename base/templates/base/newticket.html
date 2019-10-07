@@ -45,23 +45,18 @@
 {% endfor %}
 </datalist>
 {% endif %}
+
+{% if obj_type %}
 <div class="new_ticket_row"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="35" autocomplete="off"
 ></div>
 
-{% if obj_type.first.type_name %} {% comment %} default obj_type list {% endcomment %}
 <datalist id="obj_type">
 {% for obj in obj_type %}
     <option>{{ obj.type_name }}</option>
 {% endfor %}
 </datalist>
 {% endif %}
-{% if obj_type.first.obj_type %} {% comment %} filtered obj_type list {% endcomment %}
-<datalist id="obj_type">
-{% for obj in obj_type %}
-    <option>{{ obj.obj_type }}</option>
-{% endfor %}
-</datalist>
-{% endif %}
+
 </fieldset>
 
 <fieldset>

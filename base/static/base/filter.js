@@ -22,10 +22,14 @@ function form_init() {
             build_housing.disabled=false; 
         } else {
             build_housing.disabled=true;
-            type.disabled=true;
+            if (type) {
+                type.disabled=true;
+            };
         }
         if (build_housing.value == '') {
-            type.disabled=true;
+            if (type) {
+                type.disabled=true;
+            };
         };
     };
 
@@ -38,10 +42,12 @@ function form_init() {
     };
 
     if (par) {
-        if (par.value != '') {
-            type.disabled=false;
-        } else {
-            type.disabled=true;
+        if (type) {
+            if (par.value != '') {
+                type.disabled=false;
+            } else {
+                type.disabled=true;
+            };
         };
         if (build.value == '') {
             if (!build_housing) {
@@ -54,10 +60,10 @@ function form_init() {
         ticket_date.disabled=true;
     };
 };
-/*form_init();*/
+form_init();
 
 //functions
-str.onchange = function field_change() {
+/*str.onchange = */function field_change() {
     var $form = $( "#new_ticket_form" ),
     url = $form.attr( "action" ),
     token = $form.find( "input[name='csrfmiddlewaretoken']" ).val(),
@@ -100,15 +106,16 @@ str.onchange = function field_change() {
 
     posting.done(function( data ) {
         var content = $( data ).find( "#new_ticket_form" );
+        
         $( "#new_ticket_form" ).empty().append( content );
     });
 };
 
 //str
-/*str.onchange = function() {
+str.onchange = function() {
     build.disabled=false;
     new_ticket_form.submit();
-}*/
+}
 str.onclick = function() {
     if (str.value) {
         str.placeholder=str.value;

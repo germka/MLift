@@ -39,9 +39,13 @@ def ticket_detail(request, ticket_id):
         context['ticket_object'] = ticket_object
 
     try:
-        ticket_object_exact = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build, 
-        #obj_build_housing=ticket.ticket_build_housing, 
-        obj_par=ticket.ticket_par)
+        ticket_object_exact = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
+        if ticket.ticket_build_housing != None and ticket.ticket_build_housing != '':
+            ticket_object_exact = ticket_object_exact.filter(obj_build_housing=ticket.ticket_build_housing)
+        if ticket.ticket_par != None and ticket.ticket_par != '':
+            ticket_object_exact = ticket_object_exact.filter(obj_par=ticket.ticket_par)
+        if ticket.ticket_obj_type != None and ticket.ticket_obj_type != '':
+            ticket_object_exact = ticket_object_exact.filter(obj_type=ticket.ticket_obj_type)
     except:
         context['error_message'] = "Объект с таким адресом не найден"
     else:
@@ -49,13 +53,20 @@ def ticket_detail(request, ticket_id):
             ticket.ticket_object = ticket_object_exact.get()
         except (KeyError, Object.MultipleObjectsReturned):
             context['exact_message'] = "Выберите тип лифта"
-            context['object_exact'] = ticket_object_exact
+            obj_filter = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
+            if ticket.ticket_build_housing:
+                obj_filter = obj_filter.filter(obj_build_housing=ticket.ticket_build_housing)
+            if ticket.ticket_par:
+                obj_filter = obj_filter.filter(obj_par=ticket.ticket_par)
+            if ticket.ticket_obj_type:
+                obj_filter = obj_filter.filter(obj_type=ticket.ticket_obj_type)
+            context['object_exact'] = obj_filter
         except (KeyError, Object.DoesNotExist):
             context['error_message'] = "Адрес не верный, ни одного лифта не найдено"
         else:
             context['exact_message'] = "Лифт определен"
-#            context['object_exact'] = ticket.ticket_object
-#!!!-----FIX THAT-----!!!
+            context['exact_preview'] = ticket.ticket_object
+
     if request.method == 'GET':
         return render(request, 'base/detail.html', context)
     if request.method == 'POST':
@@ -189,8 +200,14 @@ def new_ticket(request):
                         filter_context = filter_context.filter(obj_par=new_objpar)
                     context['par_value'] = new_objpar
 
-                    if filter_context.first().obj_type != None:
-                        context['obj_type'] = filter_context	#--obj_type datalist
+        obj_type = filter_context.values('obj_type').order_by('obj_type').distinct()	#obj_type filtered datalist
+        if obj_type.count()>0:
+            if obj_type[0]['obj_type'] == None:
+                context['obj_type'] = None
+            else:
+                context['obj_type'] = ObjType.objects.filter(pk__in=obj_type)
+#        if filter_context.first().obj_type != None:
+#            context['obj_type'] = filter_context	#--obj_type datalist
 
 #--obj_type handler
 
@@ -232,14 +249,21 @@ def new_ticket(request):
 #--make ticket
 
         if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
-            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '' and (request.POST['obj_par'] != '' or request.POST['obj_type'] != ''):
+            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':# and (request.POST['obj_par'] != '' or request.POST['obj_type'] != ''):
                 if new_content == '':	#--last check
                     context['error_message'] = "Содержание не может быть пустым"
                 elif new_date == '' :
                     context['error_messsage'] = "Время введено не верно"
                 else:
                     try:
-                        ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, ticket_build_housing=new_objbuildhousing, ticket_par=new_objpar)
+                        ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, )
+                        if 'obj_buildhousing' in request.POST:
+                            ticket.ticket_build_housing=new_objbuildhousing
+                        if 'obj_par' in request.POST:
+                            ticket.ticket_par=new_objpar
+                        if 'obj_type' in request.POST:
+                            if request.POST['obj_type'] != '':
+                                ticket.ticket_obj_type=new_objtype
                     except (KeyError, Object.DoesNotExist):
                         context['error_message'] = "Ошибка адреса либо типа лифта"
                     except (KeyError, Ticket.DoesNotExist):
@@ -261,12 +285,28 @@ def ticket_close(request, ticket_id):
     except (KeyError, Ticket.DoesNotExist):
         context['ticket_message'] = "Ошибка закрытия - заявка не существует"
     else:
-        try:
-            ticket_object = Object.objects.get(pk=ticket.ticket_object.id)
-            context['ticket_object'] = ticket_object
-        except:
-            context['ticket_message'] = "Лифт по этой заявке не указан либо не найден"
-        else:
+        if 'obj_exact' in request.POST:
+            ticket_obj = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
+            if ticket.ticket_build_housing != None:
+                ticket_obj = ticket_obj.filter(obj_build_housing=ticket.ticket_build_housing)
+            if ticket.ticket_par != None:
+                ticket_obj = ticket_obj.filter(obj_par=ticket.ticket_par)
+            if request.POST['obj_exact'] != '':
+                ticket_obj = ticket_obj.filter(obj_type = ObjType.objects.get(type_name = request.POST['obj_exact']))
+            else:
+                context['error_message'] = "Выберите лифт"
+            try:
+                ticket.ticket_object = ticket_obj.get()
+            except (KeyError, Object.MultipleObjectsReturned):
+                context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списков"
+            else:
+                ticket.save()
+        if 'ticket_obj' in request.POST:
+            ticket.ticket_object = Object.objects.get(pk=request.POST['ticket_obj'])
+            ticket.save()
+        context['ticket_object'] = ticket.ticket_object
+        
+        if ticket.ticket_object != None:
             ticket.close()
             context['ticket_message'] = "Заявка успешно закрыта"
     return render(request, 'base/detail.html', context)
