@@ -1,40 +1,33 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}"> 
 
-<header class="header"><div class="header_midle"><span class="header_text"><b>Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</b></div></span></header>
+<header class="header"><div class="header_midle"><span class="header_text">Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</div></span></header>
 <div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
 <div class="demo-ribbon"></div> 
 
 <div class="index_table">
-<div class="ticket_row"><b>По адресу:</b>
-{% if ticket.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
-ул {{ ticket.ticket_str }}, 
-дом {{ ticket.ticket_build }}, 
-{% if ticket.ticket_build_housing %} корпус {{ ticket.ticket_build_housing }}, {% endif %}
-парадная {{ ticket.ticket_par }},
-{% if ticket.ticket_obj_type %}
-тип лифта: {{ ticket.ticket_obj_type }}.
-{% endif %}
+<div class="detail_ticket_row"><span class="detail_point">Адрес заявки</span>
+<span class="detail_info">
+{% if ticket_object.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
+{{ ticket.ticket_str }}, 
+дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
+</span>
 </div>
-<div class="ticket_row"><b>Открыта:</b> {{ ticket.ticket_date|timesince }} назад</div>
-<div class="ticket_row"><b>Статус:</b> {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% endif %}</div>
+<div class="detail_ticket_row"><span class="detail_point">Открыта: </span><span class="detail_info">{{ ticket.ticket_date|timesince }} назад</span></div>
+<div class="detail_ticket_row"><span class="detail_point">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
 
 {% if ticket.ticket_status.id == 1 %}
-<form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post">
+<form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
 {% csrf_token %}
 
-{% if exact_message %}
-    <div class="ticket_row">{{ exact_message }} 
-        {% if exact_preview.obj_number %}Номер лифта: {{ exact_preview.obj_number }}.{% endif %}
-        {% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
-    </div>
-{% endif %}
+{% if exact_preview.obj_number %}<div class="detail_ticket_row"><span class="detail_point">Номер лифта: </span><span class="detail_info"> {{ exact_preview.obj_number }} </span></div>{% endif %}
+{% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
 
 {% if object_exact %}
     {% if object_exact.obj_type %}
         {{ object_exact.obj_type }}
     {% else %}
-    <div class="new_ticket_row"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of">
+    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_point">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of"></span>
         <datalist id="object_exact">
         {% for obj in object_exact %}
             <option>{{ obj.obj_type }}</option>
@@ -45,32 +38,36 @@
 {% endif %}
 
 {% if ticket.ticket_status_id != '2' %}
-    <input type="submit" value="Закрыть заявку">
+    <div class="ticket_close"><input type="submit" value="Закрыть заявку" class="ticket_close_button send_button"></div>
 {% endif %}
 
-{% if error_message %}<p style='color:red'><b> {{ error_message }} </b></p>{% endif %}
+{% if error_message %}<div class="detail_ticket_row error_message"><span>{{ error_message }}</span></div>{% endif %}
 </form>
 {% endif %}
 
 
-<div class="ticket_row"><b>Время простоя:</b> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</div>
-<div class="ticket_row"><b>Содержание:</b>{{ ticket.ticket_content }}</div>
+<div class="detail_ticket_row"><span class="detail_point">Время простоя: </span><span class="detail_info"> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</span></div>
+<div class="detail_ticket_row"><span class="detail_point">Содержание: </span><span class="detail_info"> {{ ticket.ticket_content }}</span></div>
 
-<div class="comments"><b>Комментарии:</b>
+<div class="comments"><span class="detail_point">Комментарии:</span>
 <div>
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
-    <div class="new_ticket_row"><span class="comment_num">№{{ forloop.counter }}</span> от <span class="comment_user">{{ comment.comment_user }}</span> оставлен <span class="comment_date">{{ comment.comment_date }}</span></br><span class="comment_date">{{ comment.comment_content }}</span></div>
+    <div class="comment_row"><span class="comment_num">№{{ forloop.counter }}</span>
+    {% if comment.comment_user %}от <span class="comment_user">{{ comment.comment_user }}</span>{% endif %}
+    {% if comment.comment_date %}оставлен <span class="comment_date">{{ comment.comment_date }}</span>{% endif %}</br>
+    {% if comment.comment_content %}<span class="comment_content">{{ comment.comment_content }}</span>{% endif %}
+    {% if message %}{% if forloop.last %}<div class="comment_add_message">{{ message }}</div>{% endif %}{% endif %}
+    </div>
 {% empty %}
-    <span class="">Пока нет ни одного комментария</p>
+    <span class="no_data">Пока нет ни одного комментария</p>
 {% endfor %}
 </div>
 
-<form action="{% url 'base:ticket_detail' ticket.id %}" method="post">
-{% if errormessage %}<p style="color:red"><b>{{ errormessage }}</b></p>{% endif %}
-{% if message %}<p style="color:grey"><b>{{ message }}</b></p>{% endif %}
+<form action="{% url 'base:ticket_detail' ticket.id %}" method="post" class="new_comment_form">
+{% if errormessage %}<div class="error_message">{{ errormessage }}</div>{% endif %}
 {% csrf_token %}
-<div class="new_ticket_row"><textarea name="comment_content" required placeholder="Текст комментария" cols="60" rows="2"></textarea></div>
-<input class="send_button" type="submit" value="Отправить">
+<div class="comment_content_wrap"><textarea name="comment_content" required placeholder="Содержание комментария" cols="60" rows="3" class="new_comment_content"></textarea></div>
+<input class="send_button" type="submit" value="Отправить комментарий">
 </form>
 </div>
 

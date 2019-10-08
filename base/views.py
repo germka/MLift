@@ -52,7 +52,7 @@ def ticket_detail(request, ticket_id):
         try:
             ticket.ticket_object = ticket_object_exact.get()
         except (KeyError, Object.MultipleObjectsReturned):
-            context['exact_message'] = "Выберите тип лифта"
+            context['exact_message'] = "Выберите тип лифта:"
             obj_filter = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
             if ticket.ticket_build_housing:
                 obj_filter = obj_filter.filter(obj_build_housing=ticket.ticket_build_housing)
@@ -97,6 +97,7 @@ def new_ticket(request):
     obj_par = Object.objects.values('obj_par').order_by('obj_par').distinct()
     obj_type = ObjType.objects.order_by('type_name')
     ticket_number = Ticket.objects.count()
+    date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
     context = {
         'obj_str': obj_str,
         'obj_build': obj_build,
@@ -104,6 +105,7 @@ def new_ticket(request):
         'obj_type': obj_type,
         'obj_par': obj_par,
         'ticket_number': ticket_number,
+        'date_now': date_now,
     }
     if request.method == 'GET':
         return render(request, 'base/newticket.html', context)
@@ -244,12 +246,12 @@ def new_ticket(request):
             except:
                 new_date = ''
         else:
-            new_date = timezone.now()	#--set current date
+            new_date = timezone.now().astimezone()	#--set current date
 
-#--make ticket
+#--making ticket
 
         if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
-            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':# and (request.POST['obj_par'] != '' or request.POST['obj_type'] != ''):
+            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
                 if new_content == '':	#--last check
                     context['error_message'] = "Содержание не может быть пустым"
                 elif new_date == '' :
@@ -295,18 +297,21 @@ def ticket_close(request, ticket_id):
                 ticket_obj = ticket_obj.filter(obj_type = ObjType.objects.get(type_name = request.POST['obj_exact']))
             else:
                 context['error_message'] = "Выберите лифт"
+
             try:
                 ticket.ticket_object = ticket_obj.get()
             except (KeyError, Object.MultipleObjectsReturned):
-                context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списков"
+                context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
             else:
-                ticket.save()
-        if 'ticket_obj' in request.POST:
+                ticket.save()	#--save ticket after chiose
+        elif 'ticket_obj' in request.POST:
             ticket.ticket_object = Object.objects.get(pk=request.POST['ticket_obj'])
-            ticket.save()
+            ticket.save() #--save ticket without choise
+
         context['ticket_object'] = ticket.ticket_object
-        
+
         if ticket.ticket_object != None:
-            ticket.close()
+            ticket.close()	#--close ticket
             context['ticket_message'] = "Заявка успешно закрыта"
+
     return render(request, 'base/detail.html', context)

@@ -8,6 +8,8 @@ type = document.getElementById('type')
 date_checker = document.getElementById('date_checker')
 ticket_date = document.getElementById('ticket_date')
 ticket_content = document.getElementById('ticket_content')
+fur = document.getElementById('fur')
+fur_block = document.getElementById('fur_block')
 
 //disabling all forms except obj_str
 function form_init() {
@@ -25,7 +27,7 @@ function form_init() {
             if (type) {
                 type.disabled=true;
             };
-        }
+        };
         if (build_housing.value == '') {
             if (type) {
                 type.disabled=true;
@@ -58,6 +60,9 @@ function form_init() {
 
     if (date_checker.checked == false) {
         ticket_date.disabled=true;
+    };
+    if (fur_block) {
+        fur_block.hidden = true;
     };
 };
 form_init();
@@ -115,7 +120,7 @@ form_init();
 str.onchange = function() {
     build.disabled=false;
     new_ticket_form.submit();
-}
+};
 str.onclick = function() {
     if (str.value) {
         str.placeholder=str.value;
@@ -140,8 +145,10 @@ str.onclick = function() {
         par.value = '';
         par.disabled=true;
     };
-    type.value = '';
-    type.disabled=true;
+    if (type) {
+        type.value = '';
+        type.disabled=true;
+    };
 };
 //build
 build.onchange = function() {
@@ -171,8 +178,10 @@ build.onclick = function() {
         par.value = '';
         par.disabled=true;
     };
-    type.value = '';
-    type.disabled=true;
+    if (type) {
+        type.value = '';
+        type.disabled=true;
+    };
 }
 //housing
 if (build_housing) {
@@ -196,15 +205,19 @@ if (build_housing) {
             par.value = '';
             par.disabled=true;
         };
-        type.value = '';
-        type.disabled=true;
+        if (type) {
+            type.value = '';
+            type.disabled=true;
+        };
     };
 };
 
 //par
 if (par) {
     par.onchange = function() {
-        type.disabled=false;
+        if (type) {
+            type.disabled=false;
+        };
         new_ticket_form.submit();
     };
     par.onclick = function() {
@@ -217,26 +230,35 @@ if (par) {
             };
         };
         par.value = '';
+        if (type) {
+            type.value = '';
+            type.disabled=true;
+        };
+    };
+};
+
+if (type) {
+    type.onclick = function() {
+        if (type.value) {
+            type.placeholder=type.value;
+        } else {
+            type.placeholder="Тип лифта"
+        };
         type.value = '';
-        type.disabled=true;
     };
 };
-
-type.onclick = function() {
-    if (type.value) {
-        type.placeholder=type.value;
-    } else {
-        type.placeholder="Тип лифта"
-    };
-    type.value = '';
-};
-
 
 date_checker.onchange = function() {
     if (date_checker.checked == false) {
         ticket_date.disabled=true;
     } else {
         ticket_date.disabled=false;
+    };
+};
+
+fur.onclick = function () {
+    if (fur_block) {
+        fur_block.hidden = !fur_block.hidden;
     };
 };
 
