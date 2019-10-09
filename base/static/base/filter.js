@@ -1,18 +1,5 @@
-window.onload=function() {
-
-str = document.getElementById('str')
-build = document.getElementById('build')
-build_housing = document.getElementById('build_housing')
-par = document.getElementById('par')
-type = document.getElementById('type')
-date_checker = document.getElementById('date_checker')
-ticket_date = document.getElementById('ticket_date')
-ticket_content = document.getElementById('ticket_content')
-fur = document.getElementById('fur')
-fur_block = document.getElementById('fur_block')
-
-//disabling all forms except obj_str
-function form_init() {
+var Form = {
+    init: function() {
     if (str.value != '') {
         build.disabled=false; 
     } else {
@@ -64,58 +51,27 @@ function form_init() {
     if (fur_block) {
         fur_block.hidden = true;
     };
+}
+
 };
-form_init();
+
+window.onload=function() {
+
+str = document.getElementById('str')
+build = document.getElementById('build')
+build_housing = document.getElementById('build_housing')
+par = document.getElementById('par')
+type = document.getElementById('type')
+date_checker = document.getElementById('date_checker')
+ticket_date = document.getElementById('ticket_date')
+ticket_content = document.getElementById('ticket_content')
+fur = document.getElementById('fur')
+fur_block = document.getElementById('fur_block')
+
+//disabling all forms except obj_str
+Form.init();
 
 //functions
-/*str.onchange = */function field_change() {
-    var $form = $( "#new_ticket_form" ),
-    url = $form.attr( "action" ),
-    token = $form.find( "input[name='csrfmiddlewaretoken']" ).val(),
-    post_data = { csrfmiddlewaretoken: token, };
-
-    if (str.value != '') {
-        new_str = $form.find( "input[name='obj_str']" ).val();
-        post_data['obj_str'] = new_str;
-    };
-    if (build.value != '') {
-        build = $form.find( "input[name='obj_build']" ).val();
-        post_data['obj_build'] = new_build;
-    };
-    if (build_housing) {
-        if (build_housing.value != '') {
-            new_buildhousing = $form.find( "input[name='obj_buildhousing']" ).val();
-            post_data['obj_buildhousing'] = new_buildhousing;
-        };
-    };
-    if (par) {
-        if (par.value != '') {
-            new_par = $form.find( "input[name='obj_par']" ).val();
-            post_data['obj_par'] = new_par;
-        };
-    };
-    if (type.value != '') {
-        new_type = $form.find( "input[name='obj_type']" ).val();
-        post_data['obj_type'] = new_type;
-    };
-    if (ticket_content.value != '') {
-        new_content = $form.find( "input[name='ticket_content_']" ).val();
-        post_data['ticket_content'] = new_content;
-    };
-    if (ticket_date.value != '') {
-        new_date = $form.find( "input[name='ticket_date']" ).val();
-        post_data['ticket'] = new_date;
-    };
-
-    var posting = $.post( url, post_data );
-
-    posting.done(function( data ) {
-        var content = $( data ).find( "#new_ticket_form" );
-        
-        $( "#new_ticket_form" ).empty().append( content );
-    });
-};
-
 //str
 str.onchange = function() {
     build.disabled=false;
@@ -125,13 +81,13 @@ str.onclick = function() {
     if (str.value) {
         str.placeholder=str.value;
     } else {
-        str.placeholder="Улица"
-        build.placeholder="Дом"
+        str.placeholder="Улица";
+        build.placeholder="Дом";
         if (build_housing) {
-            build_housing.placeholder="Корпус"
+            build_housing.placeholder="Корпус";
         };
         if (par) {
-            par.placeholder="Парадная"
+            par.placeholder="Парадная";
         };
     };
     str.value = '';
