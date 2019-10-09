@@ -40,9 +40,9 @@ class TicketAdmin(admin.ModelAdmin):
 
 
 class ObjectAdmin(admin.ModelAdmin):
-    list_display = ('id','obj_number','obj_str', 'obj_build')
-    list_filter = ['obj_area','obj_str','obj_build']
-    search_fields = ['obj_number','obj_area','obj_str', 'obj_build']
+    list_display = ('id','obj_number','obj_str', 'obj_build', 'obj_build_housing', 'obj_par')
+    list_filter = ['obj_area','obj_str','obj_build',]
+    search_fields = ['obj_number','obj_area','obj_str', 'obj_build',]
     fieldsets = [
         ('Адрес', {'fields':
             [
@@ -70,6 +70,9 @@ class ObjectAdmin(admin.ModelAdmin):
             'obj_inspection'),
             ]}),
     ]
+    class Meta:
+        verbose_name = 'Лифт'
+        verbose_name_plural = 'Список лифтов'
 
 admin.site.register(Comments)
 admin.site.register(Object,ObjectAdmin)
