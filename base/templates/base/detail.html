@@ -14,7 +14,7 @@
 дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
 </span>
 </div>
-<div class="detail_ticket_row"><span class="detail_point">Открыта: </span><span class="detail_info">{{ ticket.ticket_date|timesince }} назад</span></div>
+<div class="detail_ticket_row"><span class="detail_point">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span></div>
 <div class="detail_ticket_row"><span class="detail_point">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
 
 {% if ticket.ticket_status.id == 1 %}

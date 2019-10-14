@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -93,7 +94,7 @@ class Object(models.Model):
 
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
-    ticket_user = models.IntegerField('Автор')
+    ticket_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки', null=True)
     ticket_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
     ticket_build = models.CharField('Дом', max_length=15, default='-')
