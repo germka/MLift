@@ -2,7 +2,8 @@
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}"> 
 
 <header class="header"><div class="header_midle"><span class="header_text">Заявка №{{ ticket.id }} от {{ ticket.ticket_date }} {% if no_object_message %} {{ no_obj_messge }} {% else %}  на объект: {{ ticket_object.obj_number }} {% endif %}</div></span></header>
-<div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
+{% include "base/menu.html" with new='true' index='true' only %}
+
 <div class="demo-ribbon"></div> 
 
 <div class="index_table">

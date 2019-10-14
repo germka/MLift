@@ -1,8 +1,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
-<header class="header"><div class="header_midle"><span class="header_text">Создание заявки</span></div></header>
-<div class="menu">Меню: |<a href="{% url 'base:ticket_index' %}">К списку заявок</a>|<a href="{% url 'base:new_ticket' %}">Создать заявку</a>|</div>
+{% include "base/header.html" with page_name="Создание новой заявки" %}
+{% include "base/menu.html" with new="true" index='true' only %}
+
 <div class="demo-ribbon"></div> 
 
 <div class="index_table">
