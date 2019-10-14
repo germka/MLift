@@ -40,9 +40,15 @@ class TicketAdmin(admin.ModelAdmin):
 
 
 class ObjectAdmin(admin.ModelAdmin):
-    list_display = ('id','obj_number','obj_str', 'obj_build', 'obj_build_housing', 'obj_par')
-    list_filter = ['obj_area','obj_str','obj_build',]
-    search_fields = ['obj_number','obj_area','obj_str', 'obj_build',]
+    list_display = ('id','obj_number','obj_str','obj_build','obj_build_housing','obj_par',)
+    list_filter = ['obj_area','obj_type','obj_str','obj_build','obj_in_service',]
+    search_fields = [
+                'obj_number',
+                'obj_area__area_name',
+                'obj_str__street',
+                'obj_build',
+                'obj_build_housing',
+    ]
     fieldsets = [
         ('Адрес', {'fields':
             [
@@ -51,7 +57,8 @@ class ObjectAdmin(admin.ModelAdmin):
             ('obj_build',
             'obj_build_housing',
             'obj_par'),
-            'manage_comp',
+            ('manage_comp',
+            'obj_in_service'),
             ]}),
         ('Характеристики', {'fields':
             [
@@ -71,8 +78,8 @@ class ObjectAdmin(admin.ModelAdmin):
             ]}),
     ]
     class Meta:
-        verbose_name = 'Лифт'
-        verbose_name_plural = 'Список лифтов'
+        verbose_name = "Лифт"
+        verbose_name_plural = "Список лифтов"
 
 admin.site.register(Comments)
 admin.site.register(Object,ObjectAdmin)

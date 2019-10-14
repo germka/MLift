@@ -63,6 +63,7 @@ class Object(models.Model):
     obj_manufacture = models.DateTimeField('Дата производства', null=True)
     obj_exp_start = models.DateTimeField('Дата начала эксплуатации', null=True)
     obj_inspection = models.DateTimeField('Дата последней инспекции', null=True)
+    obj_in_service = models.BooleanField('Находится на обслуживании')
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
     
