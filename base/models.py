@@ -9,41 +9,62 @@ class TicketStatus(models.Model):
     status = models.CharField(max_length=50)
     def __str__(self):
         return 'Заявка %sа' % (self.status)
+    class Meta:
+        verbose_name = "Статус заявки"
+        verbose_name_plural = "Статусы заявок"
 
 
 class TicketType(models.Model):
     type_name = models.CharField(max_length=50)
     def __str__(self):
         return 'Тип заявки: %s' % (self.type_name)
+    class Meta:
+        verbose_name = "Лифт"
+        verbose_name_plural = "Лифты"
 
 
 class ManageComp(models.Model):
     comp_name = models.CharField('Обслуживающая компания', max_length=100)
     def __str__(self):
         return '%s' % (self.comp_name)
+    class Meta:
+        verbose_name = "Владелец"
+        verbose_name_plural = "Владельцы"
+
 
 class ObjArea(models.Model):
     area_name = models.CharField('Район', max_length=50)
     def __str__(self):
         return '%s' % (self.area_name)
-
+    class Meta:
+        verbose_name = "Район"
+        verbose_name_plural = "Районы"
 
 class ObjStr(models.Model):
     street = models.CharField('Улица', max_length=50)
     def __str__(self):
         return '%s' % (self.street)
+    class Meta:
+        verbose_name = "Улица"
+        verbose_name_plural = "Улицы"
 
 
 class ObjType(models.Model):
     type_name = models.CharField('Тип лифта', max_length=20)
     def __str__(self):
         return '%s' % (self.type_name)
+    class Meta:
+        verbose_name = "Тип лифта"
+        verbose_name_plural = "Типы лифтов"
 
 
 class ObjManufacturer(models.Model):
     manufacturer = models.CharField('Завод производитель', max_length=50)
     def __str__(self):
         return '%s' % (self.manufacturer)
+    class Meta:
+        verbose_name = "Лифт"
+        verbose_name_plural = "Лифты"
 
 
 class Object(models.Model):
@@ -66,7 +87,9 @@ class Object(models.Model):
     obj_in_service = models.BooleanField('Находится на обслуживании')
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
-    
+    class Meta:
+        verbose_name = "Лифт"
+        verbose_name_plural = "Лифты"
 
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
@@ -83,12 +106,10 @@ class Ticket(models.Model):
     ticket_duration = models.DurationField('Время простоя', null=True)
     def close(self):
         Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=2))
-        return 'ticket closed'
 
     def duration_save(self):
         if self.ticket_status == TicketStatus.objects.get(pk=2):
             Ticket.objects.filter(pk=self.id).update(ticket_duration=timezone.now() - self.ticket_date)
-            return 'duration saved'
 
     def duration_get(self):
         ticket_duration=timezone.now() - self.ticket_date
@@ -97,12 +118,17 @@ class Ticket(models.Model):
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)
         return status
+
     status.admin_order_field = 'ticket_status'
     status.boolean = False
     status.short_description = 'Статус заявки'
 
     def __str__(self):
         return 'Открыта: %s, статус: %s' % (self.ticket_date.strftime("%Y/%m/%d %H:%M"), self.ticket_status)
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
 
 
 class Comments(models.Model):
@@ -112,3 +138,8 @@ class Comments(models.Model):
     comment_user = models.CharField('Пользователь', max_length=50, null=True)
     def __str__(self):
         return '%s %s' % (self.comment_date.strftime("%Y/%m/%d %H:%M"), self.comment_content)
+
+
+    class Meta:
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"

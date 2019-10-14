@@ -77,9 +77,7 @@ class ObjectAdmin(admin.ModelAdmin):
             'obj_inspection'),
             ]}),
     ]
-    class Meta:
-        verbose_name = "Лифт"
-        verbose_name_plural = "Список лифтов"
+
 
 admin.site.register(Comments)
 admin.site.register(Object,ObjectAdmin)
