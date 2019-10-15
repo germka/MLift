@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class TicketStatus(models.Model):
     status = models.CharField(max_length=50)
     def __str__(self):
-        return 'Заявка %sа' % (self.status)
+        return '%s' % (self.status)
     class Meta:
         verbose_name = "Статус заявки"
         verbose_name_plural = "Статусы заявок"

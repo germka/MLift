@@ -3,6 +3,8 @@ from . import views
 
 app_name = 'base'
 urlpatterns = [
+    # Страница авторизации
+    path('login/', views.login, name="login"),
     # Список заявок
     path('', views.ticket_index, name='ticket_index'),
     # Окно заявки

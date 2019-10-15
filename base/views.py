@@ -11,15 +11,24 @@ from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, Mana
 
 # Create your views here.
 
-def ticket_index(request):
-    paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
+def login(request):
+    return HttpResponse("Авторизируйтесь для доступа")
 
-    page = request.GET.get('page')
-    ticket_list = paginator.get_page(page)
-    context = {
-        'ticket_list': ticket_list,
-    }
-    return render(request, 'base/index.html', context)
+def ticket_index(request):
+    if request.user.is_authenticated:
+        paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
+
+        page = request.GET.get('page')
+        ticket_list = paginator.get_page(page)
+        context = {
+            'ticket_list': ticket_list,
+        }
+        return render(request, 'base/index.html', context)
+    else:
+        context = {
+            'path': request.path,
+        }
+        return HttpResponseRedirect(reverse('base:login'))
 
 
 

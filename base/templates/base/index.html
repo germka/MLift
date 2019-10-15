@@ -8,11 +8,12 @@
 
 {% if ticket_list %}
     {% for ticket in ticket_list %}
-        <div class="ticket_row_{{ forloop.counter }} ticket_row"><span class="ticket_num index_row_item"><a href="{% url 'base:ticket_detail' ticket.id %}">№{{ ticket.id }}</a></span>
-        <span  class="ticket_date index_row_item"> {{ ticket.ticket_date }}</span>
+        <div class="ticket_row_{{ forloop.counter }} ticket_row" style="z-index: {{forloop.counter}};"><span class="ticket_num index_row_item"><a href="{% url 'base:ticket_detail' ticket.id %}">№{{ ticket.id }}</a></span>
+        <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|date:"SHORT_DATETIME_FORMAT" }}</span>
         {% if ticket.ticket_area %}<span class="ticket_area index_row_item">{{ ticket.ticket_area }}</span>{% endif %}
         <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_object.obj_type %}, {{ ticket.ticket_object.obj_type }}{% endif %}</span>
-        <span class="ticket_content index_row_item">{{ ticket.ticket_content }}</span><span class="ticket_status index_row_item {% if ticket.ticket_status.id == 1 %}red_text{% elif ticket.ticket_status.id == 2  %}green_text{% endif %}">{{ ticket.ticket_status }}</span>
+        <span class="ticket_content index_row_item">{{ ticket.ticket_content }} {% if ticket.comments_set.count > 0 %}<span title="Количество комментариев">({{ticket.comments_set.count}})</span>{% endif %}</span>
+        <span class="ticket_status index_row_item {% if ticket.ticket_status.id == 1 %}red_text{% elif ticket.ticket_status.id == 2  %}green_text{% endif %}">{{ ticket.ticket_status }}</span>
         </div>
     {% endfor %}
 {% else %}
