@@ -6,7 +6,9 @@ from django.utils.datastructures import MultiValueDictKeyError
 #from django.views import generic
 from django.core.paginator import Paginator
 #from django.template import loader
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp
 
@@ -130,7 +132,6 @@ def new_ticket(request):
             return render(request, 'base/newticket.html', context)
 
         if request.method == 'POST':
-            status = TicketStatus.objects.get(pk=1)
             if 'ticket_content' in request.POST:
                 new_content = request.POST['ticket_content']
                 context['content_value'] = new_content
@@ -276,7 +277,7 @@ def new_ticket(request):
                         context['error_messsage'] = "Время введено не верно"
                     else:
                         try:
-                            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status=status, ticket_user=1, ticket_str=new_objstr, ticket_build=new_objbuild, )
+                            ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status_id=1, ticket_user=request.user, ticket_str=new_objstr, ticket_build=new_objbuild, )
                             if 'obj_buildhousing' in request.POST:
                                 ticket.ticket_build_housing=new_objbuildhousing
                             if 'obj_par' in request.POST:
