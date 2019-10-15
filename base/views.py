@@ -6,13 +6,25 @@ from django.utils.datastructures import MultiValueDictKeyError
 #from django.views import generic
 from django.core.paginator import Paginator
 #from django.template import loader
+from django.contrib.auth.decorators import login_required
 
 from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp
 
 # Create your views here.
 
-def login(request):
+def login_base(request):
     return HttpResponse("Авторизируйтесь для доступа")
+
+
+
+def logout_base(request):
+    logout(request)
+    context = {
+        'message': "Вы вышли из системы",
+    }
+    return render(request, 'base/login', context)
+
+
 
 def ticket_index(request):
     if request.user.is_authenticated:
@@ -29,7 +41,6 @@ def ticket_index(request):
             'path': request.path,
         }
         return HttpResponseRedirect(reverse('base:login'))
-
 
 
 
@@ -101,7 +112,6 @@ def ticket_detail(request, ticket_id):
             'path': request.path,
         }
         return HttpResponseRedirect(reverse('base:login'))
-
 
 
 
@@ -297,8 +307,7 @@ def new_ticket(request):
             'path': request.path,
         }
         return HttpResponseRedirect(reverse('base:login'))
-    
-    
+
 
 
 def ticket_close(request, ticket_id):
@@ -325,7 +334,7 @@ def ticket_close(request, ticket_id):
                 try:
                     ticket.ticket_object = ticket_obj.get()
                 except (KeyError, Object.MultipleObjectsReturned):
-                    context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
+                    context['error_message'] = "Сразу несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
                 else:
                     ticket.save()	#--save ticket after chiose
             elif 'ticket_obj' in request.POST:

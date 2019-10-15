@@ -4,11 +4,11 @@
 {% include "base/header.html" with page_name="Список заявок" %}
 {% include "base/menu.html" with new='true' only %}
 <div class="demo-ribbon"></div>
-<div class="index_table">
 
+<div class="index_table">
 {% if ticket_list %}
     {% for ticket in ticket_list %}
-        <div class="ticket_row_{{ forloop.counter }} ticket_row" style="z-index: {{forloop.counter}};"><span class="ticket_num index_row_item"><a href="{% url 'base:ticket_detail' ticket.id %}">№{{ ticket.id }}</a></span>
+        <div class="ticket_row_{{ forloop.counter }} ticket_row" style="z-index: {{forloop.counter}};"><a href="{% url 'base:ticket_detail' ticket.id %}"><span class="ticket_num index_row_item">№{{ ticket.id }}</span></a>
         <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|date:"SHORT_DATETIME_FORMAT" }}</span>
         {% if ticket.ticket_area %}<span class="ticket_area index_row_item">{{ ticket.ticket_area }}</span>{% endif %}
         <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_object.obj_type %}, {{ ticket.ticket_object.obj_type }}{% endif %}</span>
@@ -19,23 +19,6 @@
 {% else %}
     <p>Нет заявок</p>
 {% endif %}
-
-<div class="pagination">
-    <span class="step-links">
-        {% if ticket_list.has_previous %}
-            <a href="?page=1" title="На первую страницу">&laquo;</a>
-            <a href="?page={{ ticket_list.previous_page_number }}" title="На предыдущую страницу"><</a>
-        {% endif %}
-
-        <span class="current">
-            Страница {{ ticket_list.number }} из {{ ticket_list.paginator.num_pages }}.
-        </span>
-
-        {% if ticket_list.has_next %}
-            <a href="?page={{ ticket_list.next_page_number }}" title="На следующую страницу">></a>
-            <a href="?page={{ ticket_list.paginator.num_pages }}" title="На последнюю страницу">&raquo;</a>
-        {% endif %}
-    </span>
 </div>
 
-</div>
+{% include "base/paginator.html" %}
