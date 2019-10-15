@@ -72,7 +72,7 @@
 <legend>Состав заявки</legend>
 <div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
 <div class="content_wrap"><textarea name="ticket_content" id="ticket_content" required placeholder="Текст заявки" cols="80" rows="8" autocomplete="off" class="new_ticket_content"
-{% if content_value %}value="{{content_value}}"{% endif %}></textarea></div>
+{% if content_value %}value="{{content_value}}"{% else %}value=""{% endif %}></textarea></div>
 </fieldset>
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
 </form>

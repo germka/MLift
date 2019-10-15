@@ -89,24 +89,25 @@ body {
 
 
 .ticket_num {
-    margin-left: 3px;
+    color: black;
+    font-weight: normal;
 }
 
 .ticket_date {
     position: absolute;
-    left: 6%;
+    left: 1px;
     max-width: 20%;
 }
 
 .ticket_adress {
     position: absolute;
-    left: 21%;
+    left: 12%;
     max-width: 35%;
 }
 
 .ticket_content {
     position: absolute;
-    left: 57%;
+    left: 44%;
     max-width: 29%;
 }
 
@@ -166,8 +167,8 @@ body {
 .detail_ticket_row {
     border: 1px solid lightgray;
     position: relative;
-    height: 25px;
-    margin: 4px;
+    height: 24px;
+    margin: 2px;
     padding-top: 5px;
     padding-left: 5px;
 }
@@ -271,8 +272,7 @@ body {
     font-weight: 600;
 }
 
-.detail_point {
-    font-weight: 600;
+.detail_name {
 }
 
 .detail_info {

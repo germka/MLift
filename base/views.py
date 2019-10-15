@@ -12,16 +12,15 @@ from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, Mana
 
 # Create your views here.
 
-@login_required(login_url='login/')
+login_page = '/login/'
+
+@login_required(login_url=login_page)
 def logout_base(request):
     logout(request)
-    context = {
-        'message': "Вы вышли из системы",
-    }
-    return render(request, 'base/login', context)
+    return HttpResponseRedirect(reverse('base:login'))
 
 
-@login_required(login_url='login/')
+@login_required(login_url=login_page)
 def ticket_index(request):
     if request.user.is_authenticated:
         paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
@@ -39,7 +38,7 @@ def ticket_index(request):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-@login_required(login_url='login/')
+@login_required(login_url=login_page)
 def ticket_detail(request, ticket_id):
     if request.user.is_authenticated:
         ticket = get_object_or_404(Ticket, pk=ticket_id)
@@ -110,26 +109,24 @@ def ticket_detail(request, ticket_id):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-@login_required(login_url='login/')
+@login_required(login_url=login_page)
 def new_ticket(request):
     if request.user.is_authenticated:
-        obj_str = ObjStr.objects.order_by('street')
-        obj_build = Object.objects.values('obj_build').order_by('obj_build').distinct()
-        obj_buildhousing = Object.objects.values('obj_build_housing').order_by('obj_build_housing').distinct()
-        obj_par = Object.objects.values('obj_par').order_by('obj_par').distinct()
-        obj_type = ObjType.objects.order_by('type_name')
         ticket_number = Ticket.objects.count()
         date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+        obj_str = ObjStr.objects.order_by('street')
         context = {
             'obj_str': obj_str,
-            'obj_build': obj_build,
-            'obj_buildhousing':obj_buildhousing,
-            'obj_type': obj_type,
-            'obj_par': obj_par,
             'ticket_number': ticket_number,
             'date_now': date_now,
         }
         if request.method == 'GET':
+            context.update({
+                'obj_build':'None',
+                'obj_build_housing':'None',
+                'obj_type':'None',
+                'obj_par':'None',
+            })
             return render(request, 'base/newticket.html', context)
 
         if request.method == 'POST':
@@ -155,7 +152,6 @@ def new_ticket(request):
                     else:
                         context['str_value'] = new_objstr
                         filter_context = Object.objects.filter(obj_str=new_objstr)
-
                         context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
 
     #--obj_build handler
@@ -305,7 +301,7 @@ def new_ticket(request):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-@login_required(login_url='login/')
+@login_required(login_url=login_page)
 def ticket_close(request, ticket_id):
     if request.user.is_authenticated:
         try:

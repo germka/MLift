@@ -7,28 +7,28 @@
 <div class="demo-ribbon"></div> 
 
 <div class="index_table">
-<div class="detail_ticket_row"><span class="detail_point">Адрес заявки</span>
+<div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
 <span class="detail_info">
 {% if ticket_object.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
 {{ ticket.ticket_str }}, 
 дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
 </span>
 </div>
-<div class="detail_ticket_row"><span class="detail_point">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span></div>
-<div class="detail_ticket_row"><span class="detail_point">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
 
 {% if ticket.ticket_status.id == 1 %}
 <form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
 {% csrf_token %}
 
-{% if exact_preview.obj_number %}<div class="detail_ticket_row"><span class="detail_point">Номер лифта: </span><span class="detail_info"> {{ exact_preview.obj_number }} </span></div>{% endif %}
+{% if exact_preview.obj_number %}<div class="detail_ticket_row"><span class="detail_name">Номер лифта: </span><span class="detail_info"> {{ exact_preview.obj_number }} </span></div>{% endif %}
 {% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
 
 {% if object_exact %}
     {% if object_exact.obj_type %}
         {{ object_exact.obj_type }}
     {% else %}
-    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_point">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of"></span>
+    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_name">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of"></span>
         <datalist id="object_exact">
         {% for obj in object_exact %}
             <option>{{ obj.obj_type }}</option>
@@ -47,10 +47,10 @@
 {% endif %}
 
 
-<div class="detail_ticket_row"><span class="detail_point">Время простоя: </span><span class="detail_info"> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</span></div>
-<div class="detail_ticket_row"><span class="detail_point">Содержание: </span><span class="detail_info"> {{ ticket.ticket_content }}</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info"> {{ ticket.ticket_duration|default_if_none:ticket.ticket_date|timesince }}</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Содержание: </span><span class="detail_info"> {{ ticket.ticket_content }}</span></div>
 
-<div class="comments"><span class="detail_point">Комментарии:</span>
+<div class="comments"><span class="detail_name">Комментарии:</span>
 <div>
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
     <div class="comment_row"><span class="comment_num">№{{ forloop.counter }}</span>
