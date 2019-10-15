@@ -12,11 +12,7 @@ from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, Mana
 
 # Create your views here.
 
-def login_base(request):
-    return HttpResponse("Авторизируйтесь для доступа")
-
-
-
+@login_required(login_url='login/')
 def logout_base(request):
     logout(request)
     context = {
@@ -25,7 +21,7 @@ def logout_base(request):
     return render(request, 'base/login', context)
 
 
-
+@login_required(login_url='login/')
 def ticket_index(request):
     if request.user.is_authenticated:
         paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
@@ -43,7 +39,7 @@ def ticket_index(request):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-
+@login_required(login_url='login/')
 def ticket_detail(request, ticket_id):
     if request.user.is_authenticated:
         ticket = get_object_or_404(Ticket, pk=ticket_id)
@@ -114,7 +110,7 @@ def ticket_detail(request, ticket_id):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-
+@login_required(login_url='login/')
 def new_ticket(request):
     if request.user.is_authenticated:
         obj_str = ObjStr.objects.order_by('street')
@@ -309,7 +305,7 @@ def new_ticket(request):
         return HttpResponseRedirect(reverse('base:login'))
 
 
-
+@login_required(login_url='login/')
 def ticket_close(request, ticket_id):
     if request.user.is_authenticated:
         try:

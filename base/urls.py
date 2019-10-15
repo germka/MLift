@@ -4,7 +4,6 @@ from . import views
 app_name = 'base'
 urlpatterns = [
     # Страница авторизации
-    path('login/', views.login_base, name='login'),
     path('logout/', views.logout_base, name='logout'),
     # Список заявок
     path('', views.ticket_index, name='ticket_index'),
