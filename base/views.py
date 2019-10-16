@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 
 from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp
 
@@ -16,10 +17,9 @@ from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, Mana
 
 login_page = '/login/'
 
-@login_required(login_url=login_page)
 def logout_base(request):
     logout(request)
-    return HttpResponseRedirect(reverse('base:login'))
+    return HttpResponseRedirect(login_page)
 
 
 @login_required(login_url=login_page)
@@ -114,7 +114,7 @@ def ticket_detail(request, ticket_id):
 @login_required(login_url=login_page)
 def new_ticket(request):
     if request.user.is_authenticated:
-        ticket_number = Ticket.objects.count()
+        ticket_number = Ticket.objects.last().id
         date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
         obj_str = ObjStr.objects.order_by('street')
         context = {
@@ -338,6 +338,7 @@ def ticket_close(request, ticket_id):
 
             if ticket.ticket_object != None:
                 ticket.close()	#--close ticket
+                ticket.duration_save()
                 context['ticket_message'] = "Заявка успешно закрыта"
 
         return render(request, 'base/detail.html', context)

@@ -31,7 +31,6 @@ body {
 }
 
 .header_text {
-    display: block;
     position: relative;
     font-family: "Roboto","Helvetica","Arial",sans-serif;
     font-size: 30px;
@@ -40,6 +39,26 @@ body {
     font-weight: 400;
     box-sizing: border-box;
     top: 18px
+}
+
+.page_title {
+    height: 100%;
+    max-width: 70%;
+    display: inline-block;
+}
+
+.user_menu {
+    display: inline-block;
+    right: 40;
+    position: absolute;
+    width: 100;
+    height: 100%;
+
+}
+
+.header_logout {
+    top: 20px;
+    position: relative;
 }
 
 .demo-ribbon {
@@ -78,7 +97,8 @@ body {
     box-shadow: 0px 0px 1px 0 rgba(0,0,0,.14), 1px 1px 2px 0 rgba(0,0,0,.12), 1px 0px 3px -1px rgba(0,0,0,.2);
 }
 
-.ticket_row span {
+.ticket_row a {
+    color: black;
 }
 
 .ticket_index_table {
@@ -101,14 +121,18 @@ body {
 
 .ticket_adress {
     position: absolute;
-    left: 12%;
+    left: 15%;
     max-width: 35%;
 }
 
 .ticket_content {
     position: absolute;
-    left: 44%;
-    max-width: 29%;
+    left: 50%;
+    max-width: 40%;
+}
+
+.ticket_comment_count {
+    font-size: 8pt;
 }
 
 .ticket_status {
@@ -188,15 +212,11 @@ body {
     border: none;
     font-size: 11pt;
     right: 0;
-    position: absolute
+    position: absolute;
 }
 
 .button {
     position: relative;
-}
-
-.comments {
-    padding: 30px 0 0 30px;
 }
 
 .ticket_number {
@@ -243,6 +263,8 @@ body {
 .content_wrap {
     width: 100%;
     padding: 5px;
+    margin-top: 7px;
+    margin-bottom: 1px;
 }
 
 .comment_content_wrap {
@@ -284,6 +306,10 @@ body {
     color: grey;
 }
 
+.comments {
+    padding: 50px 0 0 0;
+}
+
 .comment_add_message {
     color: grey;
     position: absolute;
@@ -292,15 +318,14 @@ body {
 }
 
 .comment_row {
-    margin-top: 10px;
-    margin-left: 10px;
+    margin: 10px;
     position: relative;
     width: fit-content;
     max-width: 800px;
 }
 
 .comment_num {
-
+    display: none;
 }
 
 .comment_user {
@@ -312,7 +337,17 @@ body {
 }
 
 .comment_content {
+    line-height: 2;
+}
 
+.comment_content::before {
+    content: '“';
+    margin: 2px;
+}
+
+.comment_content::after {
+    content: '“';
+    margin: 2px;
 }
 
 .fur {
@@ -333,4 +368,44 @@ body {
     position: absolute;
     right: 10px;
     top: 45%;
+}
+
+.login_wrap {
+    position: relative;
+    margin: auto;
+    width: 400px;
+    top: 20%;
+    padding: 20px;
+    border-radius: 2px;
+    background-color: lightblue;
+}
+
+.login_header {
+    width: fit-content;
+    margin: auto;
+    position: relative;
+}
+
+.login_bar {
+    margin: auto;
+    margin-top: 50px;
+    position: relative;
+}
+
+.login_form input {
+    position: absolute;
+    right: 0;
+    font: inherit;
+    border-color: EEE;
+    border-width: 1pt;
+    border-style: dotted;
+}
+
+.login_form p {
+    height: 20px;
+}
+
+.login_button {
+    left: 318px;
+    top: 10;
 }

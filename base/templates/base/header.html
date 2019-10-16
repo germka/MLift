@@ -1,1 +1,22 @@
-<header class="header"><div class="header_midle"><span class="header_text">{{ page_name }}</span></div></header>
+<!--HEADER-->
+<header class="header">
+<div class="header_midle">
+<div class="page_title"><span class="header_text">
+{% if page_name %}
+    {{ page_name }}
+{% elif page_type == 'detail' %}
+    Заявка №{{ ticket.id }} от {{ ticket.ticket_date }}
+    {% if no_object_message %}
+        {{ no_obj_message }}
+    {% else %}
+        на объект: {{ ticket_object.obj_number }} 
+    {% endif %}
+{% endif %}
+</span></div>
+
+<div class="user_menu">
+<a href="{% url 'base:logout' %}"><span class="header_logout">Выход</span></a>
+</div>
+</div>
+</header>
+<!--END HEADER-->

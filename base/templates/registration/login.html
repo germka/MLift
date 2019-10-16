@@ -1,11 +1,13 @@
-{% block title %}Авторизация{% endblock %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
-{% block content %}
-
-<form method="post">
+<div class="login_wrap">
+<div class="login_header"><span class="header_text">Авторизация</span></div>
+<div class="login_bar">
+<form class="login_form" method="post">
 {% csrf_token %}
 {{ form.as_p }}
-<button type="submit">Войти</button>
+<button class="send_button login_button button" type="submit">Войти</button>
 </form>
-
-{% endblock %}
+</div>
+</div>

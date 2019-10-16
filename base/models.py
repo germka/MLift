@@ -110,7 +110,7 @@ class Ticket(models.Model):
 
     def duration_save(self):
         if self.ticket_status == TicketStatus.objects.get(pk=2):
-            Ticket.objects.filter(pk=self.id).update(ticket_duration=timezone.now() - self.ticket_date)
+            self.ticket_duration = (timezone.now().astimezone() - self.ticket_date)
 
     def duration_get(self):
         ticket_duration=timezone.now() - self.ticket_date
