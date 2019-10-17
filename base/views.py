@@ -126,6 +126,7 @@ def new_ticket(request):
             return render(request, 'base/newticket.html', context)
 
         if request.method == 'POST':
+            context['req'] = request.POST
             if 'ticket_content' in request.POST:
                 new_content = request.POST['ticket_content']
                 context['content_value'] = new_content
@@ -246,7 +247,7 @@ def new_ticket(request):
 
             if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
                 if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
-                    if new_content == '':	#--last check
+                    if 'ticket_content' not in request.POST:	#--last check
                         context['error_message'] = "Содержание не может быть пустым"
                     else:
                         try:
