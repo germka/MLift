@@ -116,6 +116,9 @@ class Ticket(models.Model):
         ticket_duration=timezone.now() - self.ticket_date
         return ticket_duration
 
+    def duration_time(self):
+        return str(self.ticket_duration)
+
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)
         return status

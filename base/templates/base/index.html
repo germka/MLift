@@ -2,9 +2,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
 {% include "base/header.html" with page_name="Список заявок" %}
-{% include "base/menu.html" with new='true' only %}
 <div class="demo-ribbon"></div>
 
+{% include "base/mainmenu.html" with new='true' only %}
+
+<div class="content_wrap">
 <div class="index_table">
 {% if ticket_list %}
     {% for ticket in ticket_list %}
@@ -22,3 +24,4 @@
 </div>
 
 {% include "base/paginator.html" %}
+</div>

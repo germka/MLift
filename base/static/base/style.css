@@ -3,11 +3,7 @@ body {
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,sans-serif;
     font-size: 10pt;
     margin: 0;
-}
-
-.menu {
-    position: absolute;
-    top: 80px;
+    padding: 0;
 }
 
 .header {
@@ -59,6 +55,11 @@ body {
 .header_logout {
     top: 20px;
     position: relative;
+}
+
+.content_wrap {
+    margin: 0;
+    padding: 0;
 }
 
 .demo-ribbon {
@@ -260,7 +261,7 @@ body {
     width: 100%;
 }
 
-.content_wrap {
+.new_content_wrap {
     width: 100%;
     padding: 5px;
     margin-top: 7px;

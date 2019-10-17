@@ -1,0 +1,13 @@
+<!--MAIN MENU-->
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/menu.css' %}">
+<div class="st_nav">
+    <ul class="st_ul">
+        {% if index %}<li class="st_li st_li_1"><a href="{% url 'base:ticket_index' %}" class="st_a anchor">Список заявок</a></li>{% endif %}
+        {% if new %}<li class="st_li st_li_2"><a href="{% url 'base:new_ticket' %}" class="st_a anchor">Создать заявку</a></li>{% endif %}
+        <li class="st_li st_li_3"><a href="#" class="st_a anchor"></a></li>
+        <li class="st_li st_li_4"><a href="#" class="st_a anchor"></a></li>
+        <li class="st_li st_li_5"><a href="#" class="st_a anchor"></a></li>
+    </ul>
+</div>
+<!--END MAIN MENU-->

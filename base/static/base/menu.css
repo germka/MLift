@@ -1,0 +1,171 @@
+.st_nav {
+    float: none; 
+    clear: both;
+    width: 13.65%; 
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute; 
+}
+.st_ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    top: 64px;
+    position: relative;
+}
+.st_li{
+    float: none; 
+    width: 100%;
+}
+.st_a{
+    display: block; 
+    width: 100%;  
+    position: relative; 
+    line-height: 55px;
+    z-index: 2;
+    text-decoration: none;
+    text-align: right;
+    color: #757575;
+    letter-spacing: 1px;
+    font-size: 16px; 
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    transition: all 0.2s ease 0s;
+    -webkit-transition: all 0.2s ease 0s;
+}  
+.st_nav .st_li a:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_nav .st_li_1 a { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+.st_nav .st_li_2 a { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+.st_nav .st_li_3 a { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+.st_nav .st_li_4 a { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+.st_nav .st_li_5 a { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+.st_a:after { 
+    content: "";
+    height: 100%; 
+    top: 0; 
+    right: 0;
+    width: 0px;  
+    position: absolute; 
+    transition: all 0.3s ease 0s; 
+    -webkit-transition: all 0.3s ease 0s; 
+    z-index: -1;
+}
+.st_a:hover:after { 
+    width: 100%; 
+}
+.st_li_1 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_2 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_3 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_4 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_5 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_1 a.active { 
+    color: #fff; 
+    background: #EA4335; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_1 a.active:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_1 a:active { 
+    color: #fff; 
+    background: #EA4335; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_2 a.active { 
+    color: #fff; 
+    background: #4285F4; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_2 a.active:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_2 a:active { 
+    color: #fff; 
+    background: #4285F4; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_3 a.active { 
+    color: #fff; 
+    background: #34A853;  
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_3 a.active:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_3 a:active { 
+    color: #fff; 
+    background: #34A853; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_4 a.active { 
+    color: #fff;
+    background: #FBBC05; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_4 a.active:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_4 a:active { 
+    color: #fff;
+    background: #FBBC05; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 a.active { 
+    color: #fff; 
+    background: #757575; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 a.active:hover { 
+    color: #fff;   
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 a:active:before { 
+    color: #fff; 
+    background: #757575; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}

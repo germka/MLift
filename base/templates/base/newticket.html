@@ -2,10 +2,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
 {% include "base/header.html" with page_name="Создание новой заявки" %}
-{% include "base/menu.html" with new="true" index='true' only %}
+{% include "base/mainmenu.html" with new='true' index='true' only %}
 
 <div class="demo-ribbon"></div> 
 
+<div class="content_wrap">
 <div class="index_table">
 <div class="new_ticket_header"><span class="ticket_number">Заявка №{{ ticket_number|add:"1" }}</span></div>
 
@@ -71,7 +72,7 @@
 <fieldset class="new_ticket_fs">
 <legend>Состав заявки</legend>
 <div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
-<div class="content_wrap"><textarea name="ticket_content" id="ticket_content" required placeholder="Текст заявки" cols="80" rows="8" autocomplete="off" class="new_ticket_content"
+<div class="new_content_wrap"><textarea name="ticket_content" id="ticket_content" required placeholder="Текст заявки" cols="80" rows="8" autocomplete="off" class="new_ticket_content"
 {% if content_value %}value="{{content_value}}"{% else %}value=""{% endif %}></textarea></div>
 </fieldset>
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
@@ -79,7 +80,7 @@
 <a href="#" class="fur" id="fur">список часто используемых причин</a>
 <div class="fur_block" id="fur_block" hidden>Пока ничего нет но надо придумать как именно выбрать или собрать данные и выложить список</div>
 </div>
-
+</div>
 
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

@@ -2,10 +2,10 @@
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}"> 
 
 {% include "base/header.html" with page_name='' page_type='detail' %}
-{% include "base/menu.html" with new='true' index='true' only %}
+{% include "base/mainmenu.html" with new='true' index='true' only %}
 
 <div class="demo-ribbon"></div> 
-
+<div class="content_wrap">
 <div class="index_table">
 <div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
 <span class="detail_info">
@@ -49,11 +49,8 @@
 
 <div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
 {% if ticket.ticket_duration %}
-    {% if ticket.ticket_duration.days %}
-        {{ ticket.ticket_duration.days }} дней
-    {% endif %}
     {% if ticket.ticket_duration %}
-        {{ ticket.ticket_duration.total_seconds }}
+        {{ ticket.duration_time|slice:"8" }}
     {% endif %}
 {% else %}
     {{ ticket.ticket_date|timesince }}
@@ -84,7 +81,6 @@
 </form>
 
 </div>
-
 </div>
-{% load static %}
+</div>
 <script type="text/javascript" src="{% static 'base/button.js' %}"></script>
