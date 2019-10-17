@@ -112,8 +112,7 @@ var Form = {
 
         posting.done(function( data ) {
             var content = $( data ).find( "#new_ticket_form" );
-            $( "#new_ticket_form" ).empty();
-            content.appendTo( "#new_ticket_form" );
+            $( "#new_ticket_form" ).empty().append( content );
         });
     }, 
 
@@ -214,33 +213,6 @@ $( document ).ajaxStop(function() {
     });
 });
 
-///CHANGE
-$("#str").change(function() {
-    Form.field_change();
-});
-$("#build").change(function() {
-    Form.field_change();
-});
-$("#build_housing").change(function() { 
-    Form.field_change();
-});
-$("#par").change(function() { 
-    Form.field_change();
-});
-///CLICK
-$("#str").on('click', function() {
-    Form.field_clear("str");
-});
-$("#build").on('click', function() {
-    Form.field_clear("build");
-});
-$("#build_housing").on('click', function() {
-    Form.field_clear("build_housing");
-});
-$("#par").on('click', function() {
-    Form.field_clear("par");
-});
-
 $(window).on('load',function() {
 
     Form.init();
@@ -258,4 +230,32 @@ $(window).on('load',function() {
             fur_block.hidden = !fur_block.hidden;
         };
     });
+
+///CHANGE
+    $("#str").change(function() {
+        Form.field_change();
+    });
+    $("#build").change(function() {
+        Form.field_change();
+    });
+    $("#build_housing").change(function() { 
+        Form.field_change();
+    });
+    $("#par").change(function() { 
+        Form.field_change();
+    });
+///CLICK
+    $("#str").on('click', function() {
+        Form.field_clear("str");
+    });
+    $("#build").on('click', function() {
+        Form.field_clear("build");
+    });
+    $("#build_housing").on('click', function() {
+        Form.field_clear("build_housing");
+    });
+    $("#par").on('click', function() {
+        Form.field_clear("par");
+    });
+
 });
