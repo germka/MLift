@@ -20,15 +20,17 @@
 }
 .st_a{
     display: block; 
-    width: 100%;  
-    position: relative; 
+    width: 100%;
+    position: relative;
     line-height: 55px;
     z-index: 2;
+    padding-right: 5px;
     text-decoration: none;
     text-align: right;
-    color: #757575;
+    color: #1f1f1f;
     letter-spacing: 1px;
-    font-size: 16px; 
+    font-size: 14px;
+    text-transform: uppercase;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -55,6 +57,10 @@
 .st_nav .st_li_5 a { 
     border-right: 8px solid rgba(0,0,0,0.4); 
 }
+.st_nav .st_li_5 div { 
+    border-right: 8px solid rgba(0,0,0,0.4); 
+}
+
 .st_a:after { 
     content: "";
     height: 100%; 
@@ -82,6 +88,9 @@
     background: rgba(0,0,0,0.4); 
 }
 .st_li_5 a:after { 
+    background: rgba(0,0,0,0.4); 
+}
+.st_li_5 div:after { 
     background: rgba(0,0,0,0.4); 
 }
 .st_li_1 a.active { 
@@ -165,6 +174,23 @@
 }
 .st_li_5 a:active:before { 
     color: #fff; 
+    background: #757575; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 div.active { 
+    color: #fff;
+    background: #757575; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 div.active:hover { 
+    color: #fff;
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+}
+.st_li_5 div:active:before { 
+    color: #fff;
     background: #757575; 
     transition: all 0.2s ease 0s; 
     -webkit-transition: all 0.2s ease 0s; 

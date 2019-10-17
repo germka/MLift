@@ -7,7 +7,7 @@
         {% if new %}<li class="st_li st_li_2"><a href="{% url 'base:new_ticket' %}" class="st_a anchor">Создать заявку</a></li>{% endif %}
         <li class="st_li st_li_3"><a href="#" class="st_a anchor"></a></li>
         <li class="st_li st_li_4"><a href="#" class="st_a anchor"></a></li>
-        <li class="st_li st_li_5"><a href="#" class="st_a anchor"></a></li>
+        {% if filter %}<li class="st_li st_li_5"><div class="filter_sidebar st_a anchor">Фильтры</div></li>{% endif %}
     </ul>
 </div>
 <!--END MAIN MENU-->

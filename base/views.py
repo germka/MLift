@@ -26,17 +26,14 @@ def logout_base(request):
 def ticket_index(request):
     if request.user.is_authenticated:
         paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
-
         page = request.GET.get('page')
         ticket_list = paginator.get_page(page)
+
         context = {
             'ticket_list': ticket_list,
         }
         return render(request, 'base/index.html', context)
     else:
-        context = {
-            'path': request.path,
-        }
         return HttpResponseRedirect(reverse('base:login'))
 
 
@@ -105,9 +102,6 @@ def ticket_detail(request, ticket_id):
                 context['errormessage'] = "Комментарий не должен быть пустым"
             return render(request, 'base/detail.html', context)
     else:
-        context = {
-            'path': request.path,
-        }
         return HttpResponseRedirect(reverse('base:login'))
 
 
@@ -296,9 +290,6 @@ def new_ticket(request):
 
             return render(request, 'base/newticket.html', context)
     else:
-        context = {
-            'path': request.path,
-        }
         return HttpResponseRedirect(reverse('base:login'))
 
 
@@ -343,7 +334,4 @@ def ticket_close(request, ticket_id):
 
         return render(request, 'base/detail.html', context)
     else:
-        context = {
-            'path': request.path,
-        }
         return HttpResponseRedirect(reverse('base:login'))
