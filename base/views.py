@@ -234,30 +234,11 @@ def new_ticket(request):
                         new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
                     except(KeyError, ObjType.DoesNotExist):
                         context['error_message'] = "Значение типа лифта не верно"
-    #        else:
-    #            if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
-    #                if context['obj_buildhousing'] == None:
-    #                    if context['obj_par'] == None:
-    #                        context['help_message'] = "Выберите тип лифта (из списка)"
-    #                    elif 'obj_par' in request.POST:
-    #                        if request.POST['obj_par'] != '':
-    #                            context['help_message'] = "Выберите тип лифта (из списка)"
-    #                elif 'obj_buildhousing' in request.POST:
-    #                    if request.POST['obj_buildhousing'] != '':
-    #                        if context['obj_par'] == None:
-    #                            context['help_message'] = "Выберите тип лифта (из списка)"
-    #                        elif 'obj_par' in request.POST:
-    #                            if request.POST['obj_par'] != '':
-    #                                context['help_message'] = "Выберите тип лифта (из списка)"
 
     #--ticket_date handler
 
             if 'ticket_date' in request.POST:
                 new_date = request.POST['ticket_date']
-                try:
-                    new_date.ctime()
-                except:
-                    new_date = ''
             else:
                 new_date = timezone.now().astimezone()	#--set current date
 
@@ -267,8 +248,6 @@ def new_ticket(request):
                 if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
                     if new_content == '':	#--last check
                         context['error_message'] = "Содержание не может быть пустым"
-                    elif new_date == '' :
-                        context['error_messsage'] = "Время введено не верно"
                     else:
                         try:
                             ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status_id=1, ticket_user=request.user, ticket_str=new_objstr, ticket_build=new_objbuild, )

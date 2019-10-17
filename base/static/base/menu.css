@@ -61,6 +61,10 @@
     border-right: 8px solid rgba(0,0,0,0.4); 
 }
 
+.st_a span {
+    text-shadow: 0 6px 9px rgba(0,0,0,0.07), 0 6px 5px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.15);
+}
+
 .st_a:after { 
     content: "";
     height: 100%; 

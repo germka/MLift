@@ -49,8 +49,8 @@
 
 <div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
 {% if ticket.ticket_duration %}
-    {% if ticket.ticket_duration %}
-        {{ ticket.duration_time|slice:"8" }}
+    {% if ticket.duration_time %}
+        {{ ticket.duration_time }}
     {% endif %}
 {% else %}
     {{ ticket.ticket_date|timesince }}

@@ -106,18 +106,20 @@ class Ticket(models.Model):
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')
     ticket_duration = models.DurationField('Время простоя', null=True)
     def close(self):
-        Ticket.objects.filter(pk=self.id).update(ticket_status=TicketStatus.objects.get(pk=2))
+        self.ticket_status_id = 2
+        self.save()
 
     def duration_save(self):
-        if self.ticket_status == TicketStatus.objects.get(pk=2):
+        if self.ticket_status_id == 2:
             self.ticket_duration = (timezone.now().astimezone() - self.ticket_date)
+            self.save()
 
     def duration_get(self):
-        ticket_duration=timezone.now() - self.ticket_date
+        ticket_duration=timezone.now().astimezone() - self.ticket_date
         return ticket_duration
 
     def duration_time(self):
-        return str(self.ticket_duration)
+        return str(self.ticket_duration).split(".")[0].replace("days", "Дней")
 
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)
