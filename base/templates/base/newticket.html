@@ -1,3 +1,6 @@
+<!doctype html>
+<html>
+
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
 
@@ -74,7 +77,6 @@
 <div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
 <div class="new_content_wrap">
 <textarea name="ticket_content" id="ticket_content" required placeholder="Текст заявки" cols="80" rows="8" autocomplete="off" class="new_ticket_content">{{ content_value }}</textarea></div>
-{{ req }}
 </fieldset>
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
 
@@ -86,3 +88,5 @@
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/filter_jquery.js' %}"></script>
+
+</html>

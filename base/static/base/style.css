@@ -45,9 +45,9 @@ body {
 
 .user_menu {
     display: inline-block;
-    right: 40;
+    right: 40px;
     position: absolute;
-    width: 100;
+    width: 100px;
     height: 100%;
 
 }
@@ -180,7 +180,7 @@ body {
 .new_ticket_row input {
     font-family: inherit;
     font-size: inherit;
-    border-color: EEE;
+    border-color: #EEE;
     border-width: 1pt;
     border-style: dotted;
     width: fit-content;
@@ -256,10 +256,12 @@ body {
     border-color: lightgray;
     width: 99%;
     font-size: 15px;
+    font-family: inherit;
 }
 
 .new_comment_content {
     width: 100%;
+    font-family: inherit;
 }
 
 .new_content_wrap {
@@ -300,7 +302,7 @@ body {
 }
 
 .detail_info {
-    left: 200;
+    left: 200px;
     position: absolute
 }
 
@@ -398,7 +400,7 @@ body {
     position: absolute;
     right: 0;
     font: inherit;
-    border-color: EEE;
+    border-color: #EEE;
     border-width: 1pt;
     border-style: dotted;
 }
@@ -409,7 +411,7 @@ body {
 
 .login_button {
     left: 318px;
-    top: 10;
+    top: 10px;
 }
 
 .filter_sidebar {
