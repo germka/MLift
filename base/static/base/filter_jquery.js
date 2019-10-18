@@ -198,6 +198,14 @@ $( document ).ajaxStop(function() {
     $("#par").change(function() { 
         Form.field_change();
     });
+    $("#date_checker").on('change', function() {
+        if ($("#date_checker").prop("checked")) {
+            $("#ticket_date").prop("disabled",false);
+        } else {
+            $("#ticket_date").prop("disabled",true);
+        };
+    });
+
 ///CLICK
     $("#str").on('click', function() {
         Form.field_clear("str");
@@ -216,18 +224,9 @@ $( document ).ajaxStop(function() {
 $(window).on('load',function() {
 
     Form.init();
-
-    $("#date_checker").on('change', function() {
-        if (date_checker.checked == false) {
-            ticket_date.disabled=true;
-        } else {
-            ticket_date.disabled=false;
-        };
-    });
-
     $("#fur").on('click', function () {
-        if (fur_block) {
-            fur_block.hidden = !fur_block.hidden;
+        if ($("#fur_block").is("div")) {
+            $("#fur_block").prop("hidden", !$("#fur_block").prop("hidden"));
         };
     });
 
