@@ -11,7 +11,7 @@
         <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|date:"SHORT_DATETIME_FORMAT" }}</span></a>
         {% if ticket.ticket_area %}<span class="ticket_area index_row_item">{{ ticket.ticket_area }}</span>{% endif %}
         <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_object.obj_type %}, {{ ticket.ticket_object.obj_type }}{% endif %}</span>
-        <span class="ticket_content index_row_item">{{ ticket.ticket_content }} {% if ticket.comments_set.count > 0 %}<span class="ticket_comment_count" title="Количество комментариев">({{ticket.comments_set.count}})</span>{% endif %}</span>
+        <span class="ticket_content index_row_item">{{ ticket.ticket_content|truncatechars:52 }} {% if ticket.comments_set.count > 0 %}<span class="ticket_comment_count" title="Количество комментариев">({{ticket.comments_set.count}})</span>{% endif %}</span>
         <span class="ticket_status index_row_item {% if ticket.ticket_status.id == 1 %}red_text{% elif ticket.ticket_status.id == 2  %}green_text{% endif %}"><span class="ticket_num">#{{ ticket.id }}</span> {{ ticket.ticket_status }}</span>
         </div>
     {% endfor %}
