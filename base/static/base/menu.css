@@ -199,3 +199,28 @@
     transition: all 0.2s ease 0s; 
     -webkit-transition: all 0.2s ease 0s; 
 }
+
+.filter_sidebar {
+    height: 55px;
+    overflow: hidden;
+    animation-delay: 0.2s;
+    transition: height 0s ease 0.2s;
+    -webkit-transition: height 0s ease 0.2s;
+}
+.filter_sidebar:hover {
+    color: #FFF;
+    height: 100% !important;
+}
+.filter_sidebar li {
+    font-size:10pt;
+    line-height: 25px;
+}
+.filter_sidebar a {
+    color: white;
+}
+.filter_menu {
+    border: 0 !important;
+}
+.filter_menu a {
+    border: 0 !important;
+}

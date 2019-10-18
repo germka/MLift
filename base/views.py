@@ -23,9 +23,17 @@ def logout_base(request):
 
 
 @login_required(login_url=login_page)
-def ticket_index(request):
+def ticket_index(request, filter_type=None):
     if request.user.is_authenticated:
-        paginator = Paginator(Ticket.objects.order_by('-ticket_date'), 20)
+        if not filter_type:
+            ticket_query = Ticket.objects.order_by('-ticket_date')
+        elif filter_type == "area":
+            ticket_query = Ticket.objects.order_by('ticket_str__area')
+        elif filter_type == "str":
+            ticket_query = Ticket.objects.order_by('ticket_str')
+        elif filter_type == "type":
+            ticket_query = Ticket.objects.order_by('ticket_status_id')
+        paginator = Paginator(ticket_query, 20)
         page = request.GET.get('page')
         ticket_list = paginator.get_page(page)
 
@@ -132,7 +140,7 @@ def new_ticket(request):
                 context['content_value'] = new_content
 
     #--obj filters
-
+            filter_context = Object.objects.filter(obj_in_service=True)
     #--obj_str handler
 
             if 'obj_str' in request.POST:
@@ -147,7 +155,7 @@ def new_ticket(request):
                         context['error_message'] = "Улица не выбрана"
                     else:
                         context['str_value'] = new_objstr
-                        filter_context = Object.objects.filter(obj_str=new_objstr)
+                        filter_context = filter_context.filter(obj_str=new_objstr)
                         context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
 
     #--obj_build handler

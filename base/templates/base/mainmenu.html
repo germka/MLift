@@ -7,7 +7,16 @@
         {% if new %}<li class="st_li st_li_2"><a href="{% url 'base:new_ticket' %}" class="st_a anchor"><span>Создать заявку</span></a></li>{% endif %}
         <li class="st_li st_li_3"><a href="#" class="st_a anchor"></a></li>
         <li class="st_li st_li_4"><a href="#" class="st_a anchor"></a></li>
-        {% if filter %}<li class="st_li st_li_5"><div class="filter_sidebar st_a anchor"><span>Фильтры<span></div></li>{% endif %}
+        {% if filter %}<li class="st_li st_li_5"><div class="filter_sidebar st_a anchor"><span>Фильтры</span>
+        <div class="filter_menu">
+            <ul>
+                <li><a href="http://94.250.252.46:8000/">Дата</a></li>
+                <li><a href="http://94.250.252.46:8000/filter/type/">Тип</a></li>
+                <li><a href="http://94.250.252.46:8000/filter/area/">Район</a></li>
+                <li><a href="http://94.250.252.46:8000/filter/str/">Улица</a></li>
+            </ul>
+            </div>
+        </div></li>{% endif %}
     </ul>
 </div>
 <!--END MAIN MENU-->

@@ -43,6 +43,7 @@ class ObjArea(models.Model):
 
 class ObjStr(models.Model):
     street = models.CharField('Улица', max_length=50)
+    area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True, verbose_name='Район')
     def __str__(self):
         return '%s' % (self.street)
     class Meta:
