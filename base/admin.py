@@ -40,7 +40,7 @@ class TicketAdmin(admin.ModelAdmin):
 
 
 class ObjectAdmin(admin.ModelAdmin):
-    list_display = ('id','obj_number','obj_str','obj_build','obj_build_housing','obj_par',)
+    list_display = ('id','obj_number','obj_str','obj_build','obj_build_housing','obj_par','obj_in_service',)
     list_filter = ['obj_area','obj_type','obj_str','obj_build','obj_in_service',]
     search_fields = [
                 'obj_number',
