@@ -26,10 +26,11 @@
     {% endif %}
 {% endif %}
 </span></div>
-
+{% if usermenu != "false" %}
 <div class="user_menu">
 <a href="{% url 'base:logout' %}"><span class="header_logout">Выход</span></a>
 </div>
+{% endif %}
 </div>
 </header>
 <!--END HEADER-->

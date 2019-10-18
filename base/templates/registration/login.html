@@ -1,5 +1,4 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
+{% include "base/header.html" with page_name="" usermenu="false" only %}
 
 <div class="login_wrap">
 <div class="login_header"><span class="header_text">Авторизация</span></div>
@@ -11,3 +10,5 @@
 </form>
 </div>
 </div>
+
+</html>
