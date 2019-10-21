@@ -116,7 +116,11 @@ def ticket_detail(request, ticket_id):
 @login_required(login_url=login_page)
 def new_ticket(request):
     if request.user.is_authenticated:
-        ticket_number = Ticket.objects.last().id
+
+        if Ticket.objects.last():
+            ticket_number = Ticket.objects.last().id
+        else:
+            ticket_number = 0
         date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
         obj_str = ObjStr.objects.order_by('street')
         context = {
@@ -135,9 +139,14 @@ def new_ticket(request):
 
         if request.method == 'POST':
             context['req'] = request.POST
+            new_objbuildhousing = None
+            new_objpar = None
+            new_objtype = None
             if 'ticket_content' in request.POST:
                 new_content = request.POST['ticket_content']
                 context['content_value'] = new_content
+            elif 'ticket_content_placeholder' in request.POST:
+                context['content_value'] = request.POST['ticket_content_placeholder']
 
     #--obj filters
             filter_context = Object.objects.filter(obj_in_service=True)
@@ -237,7 +246,7 @@ def new_ticket(request):
 
             if 'obj_type' in request.POST:
                 if request.POST['obj_type'] == '':
-                    context['help_message'] = "Выберите тип лифта (из зарегистрированных)"
+                    context['help_message'] = "Выберите тип лифта"
                 else:
                     try:
                         new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
@@ -253,13 +262,26 @@ def new_ticket(request):
 
     #--making ticket
 
-            if 'obj_str' in request.POST and 'obj_build' in request.POST and ('obj_par' in request.POST or 'obj_type' in request.POST):
+            if 'obj_str' in request.POST and 'obj_build' in request.POST:
                 if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
-                    if 'ticket_content' not in request.POST:	#--last check
-                        context['error_message'] = "Содержание не может быть пустым"
+                    context['help_message'] = 'Выбор из списка'
+                    if (filter_context.first().obj_build_housing != None or filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct().count() > 1) and not new_objbuildhousing:
+                        context['help_message'] = 'Выберите корпус'
+                    elif (filter_context.first().obj_par != None or filter_context.values('obj_par').order_by('obj_par').distinct().count() > 1) and not new_objpar:
+                        context['help_message'] = 'Выберите парадную'
+                    elif (filter_context.first().obj_type != None or filter_context.values('obj_type').order_by('obj_type').distinct().count() > 1) and not new_objtype:
+                        context['help_message'] = 'Выберите тип лифта'
+                    elif 'ticket_content' not in request.POST or request.POST['ticket_content'] == '':	#--last check
+                        context['help_message'] = "Введите содержание заявки"
                     else:
+                        context['help_message'] = "Готов создать заявку"
                         try:
                             ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status_id=1, ticket_user=request.user, ticket_str=new_objstr, ticket_build=new_objbuild, )
+                        except (KeyError, Object.DoesNotExist):
+                            context['error_message'] = "Ошибка адреса либо типа лифта"
+                        except (KeyError, Ticket.DoesNotExist):
+                            context['error_message'] = "Заявка не создалась"
+                        else:
                             if 'obj_buildhousing' in request.POST:
                                 ticket.ticket_build_housing=new_objbuildhousing
                             if 'obj_par' in request.POST:
@@ -267,12 +289,8 @@ def new_ticket(request):
                             if 'obj_type' in request.POST:
                                 if request.POST['obj_type'] != '':
                                     ticket.ticket_obj_type=new_objtype
-                        except (KeyError, Object.DoesNotExist):
-                            context['error_message'] = "Ошибка адреса либо типа лифта"
-                        except (KeyError, Ticket.DoesNotExist):
-                            context['error_message'] = "Заявка не создалась"
-                        ticket.save()
-                        return HttpResponseRedirect(reverse('base:ticket_index'))
+                            ticket.save()
+                            return HttpResponseRedirect(reverse('base:ticket_index'))
 
     #--return
 

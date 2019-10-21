@@ -99,6 +99,10 @@ var Form = {
             new_type = $form.find( "input[name='obj_type']" ).val();
             post_data['obj_type'] = new_type;
         };
+        if ($("#ticket_content").prop('placeholder') != "Текст заявки") {
+            new_content_placeholder = $form.find( "textarea[name='ticket_content']" ).prop('placeholder');
+            post_data['ticket_content_placeholder'] = new_content_placeholder;
+        };
         if ($("#ticket_content").val() != '') {
             new_content = $form.find( "textarea[name='ticket_content']" ).val();
             post_data['ticket_content'] = new_content;
@@ -219,6 +223,14 @@ $( document ).ajaxStop(function() {
     $("#par").on('click', function() {
         Form.field_clear("par");
     });
+    $("#ticket_content").on('click', function() {
+        if ($("#ticket_content").val() == '') {
+            if ($("#ticket_content").prop('placeholder') != "Текст заявки") {
+                $("#ticket_content").val( $("#ticket_content").prop('placeholder') );
+            };
+        };
+    });
+
 });
 
 $(window).on('load',function() {
@@ -256,5 +268,11 @@ $(window).on('load',function() {
     $("#par").on('click', function() {
         Form.field_clear("par");
     });
-
+    $("#ticket_content").on('click', function() {
+        if ($("#ticket_content").val() == '') {
+            if ($("#ticket_content").prop('placeholder') != "Текст заявки") {
+                $("#ticket_content").val( $("#ticket_content").prop('placeholder') );
+            };
+        };
+    });
 });

@@ -25,7 +25,7 @@
     {% if object_exact.obj_type %}
         {{ object_exact.obj_type }}
     {% else %}
-    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_name">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="of"></span>
+    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_name">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="off"></span>
         <datalist id="object_exact">
         {% for obj in object_exact %}
             <option>{{ obj.obj_type }}</option>

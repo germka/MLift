@@ -59,10 +59,7 @@
 {% endif %}
 
 <div class="help_message">{% if help_message %}<span>{{ help_message }}</span>{% endif %}
-
-{% comment %}
 {% if error_message %}<span class="error_message">{{ error_message }}</span>{% endif %}</div>
-{% endcomment %}
 
 </fieldset>
 
@@ -70,7 +67,7 @@
 <legend>Состав заявки</legend>
 <div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
 <div class="new_content_wrap">
-<textarea name="ticket_content" id="ticket_content" required placeholder="Текст заявки" cols="80" rows="8" autocomplete="off" class="new_ticket_content">{{ content_value }}</textarea></div>
+<textarea name="ticket_content" id="ticket_content" required placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="8" autocomplete="off" class="new_ticket_content"></textarea></div>
 </fieldset>
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
 
