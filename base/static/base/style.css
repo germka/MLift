@@ -87,7 +87,7 @@ body {
 
 .ticket_row {
     position: relative;
-    height: 24px;
+    min-height: 24px;
     margin: 1px;
     padding-top: 5px;
     padding-left: 3px;
@@ -109,6 +109,16 @@ body {
     margin-left: 8px;
 }
 
+.index_splitter {
+    background-color: lightsteelblue;
+    box-shadow: none;
+    transition: all 2s ease-in;
+}
+
+.index_splitter:hover {
+    background-color: lightblue;
+    box-shadow: none;
+}
 
 .ticket_num {
     color: black;
@@ -193,7 +203,7 @@ body {
 .detail_ticket_row {
     border: 1px solid lightgray;
     position: relative;
-    height: 24px;
+    min-height: 24px;
     margin: 2px;
     padding-top: 5px;
     padding-left: 5px;
@@ -304,7 +314,8 @@ body {
 
 .detail_info {
     left: 200px;
-    position: absolute
+    position: absolute;
+    max-width: calc(100% - 200px);
 }
 
 .no_data {

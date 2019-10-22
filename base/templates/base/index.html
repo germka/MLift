@@ -7,6 +7,15 @@
 <div class="index_table">
 {% if ticket_list %}
     {% for ticket in ticket_list %}
+        {% ifchanged %}
+        <div class="ticket_row index_splitter">
+        {% if splitter == "area" %}<span  class="index_row_item">{{ ticket.ticket_str.area }}</span>
+        {% elif splitter == "str" %}<span  class="index_row_item">{{ ticket.ticket_str }}</span>
+        {% elif splitter == "type" %}<span  class="index_row_item">{{ ticket.ticket.type }}</span>
+        {% endif %}
+        <span  class="index_row_item">{{ ticket.ticket_date.date }}</span>
+        </div>
+        {% endifchanged %}
         <div class="ticket_row_{{ forloop.counter }} ticket_row" style="z-index: {{forloop.counter}};"><a href="{% url 'base:ticket_detail' ticket.id %}">
         <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|date:"SHORT_DATETIME_FORMAT" }}</span></a>
         {% if ticket.ticket_area %}<span class="ticket_area index_row_item">{{ ticket.ticket_area }}</span>{% endif %}
