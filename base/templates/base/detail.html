@@ -3,7 +3,7 @@
 
 <div class="demo-ribbon"></div> 
 <div class="content_wrap">
-<div class="index_table">
+<div class="index_table" id="index_table">
 <div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
 <span class="detail_info">
 {% if ticket_object.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
@@ -36,7 +36,7 @@
 {% endif %}
 
 {% if ticket.ticket_status_id != '2' %}
-    <div class="ticket_close"><input type="submit" value="Закрыть заявку" class="ticket_close_button send_button"></div>
+    <div class="ticket_close"><input type="submit" id="ticket_close_button" value="Закрыть заявку" class="ticket_close_button send_button"></div>
 {% endif %}
 
 {% if error_message %}<div class="detail_ticket_row error_message"><span>{{ error_message }}</span></div>{% endif %}
@@ -52,7 +52,7 @@
 {% else %}
     {{ ticket.ticket_date|timesince }}
 {% endif %}</span></div>
-<div class="detail_ticket_row"><span class="detail_name">Содержание: </span><span class="detail_info"> {{ ticket.ticket_content }}</span></div>
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Содержание: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_content }}</span></div>
 
 <div class="comments"><span class="detail_name">Комментарии:</span>
 <div>

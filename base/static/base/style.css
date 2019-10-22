@@ -74,6 +74,7 @@ body {
 .index_table {
     background-color: white;
     width: calc(66.6666666667% - 16px);
+    min-width: 1024px;
     height: fit-content;
     margin: auto;
     display: block;
@@ -426,3 +427,12 @@ body {
     top: 10px;
 }
 
+
+
+@media screen and (max-width: 1386px) {
+
+.index_table {
+    min-width: 1024px;
+}
+
+}

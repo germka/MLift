@@ -7,3 +7,18 @@ flip.onclick = function () {
         flip.hidden = true;
     }
 };
+
+window.onload = function () {
+    var
+    button = document.getElementById("ticket_close_button"),
+    table = document.getElementById("index_table"),
+    content_row = document.getElementById("ticket_content_row"),
+    content_info = document.getElementById("ticket_content_info");
+
+    if (content_row && content_info) {
+        content_row.style.minHeight = (content_info.offsetHeight + 8).toString() + 'px';
+    };
+    if (button && table) {
+        button.style.top = (table.offsetHeight - 148 - 160).toString() + 'px';
+    };
+}

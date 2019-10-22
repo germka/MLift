@@ -199,17 +199,26 @@
     transition: all 0.2s ease 0s; 
     -webkit-transition: all 0.2s ease 0s; 
 }
-
 .filter_sidebar {
     height: 55px;
     overflow: hidden;
-    animation-delay: 0.2s;
-    transition: height 0s ease 0.2s;
-    -webkit-transition: height 0s ease 0.2s;
+    animation-delay: 0s;
+    transition: height 0s ease 0s;
+    -webkit-transition: height 0s ease 0s;
 }
 .filter_sidebar:hover {
     color: #FFF;
     height: 100% !important;
+}
+.filter_sidebar:active {
+    background: #757575; 
+    transition: all 0.2s ease 0s; 
+    -webkit-transition: all 0.2s ease 0s; 
+    color: #FFF;
+    height: 100% !important;
+}
+.filter_sidebar:hover div {
+    visibility: visible !important;
 }
 .filter_sidebar li {
     font-size:10pt;
@@ -217,8 +226,11 @@
 }
 .filter_sidebar a {
     color: white;
+    display: block;
 }
 .filter_menu {
+    visibility: hidden;
+    transition: visibility 1s ease 0.18s;
     border: 0 !important;
 }
 .filter_menu a {
