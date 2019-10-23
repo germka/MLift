@@ -34,8 +34,8 @@ def ticket_index(request, filter_type=None):
         elif filter_type == "str":
             ticket_query = Ticket.objects.order_by('ticket_str').order_by('-ticket_date')
             context['splitter'] = "str"
-        elif filter_type == "type":
-            ticket_query = Ticket.objects.order_by('ticket_status_id').order_by('-ticket_date')
+        elif filter_type == "status":
+            ticket_query = Ticket.objects.order_by('ticket_status').order_by('-ticket_date')
             context['splitter'] = "status"
         paginator = Paginator(ticket_query, 20)
         page = request.GET.get('page')
