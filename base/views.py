@@ -265,6 +265,11 @@ def new_ticket(request):
 
     #--making ticket
 
+            if 'obj_str' in request.POST:
+                if request.POST['obj_str'] != '':
+                    context['help_message'] = 'Выберите дом'
+                else:
+                    context['help_message'] = 'Выберите улицу'
             if 'obj_str' in request.POST and 'obj_build' in request.POST:
                 if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
                     context['help_message'] = 'Выбор из списка'

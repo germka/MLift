@@ -19,6 +19,17 @@ var Form = {
             build.prop("disabled",true);
         };
 
+        if (build.is("input")) {
+            if (type.is("input")) {
+                if (build.val() != '') {
+                    type.prop("disabled",false);
+                } else {
+                    type.prop("disabled",true);
+                    type.val('');
+                };
+            };
+        };
+
         if (build_housing.is("input")) {
             if (build.val() != '') {
                 build_housing.prop("disabled",false);
