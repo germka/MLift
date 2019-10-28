@@ -33,3 +33,5 @@ ALTER TABLE public.test
 COPY temp_object FROM '/tmp/base.csv' WITH CSV HEADER DELIMITER ';';
 #----------------------------------------------------------------------------------------------------------------------
 INSERT INTO temp_object (id,manage_comp_id,obj_area_id,obj_aperture,obj_str_id,obj_build,obj_build_housing,obj_par,obj_number,obj_factory_number,obj_inspection,obj_type_id,obj_carrying,obj_manufacturer_id,obj_manufacture,obj_exp_start,obj_communication) SELECT id, management_comp::integer, obj_area::integer, obj_aperture, obj_str::integer, obj_buid, obj_build_housing, obj_par, obj_number, obj_factory_number, obj_inspection, obj_type::integer, obj_carrying, obj_manufacturer::integer, to_timestamp(obj_manufacture::text,'YYYY-MM-DD'), to_timestamp(obj_exp_start::text,'DD-MM-YYYY'), obj_communication::boolean FROM test;
+#----------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE base_ticket_id_seq RESTART WITH 1;

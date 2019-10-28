@@ -25,7 +25,8 @@ def logout_base(request):
 @login_required(login_url=login_page)
 def ticket_index(request, filter_type=None):
     if request.user.is_authenticated:
-        context = {}
+        context = {
+        }
         if not filter_type:
             ticket_query = Ticket.objects.order_by('-ticket_date')
         elif filter_type == "area":
