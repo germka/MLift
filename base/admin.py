@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comments, Ticket, Object, ManageComp, ObjStr, ObjType
+from .models import Comments, Ticket, Object, ManageComp, ObjStr, ObjType, ObjManufacturer, FUReason, FUR_group
 
 # Register your models here.
 
@@ -79,9 +79,42 @@ class ObjectAdmin(admin.ModelAdmin):
     ]
 
 
+class FUReasonAdmin(admin.ModelAdmin):
+    list_display = ('reason_group','reason_text',)
+    list_filter = ['reason_group',]
+    search_fields = [
+        'reason_group__group_name',
+        'reason_text',
+    ]
+    fieldsets = [
+    ('Группа', { 'fields':
+        [
+        'reason_group',
+        ]
+    }),
+    ('Содержание', { 'fields':
+        [
+        'reason_text',
+        ]
+    }),
+    ]
+
+
+class FUReasonInLine(admin.TabularInline):
+    model = FUReason
+    extra = 0
+
+
+class FUR_groupAdmin(admin.ModelAdmin):
+    inlines = [FUReasonInLine]
+
+
 admin.site.register(Comments)
-admin.site.register(Object,ObjectAdmin)
-admin.site.register(Ticket,TicketAdmin)
+admin.site.register(Object, ObjectAdmin)
+admin.site.register(Ticket, TicketAdmin)
 admin.site.register(ManageComp)
 admin.site.register(ObjStr)
 admin.site.register(ObjType)
+admin.site.register(ObjManufacturer)
+admin.site.register(FUReason, FUReasonAdmin)
+admin.site.register(FUR_group, FUR_groupAdmin)
