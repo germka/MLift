@@ -73,7 +73,18 @@
 
 </form>
 <a href="#" class="fur" id="fur">список часто используемых причин</a>
-<div class="fur_block" id="fur_block" hidden>Пока ничего нет но надо придумать как именно выбрать или собрать данные и выложить список</br></div>
+
+<div class="fur_block" id="fur_block" hidden>
+{% for reason in FUReason %}
+    {% ifchanged %}
+        {{ reason.reason_group }}
+    {% endifchanged %}
+    {{ reason.reason_text }}
+{% empty %}
+    Пока ничего нет но надо придумать как именно выбрать или собрать данные и заполнить их в административном интерфейсе</br>
+{% endfor %}
+</div>
+
 </div>
 </div>
 

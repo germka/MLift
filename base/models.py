@@ -20,8 +20,8 @@ class TicketType(models.Model):
     def __str__(self):
         return 'Тип заявки: %s' % (self.type_name)
     class Meta:
-        verbose_name = "Лифт"
-        verbose_name_plural = "Лифты"
+        verbose_name = "Тип заявки"
+        verbose_name_plural = "Типы заявок"
 
 
 class ManageComp(models.Model):
@@ -30,7 +30,7 @@ class ManageComp(models.Model):
         return '%s' % (self.comp_name)
     class Meta:
         verbose_name = "Владелец"
-        verbose_name_plural = "Владельцы"
+        verbose_name_plural = "02. Владельцы"
 
 
 class ObjArea(models.Model):
@@ -48,7 +48,7 @@ class ObjStr(models.Model):
         return '%s' % (self.street)
     class Meta:
         verbose_name = "Улица"
-        verbose_name_plural = "Улицы"
+        verbose_name_plural = "02. Улицы"
 
 
 class ObjType(models.Model):
@@ -57,7 +57,7 @@ class ObjType(models.Model):
         return '%s' % (self.type_name)
     class Meta:
         verbose_name = "Тип лифта"
-        verbose_name_plural = "Типы лифтов"
+        verbose_name_plural = "02. Типы лифтов"
 
 
 class ObjManufacturer(models.Model):
@@ -65,23 +65,23 @@ class ObjManufacturer(models.Model):
     def __str__(self):
         return '%s' % (self.manufacturer)
     class Meta:
-        verbose_name = "Лифт"
-        verbose_name_plural = "Лифты"
+        verbose_name = "Завод производитель"
+        verbose_name_plural = "02. Заводы производители"
 
 
 class Object(models.Model):
-    obj_area = models.ForeignKey(ObjArea, on_delete=models.CASCADE, null=True, verbose_name='Район')
-    obj_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
+    obj_area = models.ForeignKey(ObjArea, on_delete=models.DO_NOTHING, null=True, verbose_name='Район')
+    obj_str = models.ForeignKey(ObjStr, on_delete=models.DO_NOTHING, verbose_name='Улица')
     obj_build = models.CharField('Дом', max_length=15, null=True)
     obj_build_housing = models.CharField('Корпус', max_length=10, null=True, blank=True)
     obj_par = models.IntegerField('Номер парадной', null=True, blank=True)
     obj_number = models.CharField('Номер лифта', max_length=15, null=True, blank=True)
     obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True)
-    obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, null=True, verbose_name='Тип объекта', blank=True)
+    obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, null=True, verbose_name='Тип объекта', blank=True)
     obj_carrying = models.IntegerField('Грузоподъемность', null=True, blank=True)
     obj_aperture = models.IntegerField('Этажность', null=True, blank=True)
-    obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.CASCADE, null=True, verbose_name='Завод производитель', blank=True)
-    manage_comp = models.ForeignKey(ManageComp, on_delete=models.CASCADE, null=True, verbose_name='Управляющая компания', blank=True)
+    obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.DO_NOTHING, null=True, verbose_name='Завод производитель', blank=True)
+    manage_comp = models.ForeignKey(ManageComp, on_delete=models.DO_NOTHING, null=True, verbose_name='Управляющая компания', blank=True)
     obj_communication = models.BooleanField('Наличие связи', null=True)
     obj_manufacture = models.DateTimeField('Дата производства', null=True, blank=True)
     obj_exp_start = models.DateTimeField('Дата начала эксплуатации', null=True, blank=True)
@@ -91,20 +91,20 @@ class Object(models.Model):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
     class Meta:
         verbose_name = "Лифт"
-        verbose_name_plural = "Лифты"
+        verbose_name_plural = "01. Лифты"
 
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
-    ticket_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
+    ticket_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='Автор')
     ticket_object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='Объект заявки', null=True)
-    ticket_str = models.ForeignKey(ObjStr, on_delete=models.CASCADE, verbose_name='Улица')
+    ticket_str = models.ForeignKey(ObjStr, on_delete=models.DO_NOTHING, verbose_name='Улица')
     ticket_build = models.CharField('Дом', max_length=15, default='-')
     ticket_build_housing = models.CharField('Корпус', max_length=10, null=True)
     ticket_par = models.IntegerField('Парадная',null=True)
-    ticket_obj_type = models.ForeignKey(ObjType, on_delete=models.CASCADE, verbose_name='Тип лифта', null=True)
-    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='Тип заявки', null=True)
+    ticket_obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, verbose_name='Тип лифта', null=True)
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.DO_NOTHING, verbose_name='Тип заявки', null=True)
     ticket_content = models.CharField('Содержание' ,max_length=1000)
-    ticket_status = models.ForeignKey(TicketStatus, on_delete=models.CASCADE, default=1, verbose_name='Статус')
+    ticket_status = models.ForeignKey(TicketStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус')
     ticket_duration = models.DurationField('Время простоя', null=True)
     def close(self):
         self.ticket_status_id = 2
@@ -135,7 +135,7 @@ class Ticket(models.Model):
 
     class Meta:
         verbose_name = "Заявка"
-        verbose_name_plural = "Заявки"
+        verbose_name_plural = "07. Заявки"
 
 
 class Comments(models.Model):
@@ -146,7 +146,25 @@ class Comments(models.Model):
     def __str__(self):
         return '%s %s' % (self.comment_date.strftime("%Y/%m/%d %H:%M"), self.comment_content)
 
-
     class Meta:
         verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
+        verbose_name_plural = "07. Комментарии"
+
+
+class FUR_group(models.Model):
+    group_name = models.CharField('Название группы', max_length=50)
+    def __str__(self):
+        return '%s' % (self.group_name)
+    class Meta:
+        verbose_name = "Группа причин заявок"
+        verbose_name_plural = "09. Группы причин заявок"
+
+
+class FUReason(models.Model):
+    reason_group = models.ForeignKey(FUR_group, on_delete=models.CASCADE, verbose_name='Группа списка причин')
+    reason_text = models.TextField('Содержание', max_length=2000)
+    def __str__(self):
+        return '%s' % (self.reason_text)
+    class Meta:
+        verbose_name = "Часто используемая причина"
+        verbose_name_plural = "09. Часто используемые причины"
