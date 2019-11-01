@@ -23,21 +23,27 @@ def logout_base(request):
 
 
 @login_required(login_url=login_page)
-def ticket_index(request, filter_type=None):
+def ticket_index(request, index_filter=None):
     if request.user.is_authenticated:
         context = {
         }
-        if not filter_type:
+        if not index_filter:
             ticket_query = Ticket.objects.order_by('-ticket_date')
-        elif filter_type == "area":
+        elif index_filter == "area":
             ticket_query = Ticket.objects.order_by('ticket_str__area').order_by('-ticket_date')
             context['splitter'] = "area"
-        elif filter_type == "str":
+        elif index_filter == "str":
             ticket_query = Ticket.objects.order_by('ticket_str').order_by('-ticket_date')
             context['splitter'] = "str"
-        elif filter_type == "status":
+        elif index_filter == "status":
             ticket_query = Ticket.objects.order_by('ticket_status').order_by('-ticket_date')
             context['splitter'] = "status"
+        elif {'street':index_filter} in ObjStr.objects.all().values('street'):
+            ticket_query = Ticket.objects.filter(ticket_str__street__contains=index_filter).order_by('-ticket_date')
+        elif {'status':index_filter} in TicketStatus.objects.all().values('status'):
+            ticket_query = Ticket.objects.filter(ticket_status__status__contains=index_filter).order_by('-ticket_date')
+
+
         paginator = Paginator(ticket_query, 20)
         page = request.GET.get('page')
         ticket_list = paginator.get_page(page)

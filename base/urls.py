@@ -8,7 +8,7 @@ urlpatterns = [
     # Список заявок
     path('', views.ticket_index, name='ticket_index'),
     # фильтрованный список
-    path('filter/<str:filter_type>/', views.ticket_index, name='index_filter'),
+    path('tickets/<str:index_filter>/', views.ticket_index, name='index_filter'),
     # Окно заявки
     path('<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
     # Создание заявки

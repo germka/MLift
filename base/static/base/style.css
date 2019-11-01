@@ -329,6 +329,11 @@ body {
     background-color: rgba(225,225,225,0.2);
 }
 
+.fur_block ul {
+    cursor: pointer;
+    text-decoration: dotted underline;
+}
+
 .reason_group_link {
     text-decoration: dotted underline;
     color: black;

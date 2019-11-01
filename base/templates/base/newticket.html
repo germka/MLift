@@ -77,7 +77,7 @@
 <div class="fur_block" id="fur_block" hidden>
 {% for group in FUR|dictsort:"id" %}
     <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
-    <ul id="reason_list_{{ group.id }}" hidden>
+    <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
     {% for reason in group.fureason_set.all %}
         <li>{{ reason }}</li>
     {% endfor %}
