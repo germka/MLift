@@ -72,14 +72,16 @@
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
 
 </form>
-<a href="#" class="fur" id="fur">список часто используемых причин</a>
+<a href="javascript: void(0)" class="fur" id="fur">список часто используемых причин</a>
 
 <div class="fur_block" id="fur_block" hidden>
-{% for reason in FUReason %}
-    {% ifchanged %}
-        {{ reason.reason_group }}
-    {% endifchanged %}
-    {{ reason.reason_text }}
+{% for group in FUR|dictsort:"id" %}
+    <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
+    <ul id="reason_list_{{ group.id }}" hidden>
+    {% for reason in group.fureason_set.all %}
+        <li>{{ reason }}</li>
+    {% endfor %}
+    </ul>
 {% empty %}
     Пока ничего нет но надо придумать как именно выбрать или собрать данные и заполнить их в административном интерфейсе</br>
 {% endfor %}
@@ -91,5 +93,6 @@
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/filter_jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 
 </html>

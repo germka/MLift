@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
-from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp
+from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason
 
 # Create your views here.
 
@@ -131,6 +131,7 @@ def new_ticket(request):
             'obj_str': obj_str,
             'ticket_number': ticket_number,
             'date_now': date_now,
+            'FUR': FUR_group.objects.all()
         }
         if request.method == 'GET':
             context.update({
