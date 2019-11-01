@@ -39,7 +39,7 @@ class ObjArea(models.Model):
         return '%s' % (self.area_name)
     class Meta:
         verbose_name = "Район"
-        verbose_name_plural = "Районы"
+        verbose_name_plural = "02. Районы"
 
 class ObjStr(models.Model):
     street = models.CharField('Улица', max_length=50)

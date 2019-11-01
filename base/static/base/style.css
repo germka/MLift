@@ -315,6 +315,26 @@ body {
     font-weight: 600;
 }
 
+.fur {
+    font-size: 9pt;
+    text-decoration-style: dotted;
+}
+
+.fur_block {
+    border: 1px dotted gray;
+    width: 80%;
+    min-height: 100px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(225,225,225,0.2);
+}
+
+.reason_group_link {
+    text-decoration: dotted underline;
+    color: black;
+    display: block;
+}
+
 .detail_name {
 }
 
@@ -370,20 +390,6 @@ body {
 .comment_content::after {
     content: '“';
     margin: 2px;
-}
-
-.fur {
-    font-size: 9pt;
-    text-decoration-style: dotted;
-}
-
-.fur_block {
-    border: 1px dotted gray;
-    width: 80%;
-    height: 300px;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: rgba(225,225,225,0.2);
 }
 
 .help_message {

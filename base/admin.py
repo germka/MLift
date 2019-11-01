@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comments, Ticket, Object, ManageComp, ObjStr, ObjType, ObjManufacturer, FUReason, FUR_group
+from .models import Comments, Ticket, Object, ManageComp, ObjArea, ObjStr, ObjType, ObjManufacturer, FUReason, FUR_group
 
 # Register your models here.
 
@@ -109,12 +109,13 @@ class FUR_groupAdmin(admin.ModelAdmin):
     inlines = [FUReasonInLine]
 
 
-admin.site.register(Comments)
+#admin.site.register(Comments)
 admin.site.register(Object, ObjectAdmin)
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(ManageComp)
+admin.site.register(ObjArea)
 admin.site.register(ObjStr)
 admin.site.register(ObjType)
 admin.site.register(ObjManufacturer)
-admin.site.register(FUReason, FUReasonAdmin)
+#admin.site.register(FUReason, FUReasonAdmin)
 admin.site.register(FUR_group, FUR_groupAdmin)
