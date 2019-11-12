@@ -5,7 +5,13 @@
 
 <div class="content_wrap">
 <div class="index_table">
-<div class="new_ticket_header"><span class="ticket_number">Заявка №{{ ticket_number|add:"1" }}</span></div>
+
+<div class="new_ticket_header"><span class="ticket_number">Заявка №{{ ticket_number|add:"1" }}</span>
+{% if request.META.HTTP_REFERER != request.build_absolute_uri %}
+<a href="{{ request.META.HTTP_REFERER }}" class="turn_back">Вернуться назад</a>
+{% endif %}
+
+</div>
 
 <form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post" class="new_ticket_form">
 {% csrf_token %}

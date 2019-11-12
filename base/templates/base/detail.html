@@ -4,6 +4,12 @@
 <div class="demo-ribbon"></div> 
 <div class="content_wrap">
 <div class="index_table" id="index_table">
+<div class="new_ticket_header">
+{% if request.META.HTTP_REFERER != request.build_absolute_uri %}
+<a href="{{ request.META.HTTP_REFERER }}" class="turn_back">Вернуться назад</a>
+{% endif %}
+</div>
+
 <div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
 <span class="detail_info">
 {% if ticket_object.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}

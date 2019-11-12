@@ -3,17 +3,17 @@
 <link rel="stylesheet" type="text/css" href="{% static 'base/menu.css' %}">
 <div class="st_nav">
     <ul class="st_ul">
-        <li class="st_li st_li_1"><a href="{% url 'admin:index' %}" target="_blank" class="st_a anchor">{% if request.user.is_staff %}<span class="full-width">Администрирование</span>{% endif %}</a></li>
-        {% if index %}<li class="st_li st_li_2"><a href="{% url 'base:ticket_index' %}" class="st_a anchor"><span class="full-width">Список заявок</span></a></li>{% endif %}
-        {% if new %}<li class="st_li st_li_3"><a href="{% url 'base:new_ticket' %}" class="st_a anchor"><span class="full-width">Создать заявку</span></a></li>{% endif %}
+        <li class="st_li st_li_1"><a href="{% url 'admin:index' %}" target="_blank" class="st_a anchor" title="Управление базой данных">{% if request.user.is_staff %}<span class="full-width">Администрирование</span>{% endif %}</a></li>
+        {% if index %}<li class="st_li st_li_2"><a href="{% url 'base:ticket_index' %}" class="st_a anchor" title="Список заявок"><span class="full-width">Список заявок</span></a></li>{% endif %}
+        {% if new %}<li class="st_li st_li_3"><a href="{% url 'base:new_ticket' %}" class="st_a anchor" title="Создать новую заявку"><span class="full-width">Создать заявку</span></a></li>{% endif %}
         <li class="st_li st_li_4"><a href="#" class="st_a anchor"></a></li>
-        {% if filter %}<li class="st_li st_li_5"><div class="filter_sidebar st_a anchor"><span class="full-width">Фильтры</span>
+        {% if filter %}<li class="st_li st_li_5" title="Сортировка заявок"><div class="filter_sidebar st_a anchor"><span class="full-width">Фильтры</span>
         <div class="filter_menu">
             <ul>
-                <li><a href="{% url 'base:ticket_index' %}">Дата</a></li>
-                <li><a href="{% url 'base:index_filter' 'status' %}">Статус</a></li>
-                <li><a href="{% url 'base:index_filter' 'area' %}">Район</a></li>
-                <li><a href="{% url 'base:index_filter' 'str' %}">Улица</a></li>
+                <li><a href="{% url 'base:ticket_index' %}" title="Сортировка заявок по дате">Дата</a></li>
+                <li><a href="{% url 'base:index_filter' 'status' %}" title="Сортировка заявок по статусу">Статус</a></li>
+                <li><a href="{% url 'base:index_filter' 'area' %}" title="Сортировка заявок по району">Район</a></li>
+                <li><a href="{% url 'base:index_filter' 'str' %}" title="Сортировка заявок по улице">Улица</a></li>
             </ul>
             </div>
         </div></li>{% endif %}

@@ -243,9 +243,6 @@ body {
 
 .new_ticket_form {
     margin: auto;
-    font-size: 10.5pt;
-    font-family: Verdana;
-    font-weight: 400;
 }
 
 .ticket_close_form {
@@ -303,6 +300,10 @@ body {
 
 .new_ticket_header {
     margin-bottom: 30px;
+}
+
+.turn_back {
+    float:right;
 }
 
 .ticket_close_button {
