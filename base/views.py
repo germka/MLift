@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
-from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason
+from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason, Worker
 
 # Create your views here.
 
@@ -62,6 +62,7 @@ def ticket_detail(request, ticket_id):
         context = {
             'ticket': ticket,
             'obj_type': ObjType.objects.all(),
+            'workers': Worker.objects.filter(worker_area = ticket.ticket_str.area)
         }
 
         try:
@@ -99,6 +100,7 @@ def ticket_detail(request, ticket_id):
             else:
                 context['exact_message'] = "Лифт определен"
                 context['exact_preview'] = ticket.ticket_object
+        
 
         if request.method == 'GET':
             return render(request, 'base/detail.html', context)
@@ -340,7 +342,7 @@ def ticket_close(request, ticket_id):
                 try:
                     ticket.ticket_object = ticket_obj.get()
                 except (KeyError, Object.MultipleObjectsReturned):
-                    context['error_message'] = "Сразу несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
+                    context['error_message'] = "Срзу несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
                 else:
                     ticket.save()	#--save ticket after chiose
             elif 'ticket_obj' in request.POST:
@@ -348,6 +350,11 @@ def ticket_close(request, ticket_id):
                 ticket.save() #--save ticket without choise
 
             context['ticket_object'] = ticket.ticket_object
+
+            if 'worker_exact' in request.POST:
+                full_name = request.POST['worker_exact'].split(' ',1)
+                worker = Worker.objects.filter(first_name__contains=full_name[0], last_name__contains=full_name[1])
+                ticket.ticket_worker = worker.get()
 
             if ticket.ticket_object != None:
                 ticket.close()	#--close ticket

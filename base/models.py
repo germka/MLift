@@ -93,6 +93,27 @@ class Object(models.Model):
         verbose_name = "Лифт"
         verbose_name_plural = "01. Лифты"
 
+
+class Worker(models.Model):
+    first_name = models.CharField('Имя', max_length=15)
+    last_name = models.CharField('Фамилия', max_length=15)
+    optional_name = models.CharField('Отчество', max_length=15)
+    worker_area = models.ForeignKey(ObjArea, on_delete=models.DO_NOTHING, verbose_name='Район работы')
+    worker_recruitment = models.DateTimeField('Дата приема на работу', null=True, blank=True)
+    phone_work = models.CharField('Рабочий телефон', max_length=11, null=True, blank=True)
+    phone_alt = models.CharField('Дополнительный телефон', max_length=11, null=True, blank=True)
+    def __str__(self):
+        if (self.worker_recruitment):
+            return '%s %s %s принят: %s' % (self.first_name, self.last_name, self.optional_name, self.worker_recruitment)
+        else:
+            return '%s %s %s' % (self.first_name, self.last_name, self.optional_name)
+    def full_name(self):
+        return '%s %s' % (self.first_name, self.last_name)
+    class Meta:
+        verbose_name = "Работник"
+        verbose_name_plural = "08. Работники"
+
+
 class Ticket(models.Model):
     ticket_date = models.DateTimeField('Дата публикации')
     ticket_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='Автор')
@@ -106,6 +127,7 @@ class Ticket(models.Model):
     ticket_content = models.CharField('Содержание' ,max_length=1000)
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус')
     ticket_duration = models.DurationField('Время простоя', null=True)
+    ticket_worker = models.ForeignKey(Worker, on_delete=models.DO_NOTHING, verbose_name='Работник', blank=True, null=True)
     def close(self):
         self.ticket_status_id = 2
         self.save()

@@ -41,6 +41,16 @@
     {% endif %}
 {% endif %}
 
+{% if workers %}
+    <div class="detail_ticket_row"><span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomlete="off"></span>
+        <datalist id="worker_exact">
+        {% for worker in workers %}
+            <option>{{ worker.full_name }}</option>
+        {% endfor %}
+        </datalist>
+    </div>
+{% endif %}
+
 {% if ticket.ticket_status_id != '2' %}
     <div class="ticket_close"><input type="submit" id="ticket_close_button" value="Закрыть заявку" class="ticket_close_button send_button"></div>
 {% endif %}
@@ -49,6 +59,9 @@
 </form>
 {% endif %}
 
+{% if ticket.ticket_worker %}
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Исполнитель: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker }}</span></div>
+{% endif %}
 
 <div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
 {% if ticket.ticket_duration %}
@@ -65,7 +78,7 @@
 {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
     <div class="comment_row"><span class="comment_num">№{{ forloop.counter }}</span>
     {% if comment.comment_date %}<span class="comment_date">[{{ comment.comment_date }}]</span>{% endif %}
-    {% if comment.comment_user %}<span class="comment_user">{{ comment.comment_user }} написал:</span>{% endif %}
+    {% if comment.comment_user %}<span class="comment_user">{{ comment.comment_user }} написал(a):</span>{% endif %}
     </br>
     {% if comment.comment_content %}<span class="comment_content">{{ comment.comment_content }}</span>{% endif %}
     {% if message %}{% if forloop.last %}<div class="comment_add_message">{{ message }}</div>{% endif %}{% endif %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comments, Ticket, Object, ManageComp, ObjArea, ObjStr, ObjType, ObjManufacturer, FUReason, FUR_group
+from .models import Comments, Ticket, Object, ManageComp, ObjArea, ObjStr, ObjType, ObjManufacturer, FUReason, FUR_group, Worker
 
 # Register your models here.
 
@@ -119,3 +119,4 @@ admin.site.register(ObjType)
 admin.site.register(ObjManufacturer)
 #admin.site.register(FUReason, FUReasonAdmin)
 admin.site.register(FUR_group, FUR_groupAdmin)
+admin.site.register(Worker)
