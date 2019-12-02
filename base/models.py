@@ -21,7 +21,7 @@ class TicketType(models.Model):
         return 'Тип заявки: %s' % (self.type_name)
     class Meta:
         verbose_name = "Тип заявки"
-        verbose_name_plural = "Типы заявок"
+        verbose_name_plural = "07. Типы заявок"
 
 
 class ManageComp(models.Model):
@@ -76,8 +76,8 @@ class Object(models.Model):
     obj_build_housing = models.CharField('Корпус', max_length=10, null=True, blank=True)
     obj_par = models.IntegerField('Номер парадной', null=True, blank=True)
     obj_number = models.CharField('Номер лифта', max_length=15, null=True, blank=True)
-    obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True)
-    obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, null=True, verbose_name='Тип объекта', blank=True)
+    obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True, blank=True)
+    obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, null=True, verbose_name='Тип лифта', blank=True)
     obj_carrying = models.IntegerField('Грузоподъемность', null=True, blank=True)
     obj_aperture = models.IntegerField('Этажность', null=True, blank=True)
     obj_manufacturer = models.ForeignKey(ObjManufacturer, on_delete=models.DO_NOTHING, null=True, verbose_name='Завод производитель', blank=True)
@@ -86,7 +86,7 @@ class Object(models.Model):
     obj_manufacture = models.DateTimeField('Дата производства', null=True, blank=True)
     obj_exp_start = models.DateTimeField('Дата начала эксплуатации', null=True, blank=True)
     obj_inspection = models.DateTimeField('Дата последней инспекции', null=True, blank=True)
-    obj_in_service = models.BooleanField('Находится на обслуживании')
+    obj_in_service = models.BooleanField('Обслуживание')
     def __str__(self):
         return '№ %s улица %s дом %s' % (self.obj_number, self.obj_str, self.obj_build)
     class Meta:
@@ -95,11 +95,11 @@ class Object(models.Model):
 
 
 class Worker(models.Model):
-    first_name = models.CharField('Имя', max_length=15)
     last_name = models.CharField('Фамилия', max_length=15)
+    first_name = models.CharField('Имя', max_length=15)
     optional_name = models.CharField('Отчество', max_length=15)
     worker_area = models.ForeignKey(ObjArea, on_delete=models.DO_NOTHING, verbose_name='Район работы')
-    worker_recruitment = models.DateTimeField('Дата приема на работу', null=True, blank=True)
+    worker_recruitment = models.DateField('Дата приема на работу', null=True, blank=True)
     phone_work = models.CharField('Рабочий телефон', max_length=11, null=True, blank=True)
     phone_alt = models.CharField('Дополнительный телефон', max_length=11, null=True, blank=True)
     def __str__(self):
@@ -128,6 +128,7 @@ class Ticket(models.Model):
     ticket_status = models.ForeignKey(TicketStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус')
     ticket_duration = models.DurationField('Время простоя', null=True)
     ticket_worker = models.ForeignKey(Worker, on_delete=models.DO_NOTHING, verbose_name='Работник', blank=True, null=True)
+    ticket_sender = models.CharField('Заявитель', max_length=50, null=True, blank=True)
     def close(self):
         self.ticket_status_id = 2
         self.save()

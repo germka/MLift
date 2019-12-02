@@ -20,13 +20,15 @@
         {% endifchanged %}
         <div class="ticket_row_{{ forloop.counter }} ticket_row {{ rowtype }}" style="z-index: {{ forloop.counter }};">
         <a href="{% url 'base:ticket_detail' ticket.id %}" title="Открыть заявку №{{ticket.id}}">
-            <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|date:"SHORT_DATETIME_FORMAT" }}</span>
-        </a>
-        <a href="{% url 'base:index_filter' ticket.ticket_str.street %}" title='Отфильтровать заявки по улице "{{ ticket.ticket_str }}"'>
-            <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_object.obj_type %}, {{ ticket.ticket_object.obj_type }}{% endif %}</span>
+            <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|time:"TIME_FORMAT" }}</span>
         </a>
         <a href="{% url 'base:ticket_detail' ticket.id %}" title="Открыть заявку №{{ticket.id}}">
-            <span class="ticket_content index_row_item">{{ ticket.ticket_content|truncatechars:49 }} {% if ticket.comments_set.count > 0 %}<span class="ticket_comment_count" title="Количество комментариев">({{ticket.comments_set.count}})</span>{% endif %}</span>
+            <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, {{ ticket.ticket_obj_type }}{% else %}, {{ ticket.ticket_object.obj_type|default_if_none:"неопределен" }}{% endif %}</span>
+        </a>
+        <a href="{% url 'base:ticket_detail' ticket.id %}" title="Тип/Причина/Исполнитель заявки">
+            <span class="ticket_type index_row_item">{{ ticket.ticket_type.type_name }}</span>
+            <span class="ticket_content index_row_item">{{ ticket.ticket_content|truncatechars:42 }} {% if ticket.comments_set.count > 0 %}<span class="ticket_comment_count" title="Количество комментариев">({{ticket.comments_set.count}})</span>{% endif %}</span>
+            <span class="index_ticket_worker index_row_item">{{ ticket.ticket_worker.last_name|truncatechars:10 }}</span>
         </a>
         <a href="{% url 'base:index_filter' ticket.ticket_status.status %}" title='Отфильтровать заявки со статусом "{{ ticket.ticket_status }}"'>
             <span class="ticket_status index_row_item {% if ticket.ticket_status.id == 1 %}red_text{% elif ticket.ticket_status.id == 2  %}green_text{% endif %}"><span class="ticket_num">#{{ ticket.id }}</span> {{ ticket.ticket_status }}</span>

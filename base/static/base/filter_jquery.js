@@ -83,8 +83,10 @@ var Form = {
         token = $form.find( "input[name='csrfmiddlewaretoken']" ).val(),
         post_data = { csrfmiddlewaretoken: token, }
         build_housing = $('#build_housing'),
-        par = $('#par');
-        type = $('#type');
+        par = $('#par'),
+        type = $('#type'),
+        ticket_type = $('#tickettype'),
+        sender = $('#ticket_sender');
 
         if ($("#str").val() != '') {
             new_str = $form.find( "input[name='obj_str']" ).val();
@@ -122,6 +124,16 @@ var Form = {
             new_date = $form.find( "input[name='ticket_date']" ).val();
             post_data['ticket'] = new_date;
         };
+        if (ticket_type.val() != '') {
+            new_ticket_type = $form.find( "input[name='ticket_type']" ).val();
+            post_data['ticket_type'] = new_ticket_type;
+        };
+        if (sender.val() != '') {
+            new_sender = $form.find( "input[name='ticket_sender']" ).val();
+            post_data['ticket_sender'] = new_sender;
+        };
+
+        post_data['sender'] = 'jQuery'
 
         var posting = $.post( url, post_data );
 

@@ -54,7 +54,6 @@
 {% if obj_type %}
 <div class="new_ticket_row inline"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="10" autocomplete="off"
 ></div>
-
 <datalist id="obj_type">
 {% for obj in obj_type %}
     <option>{{ obj.type_name }}</option>
@@ -64,16 +63,26 @@
 <span class="no_data">Нет данных о типе лифта по этому адресу</span>
 {% endif %}
 
-<div class="help_message">{% if help_message %}<span>{{ help_message }}</span>{% endif %}
+<div class="help_message new_ticket_row inline">{% if help_message %}<span>{{ help_message }}</span>{% endif %}
 {% if error_message %}<span class="error_message">{{ error_message }}</span>{% endif %}</div>
 
+<input type="text" name="ticket_sender" id="ticket_sender" placeholder="Заявитель" 
+{% if sender_value %}value="{{ sender_value }}"{% endif %}>
 </fieldset>
 
 <fieldset class="new_ticket_fs">
 <legend>Состав заявки</legend>
-<div class="new_ticket_row"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
+<div class="new_ticket_row inline"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
+<div class="new_ticket_row inline"><input list="ticket_type" name="ticket_type" id="tickettype" placeholder="Тип заявки" size="10" autocomplete="off" required
+{% if type_value %}value="{{ type_value }}"{% endif %}></div>
+<datalist id="ticket_type">
+{% for type in ticket_type %}
+    <option>{{ type.type_name }}</option>
+{% endfor %}
+</datalist>
+
 <div class="new_content_wrap">
-<textarea name="ticket_content" id="ticket_content" required placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="8" autocomplete="off" class="new_ticket_content"></textarea></div>
+<textarea name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content"></textarea></div>
 </fieldset>
 <div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
 

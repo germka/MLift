@@ -16,14 +16,26 @@
 {{ ticket.ticket_str }}, 
 дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
 </span>
+<span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
 </div>
-<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span>
+<span class="detail_ticket_type">{% if ticket.ticket_sender %}Заявитель: {{ ticket.ticket_sender }}{% endif %}</span>
+</div>
 <div class="detail_ticket_row"><span class="detail_name">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
+{% if ticket.ticket_duration %}
+    {% if ticket.duration_time %}
+        {{ ticket.duration_time }}
+    {% endif %}
+{% else %}
+    {{ ticket.ticket_date|timesince }}
+{% endif %}</span></div>
 
 {% if ticket.ticket_status.id == 1 %}
 <form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
 {% csrf_token %}
 
+{% if exact_message %}<div class="detail_ticket_row"><span class="detail_name"></span><span class="detail_info"> {{ exact_message }} </span></div>{% endif %}
 {% if exact_preview.obj_number %}<div class="detail_ticket_row"><span class="detail_name">Номер лифта: </span><span class="detail_info"> {{ exact_preview.obj_number }} </span></div>{% endif %}
 {% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
 
@@ -42,7 +54,7 @@
 {% endif %}
 
 {% if workers %}
-    <div class="detail_ticket_row"><span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomlete="off"></span>
+    <div class="detail_ticket_row"><span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomplete="off" required></span>
         <datalist id="worker_exact">
         {% for worker in workers %}
             <option>{{ worker.full_name }}</option>
@@ -63,15 +75,27 @@
 <div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Исполнитель: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker }}</span></div>
 {% endif %}
 
-<div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
-{% if ticket.ticket_duration %}
-    {% if ticket.duration_time %}
-        {{ ticket.duration_time }}
-    {% endif %}
-{% else %}
-    {{ ticket.ticket_date|timesince }}
-{% endif %}</span></div>
-<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Содержание: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_content }}</span></div>
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name" style="position:absolute">Причина: </span>
+
+<div class="detail_ticket_content"><textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">
+{% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}
+</textarea></div>
+</div>
+
+<a href="javascript: void(0)" class="fur" id="fur">список часто используемых причин</a>
+
+<div class="fur_block" id="fur_block" hidden>
+    {% for group in FUR|dictsort:"id" %}
+<a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
+    <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
+        {% for reason in group.fureason_set.all %}
+            <li>{{ reason }}</li>
+        {% endfor %}
+    </ul>
+    {% empty %}
+        Пока ничего нет но надо придумать как именно выбрать или собрать данные и заполнить их в административном интерфейсе</br>
+    {% endfor %}
+</div>
 
 <div class="comments"><span class="detail_name">Комментарии:</span>
 <div>
@@ -90,7 +114,7 @@
 </div>
 
 <form id="new_comment_form" action="{% url 'base:ticket_detail' ticket.id %}" method="post" class="new_comment_form" {% if not message %}hidden{% endif %}>
-{% if errormessage %}<div class="error_message">{{ errormessage }}</div>{% endif %}
+{% if error_message %}<div class="error_message">{{ error_message }}</div>{% endif %}
 {% csrf_token %}
 <div class="comment_content_wrap"><textarea name="comment_content" required placeholder="Содержание комментария" cols="50" rows="4" class="new_comment_content"></textarea></div>
 <input class="send_button" type="submit" value="Отправить комментарий">
@@ -100,7 +124,10 @@
 </div>
 </div>
 {% load static %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/button.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/menu.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/list.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/fur.js' %}"></script>
 
 </html>

@@ -1,0 +1,10 @@
+{% for obj in objects %}
+{{ forloop.counter }} 
+{% ifchanged %}
+{{ obj }}, {% if obj.obj_build_housing %} корпус: {{ obj.obj_build_housing }}, {% endif %} {% if obj.obj_par %} парадная: {{ obj.obj_par }}, {% endif %} тип: {{ obj.obj_type }}<br/>
+{% else %}
+<span style="color:red">
+{{ obj }}, {% if obj.obj_build_housing %} корпус: {{ obj.obj_build_housing }}, {% endif %} {% if obj.obj_par %} парадная: {{ obj.obj_par }}, {% endif %} тип: {{ obj.obj_type }}
+</span><br/>
+{% endifchanged %}
+{% endfor %}

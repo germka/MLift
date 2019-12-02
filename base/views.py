@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
-from .models import Ticket, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason, Worker
+from .models import Ticket, TicketType, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason, Worker
 
 # Create your views here.
 
@@ -38,13 +38,16 @@ def ticket_index(request, index_filter=None):
         elif index_filter == "status":
             ticket_query = Ticket.objects.order_by('ticket_status').order_by('-ticket_date')
             context['splitter'] = "status"
+        elif index_filter == "owner":
+            ticket_query = Ticket.objects.order_by('ticket_object__manage_comp').order_by('-ticket_date')
+            context['splitter'] = "owner"
         elif {'street':index_filter} in ObjStr.objects.all().values('street'):
             ticket_query = Ticket.objects.filter(ticket_str__street__contains=index_filter).order_by('-ticket_date')
         elif {'status':index_filter} in TicketStatus.objects.all().values('status'):
             ticket_query = Ticket.objects.filter(ticket_status__status__contains=index_filter).order_by('-ticket_date')
 
 
-        paginator = Paginator(ticket_query, 20)
+        paginator = Paginator(ticket_query, 40)
         page = request.GET.get('page')
         ticket_list = paginator.get_page(page)
 
@@ -62,7 +65,8 @@ def ticket_detail(request, ticket_id):
         context = {
             'ticket': ticket,
             'obj_type': ObjType.objects.all(),
-            'workers': Worker.objects.filter(worker_area = ticket.ticket_str.area)
+            'workers': Worker.objects.filter(worker_area = ticket.ticket_str.area),
+            'FUR': FUR_group.objects.all(),
         }
 
         try:
@@ -85,6 +89,9 @@ def ticket_detail(request, ticket_id):
         else:
             try:
                 ticket.ticket_object = ticket_object_exact.get()
+                context['exact_message'] = "Лифт определен"
+                context['exact_preview'] = ticket.ticket_object
+
             except (KeyError, Object.MultipleObjectsReturned):
                 context['exact_message'] = "Выберите тип лифта:"
                 obj_filter = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
@@ -98,9 +105,8 @@ def ticket_detail(request, ticket_id):
             except (KeyError, Object.DoesNotExist):
                 context['error_message'] = "Адрес не верный, ни одного лифта не найдено"
             else:
-                context['exact_message'] = "Лифт определен"
+#                context['exact_message'] = "Лифт определен"
                 context['exact_preview'] = ticket.ticket_object
-        
 
         if request.method == 'GET':
             return render(request, 'base/detail.html', context)
@@ -139,12 +145,13 @@ def new_ticket(request):
             'obj_str': obj_str,
             'ticket_number': ticket_number,
             'date_now': date_now,
-            'FUR': FUR_group.objects.all()
+            'FUR': FUR_group.objects.all(),
+            'ticket_type': TicketType.objects.all(),
         }
         if request.method == 'GET':
             context.update({
                 'obj_build':'None',
-                'obj_build_housing':'None',
+                'obj_buildhousing':'None',
                 'obj_type':'None',
                 'obj_par':'None',
             })
@@ -160,6 +167,10 @@ def new_ticket(request):
                 context['content_value'] = new_content
             elif 'ticket_content_placeholder' in request.POST:
                 context['content_value'] = request.POST['ticket_content_placeholder']
+            if 'ticket_sender' in request.POST:
+                context['sender_value'] = request.POST['ticket_sender']
+            if 'ticket_type' in request.POST:
+                context['type_value'] = request.POST['ticket_type']
 
     #--obj filters
             filter_context = Object.objects.filter(obj_in_service=True)
@@ -280,19 +291,30 @@ def new_ticket(request):
                     context['help_message'] = 'Выберите дом'
                 else:
                     context['help_message'] = 'Выберите улицу'
+
+            if 'sender' in request.POST:
+                if request.POST['sender'] == 'jQuery':
+                    return render(request, 'base/newticket.html', context)
+
             if 'obj_str' in request.POST and 'obj_build' in request.POST:
                 if request.POST['obj_str'] != '' and request.POST['obj_build'] != '':
                     context['help_message'] = 'Выбор из списка'
+
                     if (filter_context.first().obj_build_housing != None or filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct().count() > 1) and not new_objbuildhousing:
                         context['help_message'] = 'Выберите корпус'
                     elif (filter_context.first().obj_par != None or filter_context.values('obj_par').order_by('obj_par').distinct().count() > 1) and not new_objpar:
                         context['help_message'] = 'Выберите парадную'
-                    elif (filter_context.first().obj_type != None or filter_context.values('obj_type').order_by('obj_type').distinct().count() > 1) and not new_objtype:
-                        context['help_message'] = 'Выберите тип лифта'
-                    elif 'ticket_content' not in request.POST or request.POST['ticket_content'] == '':	#--last check
-                        context['help_message'] = "Введите содержание заявки"
+#                    elif (filter_context.first().obj_type != None or filter_context.values('obj_type').order_by('obj_type').distinct().count() > 1) and not new_objtype: #Условие что лифт не выбран
+#                        context['help_message'] = 'Выберите тип лифта'
+#                    elif 'ticket_content' not in request.POST or request.POST['ticket_content'] == '':	#--last check
+#                        context['help_message'] = "Введите содержание заявки"
+                    elif 'ticket_type' not in request.POST or request.POST['ticket_type'] == '':	#--last check
+                        context['help_message'] = "Введите тип заявки"
+
+
                     else:
                         context['help_message'] = "Готов создать заявку"
+
                         try:
                             ticket = Ticket(ticket_content=new_content, ticket_date=new_date, ticket_status_id=1, ticket_user=request.user, ticket_str=new_objstr, ticket_build=new_objbuild, )
                         except (KeyError, Object.DoesNotExist):
@@ -307,6 +329,10 @@ def new_ticket(request):
                             if 'obj_type' in request.POST:
                                 if request.POST['obj_type'] != '':
                                     ticket.ticket_obj_type=new_objtype
+                            if 'ticket_type' in request.POST:
+                                ticket.ticket_type=TicketType.objects.get(type_name = request.POST['ticket_type'])
+                            if 'ticket_sender' in request.POST:
+                                ticket.ticket_sender=request.POST['ticket_sender']
                             ticket.save()
                             return HttpResponseRedirect(reverse('base:ticket_index'))
 
@@ -356,6 +382,9 @@ def ticket_close(request, ticket_id):
                 worker = Worker.objects.filter(first_name__contains=full_name[0], last_name__contains=full_name[1])
                 ticket.ticket_worker = worker.get()
 
+            if 'ticket_content' in request.POST:
+                ticket.ticket_content = request.POST['ticket_content']
+
             if ticket.ticket_object != None:
                 ticket.close()	#--close ticket
                 ticket.duration_save()
@@ -364,3 +393,11 @@ def ticket_close(request, ticket_id):
         return render(request, 'base/detail.html', context)
     else:
         return HttpResponseRedirect(reverse('base:login'))
+
+
+@login_required(login_url=login_page)
+def dublicate(request):
+    context = {
+        'objects':Object.objects.filter(obj_in_service=True).order_by('obj_type').order_by('obj_par').order_by('obj_build').order_by('obj_build_housing').order_by('obj_str'),
+    }
+    return render(request, 'base/debug.html', context)
