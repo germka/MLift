@@ -16,6 +16,7 @@ from .models import Ticket, TicketType, TicketStatus, Object, ObjArea, ObjStr, O
 # Create your views here.
 
 login_page = '/login/'
+paginator_list_size = 50
 
 def logout_base(request):
     logout(request)
@@ -29,17 +30,18 @@ def ticket_index(request, index_filter=None):
         }
         if not index_filter:
             ticket_query = Ticket.objects.order_by('-ticket_date')
+            context['no_filter'] = True
         elif index_filter == "area":
-            ticket_query = Ticket.objects.order_by('ticket_str__area').order_by('-ticket_date')
+            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str__area', '-id')
             context['splitter'] = "area"
         elif index_filter == "str":
-            ticket_query = Ticket.objects.order_by('ticket_str').order_by('-ticket_date')
+            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
             context['splitter'] = "str"
         elif index_filter == "status":
-            ticket_query = Ticket.objects.order_by('ticket_status').order_by('-ticket_date')
+            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_status', '-id')
             context['splitter'] = "status"
         elif index_filter == "owner":
-            ticket_query = Ticket.objects.order_by('ticket_object__manage_comp').order_by('-ticket_date')
+            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_object__manage_comp', '-id')
             context['splitter'] = "owner"
         elif {'street':index_filter} in ObjStr.objects.all().values('street'):
             ticket_query = Ticket.objects.filter(ticket_str__street__contains=index_filter).order_by('-ticket_date')
@@ -47,7 +49,7 @@ def ticket_index(request, index_filter=None):
             ticket_query = Ticket.objects.filter(ticket_status__status__contains=index_filter).order_by('-ticket_date')
 
 
-        paginator = Paginator(ticket_query, 40)
+        paginator = Paginator(ticket_query, paginator_list_size)
         page = request.GET.get('page')
         ticket_list = paginator.get_page(page)
 

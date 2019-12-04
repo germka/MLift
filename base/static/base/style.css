@@ -72,6 +72,16 @@ body {
     flex-shrink: 0;
 }
 
+.index_no_filter {
+    position: relative;
+    float: right;
+    bottom: 20px;
+}
+
+.index_no_filter a {
+    text-decoration: dotted underline;
+}
+
 .index_table {
     background-color: white;
     width: calc(66.6666666667% - 16px);
@@ -138,21 +148,27 @@ body {
     max-width: 20%;
 }
 
+.ticket_close_date {
+    position: absolute;
+    left: 1px;
+    max-width: 20%;
+}
+
 .ticket_adress {
     position: absolute;
-    left: 5%;
+    left: 10%;
     max-width: 45%;
 }
 
 .ticket_type {
     position: absolute;
-    left: 45%;
-    max-width: 8%;
+    left: 49%;
+    max-width: 9%;
 }
 
 .ticket_content {
     position: absolute;
-    left: 54%;
+    left: 58%;
     max-width: 32%;
 }
 
@@ -162,7 +178,7 @@ body {
 
 .index_ticket_worker {
     position: absolute;
-    left: 82%;
+    left: 85.5%;
     max-width: 10%;
 }
 
@@ -171,6 +187,11 @@ body {
     position: absolute;
     right: 3px;
     font-weight: 600;
+}
+
+.ticket_status_icon {
+    top: 2px;
+    position: relative;
 }
 
 .index_row_item {
@@ -375,6 +396,7 @@ body {
     left: 200px;
     position: absolute;
     max-width: calc(100% - 200px);
+    font-family: inherit;
 }
 
 .detail_ticket_type {
@@ -383,7 +405,7 @@ body {
 }
 
 .detail_ticket_content {
-    min-height: 70px;
+    min-height: 75px;
 }
 
 .no_data {

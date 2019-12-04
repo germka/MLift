@@ -103,12 +103,9 @@ class Worker(models.Model):
     phone_work = models.CharField('Рабочий телефон', max_length=11, null=True, blank=True)
     phone_alt = models.CharField('Дополнительный телефон', max_length=11, null=True, blank=True)
     def __str__(self):
-        if (self.worker_recruitment):
-            return '%s %s %s принят: %s' % (self.first_name, self.last_name, self.optional_name, self.worker_recruitment)
-        else:
-            return '%s %s %s' % (self.first_name, self.last_name, self.optional_name)
+        return '%s %s %s' % (self.last_name, self.first_name, self.optional_name)
     def full_name(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return '%s %s' % (self.last_name, self.first_name)
     class Meta:
         verbose_name = "Работник"
         verbose_name_plural = "08. Работники"
@@ -144,6 +141,11 @@ class Ticket(models.Model):
 
     def duration_time(self):
         return str(self.ticket_duration).split(".")[0].replace("days", "Дней")
+
+    def close_time(self):
+        if self.ticket_duration:
+            closed = self.ticket_date + self.ticket_duration
+            return closed
 
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)

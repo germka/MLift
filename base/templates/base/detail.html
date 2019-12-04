@@ -18,10 +18,10 @@
 </span>
 <span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
 </div>
-<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} {{ ticket.ticket_date|timesince }} назад</span>
+<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} [{{ ticket.ticket_date|time:"H:i" }}]</span>
 <span class="detail_ticket_type">{% if ticket.ticket_sender %}Заявитель: {{ ticket.ticket_sender }}{% endif %}</span>
 </div>
-<div class="detail_ticket_row"><span class="detail_name">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }}{% endif %}</span></div>
+<div class="detail_ticket_row"><span class="detail_name">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }} {% if ticket.close_time %} [{{ ticket.close_time|time:"H:i" }}] {% endif %} {% endif %}</span></div>
 <div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
 {% if ticket.ticket_duration %}
     {% if ticket.duration_time %}
@@ -72,7 +72,7 @@
 {% endif %}
 
 {% if ticket.ticket_worker %}
-<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Исполнитель: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker }}</span></div>
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Исполнитель: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker.full_name }}</span></div>
 {% endif %}
 
 <div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name" style="position:absolute">Причина: </span>
@@ -82,7 +82,7 @@
 </textarea></div>
 </div>
 
-<a href="javascript: void(0)" class="fur" id="fur">список часто используемых причин</a>
+<a href="javascript: void(0)" class="fur" id="fur">Причины</a>
 
 <div class="fur_block" id="fur_block" hidden>
     {% for group in FUR|dictsort:"id" %}

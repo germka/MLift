@@ -1,0 +1,498 @@
+body {
+    background-color: #f5f5f5 !important;
+    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,sans-serif;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    flex-shrink: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-height: 64px;
+    max-height: 1000px;
+    z-index: 3;
+    position: relative;
+    background-color: #f5f5f5 !important;
+}
+
+.header_midle {
+    align-items: center;
+    height: 64px;
+    margin: 0;
+    padding: 0 40px 0 80px;
+}
+
+.header_text {
+    position: relative;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: .02em;
+    font-weight: 400;
+    box-sizing: border-box;
+    top: 18px
+}
+
+.page_title {
+    height: 100%;
+    max-width: 70%;
+    display: inline-block;
+}
+
+.user_menu {
+    display: inline-block;
+    right: 40px;
+    position: absolute;
+    width: fit-content;
+    min-width: 100px;
+    height: 100%;
+
+}
+
+.header_logout, .header_user {
+    top: 20px;
+    position: relative;
+}
+
+.content_wrap {
+    margin: 0;
+    padding: 0;
+}
+
+.demo-ribbon {
+    width: 100%;
+    height: 40vh;
+    background-color: lightblue;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+.index_table {
+    background-color: white;
+    width: calc(66.6666666667% - 16px);
+    min-width: 1024px;
+    height: fit-content;
+    margin: auto;
+    display: block;
+    position: relative;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
+    border-radius: 2px;
+    margin-top: -35vh;
+    border-radius: 2px;
+    padding: 80px 56px;
+}
+
+.ticket_row {
+    position: relative;
+    min-height: 24px;
+    margin: 1px;
+    padding-top: 5px;
+    padding-left: 3px;
+    box-shadow: inset 0px 0px 1px 0 rgba(0,0,0,.10);
+}
+
+.dark_row {
+    background-color: aliceblue;
+    /*lavender*/
+}
+
+.ticket_row:hover {
+    box-shadow: 0px 0px 1px 0 rgba(0,0,0,.14), 1px 1px 2px 0 rgba(0,0,0,.12), 1px 0px 3px -1px rgba(0,0,0,.2);
+    background-color: rgba(0,0,0,0.02);
+}
+
+.ticket_row a {
+    color: black;
+}
+
+.ticket_index_table {
+    display: inline-block;
+    position: relative;
+    margin-left: 8px;
+}
+
+.index_splitter {
+    background-color: lightsteelblue;
+    box-shadow: none;
+    transition: all 2s ease-in;
+}
+
+.index_splitter:hover {
+    background-color: lightblue;
+    box-shadow: none;
+}
+
+.ticket_num {
+    color: black;
+    font-weight: normal;
+}
+
+.ticket_date {
+    position: absolute;
+    left: 1px;
+    max-width: 20%;
+}
+
+.ticket_close_date {
+    position: absolute;
+    left: 1px;
+    max-width: 20%;
+}
+
+.ticket_adress {
+    position: absolute;
+    left: 5%;
+    max-width: 45%;
+}
+
+.ticket_type {
+    position: absolute;
+    left: 45%;
+    max-width: 9%;
+}
+
+.ticket_content {
+    position: absolute;
+    left: 54%;
+    max-width: 32%;
+}
+
+.ticket_comment_count {
+    font-size: 8pt;
+}
+
+.index_ticket_worker {
+    position: absolute;
+    left: 82%;
+    max-width: 10%;
+}
+
+.ticket_status {
+    min-width: 4%;
+    position: absolute;
+    right: 3px;
+    font-weight: 600;
+}
+
+.index_row_item {
+    background-color: inherit;
+    margin: 1px 5px 5px 5px;
+}
+
+.red_text {
+    color: indianred;
+}
+
+.green_text{
+    color:green;
+}
+
+.pagination {
+    max-width: 1024px;
+    width: fit-content;
+    margin: auto;
+    display: table;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.new_ticket_row {
+    position: relative;
+    padding: 4px;
+    border-color: white;
+    border-width: 1px;
+    background-color: white;
+    margin: 1px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.new_ticket_row input {
+    font-family: inherit;
+    font-size: inherit;
+    border-color: #EEE;
+    border-width: 1pt;
+    border-style: dotted;
+    width: fit-content;
+}
+
+.new_ticket_row textarea {
+    width: 100%;
+}
+
+.detail_ticket_row {
+    border: 1px solid lightgray;
+    position: relative;
+    min-height: 24px;
+    margin: 2px;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.detail_ticket_row span {
+    vertical-align: middle;
+}
+
+.send_button {
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    display: table;
+    width: fit-content;
+    height: fit-content; 
+    padding: 15px 20px;
+    background: rgba(200,200,200,.5);
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    border: none;
+    font-size: 11pt;
+    right: 0;
+    position: absolute;
+}
+
+.button {
+    position: relative;
+}
+
+.ticket_number {
+    font-size: 22;
+}
+
+.new_ticket_form {
+    margin: auto;
+}
+
+.ticket_close_form {
+    margin: 0;
+    position: relative;
+}
+
+.new_comment_form {
+    position: relative;
+    width: 60%;
+}
+
+.new_ticket_fs {
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 20px;
+    padding: 10px;
+    position: relative;
+}
+
+#tickettype {
+    margin-left: 50px;
+    width: 200px;
+}
+
+#ticket_date, #date_checker {
+    width: unset;
+}
+
+#ticket_sender {
+    float: right;
+    padding: 3px;
+}
+
+.new_ticket_content {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    width: 99%;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.new_comment_content {
+    padding: 0;
+    width: 100%;
+    font-family: inherit;
+}
+
+.new_content_wrap {
+    width: 100%;
+    padding: 5px;
+    margin-top: 7px;
+    margin-bottom: 1px;
+}
+
+.comment_content_wrap {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.inline input {
+    width: 100%;
+}
+
+.new_ticket_header {
+    margin-bottom: 30px;
+}
+
+.turn_back {
+    float:right;
+}
+
+.ticket_close_button {
+    top: 160px;
+    z-index: 99;
+}
+
+.error_message {
+    color: red;
+    font-weight: 600;
+}
+
+.fur {
+    font-size: 9pt;
+    text-decoration-style: dotted;
+}
+
+.fur_block {
+    border: 1px dotted gray;
+    width: 80%;
+    min-height: 100px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(225,225,225,0.2);
+}
+
+.fur_block ul {
+    cursor: pointer;
+    text-decoration: dotted underline;
+}
+
+.reason_group_link {
+    text-decoration: dotted underline;
+    color: black;
+    display: block;
+}
+
+.detail_name {
+}
+
+.detail_info {
+    left: 200px;
+    position: absolute;
+    max-width: calc(100% - 200px);
+    font-family: inherit;
+}
+
+.detail_ticket_type {
+    float: right;
+    margin-right: 5px;
+}
+
+.detail_ticket_content {
+    min-height: 75px;
+}
+
+.no_data {
+    color: grey;
+}
+
+.comments {
+    padding: 50px 0 0 0;
+}
+
+.comment_add_message {
+    color: grey;
+    position: absolute;
+    right: -100%;
+    top: 0;
+}
+
+.comment_row {
+    margin: 10px;
+    position: relative;
+    width: fit-content;
+    max-width: 800px;
+}
+
+.comment_num {
+    display: none;
+}
+
+.comment_user {
+
+}
+
+.comment_date {
+
+}
+
+.comment_content {
+    line-height: 2;
+}
+
+.comment_content::before {
+    content: '“';
+    margin: 2px;
+}
+
+.comment_content::after {
+    content: '“';
+    margin: 2px;
+}
+
+.help_message {
+#    position: absolute;
+#    right: 10px;
+    top: 45%;
+}
+
+.login_wrap {
+    position: relative;
+    margin: auto;
+    width: 400px;
+    top: 20%;
+    padding: 20px;
+    border-radius: 2px;
+    background-color: lightblue;
+}
+
+.login_header {
+    width: fit-content;
+    margin: auto;
+    position: relative;
+}
+
+.login_bar {
+    margin: auto;
+    margin-top: 50px;
+    position: relative;
+}
+
+.login_form input {
+    position: absolute;
+    right: 0;
+    font: inherit;
+    border-color: #EEE;
+    border-width: 1pt;
+    border-style: dotted;
+}
+
+.login_form p {
+    height: 20px;
+}
+
+.login_button {
+    left: 318px;
+    top: 10px;
+}
+
+
+
+@media screen and (max-width: 1386px) {
+
+.index_table {
+    min-width: 1024px;
+}
+
+}
