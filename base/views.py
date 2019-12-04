@@ -96,7 +96,7 @@ def ticket_detail(request, ticket_id):
 
             except (KeyError, Object.MultipleObjectsReturned):
                 context['exact_message'] = "Выберите тип лифта:"
-                obj_filter = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
+                obj_filter = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build, obj_in_service = True)
                 if ticket.ticket_build_housing:
                     obj_filter = obj_filter.filter(obj_build_housing=ticket.ticket_build_housing)
                 if ticket.ticket_par:
@@ -381,7 +381,7 @@ def ticket_close(request, ticket_id):
 
             if 'worker_exact' in request.POST:
                 full_name = request.POST['worker_exact'].split(' ',1)
-                worker = Worker.objects.filter(first_name__contains=full_name[0], last_name__contains=full_name[1])
+                worker = Worker.objects.filter(first_name__contains=full_name[1], last_name__contains=full_name[0])
                 ticket.ticket_worker = worker.get()
 
             if 'ticket_content' in request.POST:

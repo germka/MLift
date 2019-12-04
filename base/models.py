@@ -97,13 +97,14 @@ class Object(models.Model):
 class Worker(models.Model):
     last_name = models.CharField('Фамилия', max_length=15)
     first_name = models.CharField('Имя', max_length=15)
-    optional_name = models.CharField('Отчество', max_length=15)
+    optional_name = models.CharField('Отчество', max_length=15, null=True, blank=True)
     worker_area = models.ForeignKey(ObjArea, on_delete=models.DO_NOTHING, verbose_name='Район работы')
     worker_recruitment = models.DateField('Дата приема на работу', null=True, blank=True)
     phone_work = models.CharField('Рабочий телефон', max_length=11, null=True, blank=True)
     phone_alt = models.CharField('Дополнительный телефон', max_length=11, null=True, blank=True)
     def __str__(self):
         return '%s %s %s' % (self.last_name, self.first_name, self.optional_name)
+    @property
     def full_name(self):
         return '%s %s' % (self.last_name, self.first_name)
     class Meta:
@@ -139,9 +140,11 @@ class Ticket(models.Model):
         ticket_duration=timezone.now().astimezone() - self.ticket_date
         return ticket_duration
 
+    @property
     def duration_time(self):
         return str(self.ticket_duration).split(".")[0].replace("days", "Дней")
 
+    @property
     def close_time(self):
         if self.ticket_duration:
             closed = self.ticket_date + self.ticket_duration

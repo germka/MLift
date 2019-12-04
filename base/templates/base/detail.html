@@ -12,9 +12,7 @@
 
 <div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
 <span class="detail_info">
-{% if ticket_object.obj_area %}{{ ticket_object.obj_area }} р-н, {% endif %}
-{{ ticket.ticket_str }}, 
-дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
+{{ ticket.ticket_str }}, дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
 </span>
 <span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
 </div>
@@ -43,7 +41,9 @@
     {% if object_exact.obj_type %}
         {{ object_exact.obj_type }}
     {% else %}
-    <div class="detail_ticket_row">{% if exact_message %}<span class="detail_name">{{ exact_message }}{% endif %}<span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="off"></span>
+    <div class="detail_ticket_row">
+    {% if exact_message %}<span class="detail_name">{{ exact_message }}</span>{% endif %}
+    <span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="off"></span>
         <datalist id="object_exact">
         {% for obj in object_exact %}
             <option>{{ obj.obj_type }}</option>

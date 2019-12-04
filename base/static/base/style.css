@@ -79,7 +79,7 @@ body {
 }
 
 .index_no_filter a {
-    text-decoration: dotted underline;
+    color: gray;
 }
 
 .index_table {
