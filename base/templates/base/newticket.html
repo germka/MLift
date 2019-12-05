@@ -1,113 +1,124 @@
-{% include "base/header.html" with page_name="Создание новой заявки" %}
-{% include "base/mainmenu.html" with new='true' index='true' %}
+{% extends "base/content_page.html" %}
 
-<div class="demo-ribbon"></div> 
+{% block title %}Создание заявки{% endblock %}
+{% block header %}Создание заявки{% endblock %}
 
-<div class="content_wrap">
-<div class="index_table">
+{% block top_menu %}{% include "base/top_menu.html" with index='true' %}{% endblock %}
+
+{% block content %}
 
 <div class="new_ticket_header"><span class="ticket_number">Заявка №{{ ticket_number|add:"1" }}</span>
 {% if request.META.HTTP_REFERER != request.build_absolute_uri %}
 <a href="{{ request.META.HTTP_REFERER }}" class="turn_back">Вернуться назад</a>
 {% endif %}
-
 </div>
 
 <form id="new_ticket_form" action="{% url 'base:new_ticket' %}" method="post" class="new_ticket_form">
 {% csrf_token %}
 
-<fieldset class="new_ticket_fs">
-<legend>Выберите адрес обращения</legend>
-<div class="new_ticket_row inline"><input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="15" autocomplete="off"
-{% if str_value %}value="{{str_value}}"{% endif %}></div>
-<datalist id="obj_str">
-{% for street_name in obj_str %}
-    <option>{{ street_name }}</option>
-{% endfor %}
-</datalist>
-<div class="new_ticket_row inline"><input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="5" autocomplete="off"
-{% if build_value %}value="{{build_value}}"{% endif %}></div>
-<datalist id="obj_build">
-{% for obj in obj_build %}
-    <option>{{ obj.obj_build }}</option>
-{% endfor %}
-</datalist>
-{% if obj_buildhousing %}
-<div class="new_ticket_row inline"><input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="7" autocomplete="off"
-{% if build_housing_value %}value="{{build_housing_value}}"{% endif %}></div>
-<datalist id="obj_buildhousing">
-{% for obj in obj_buildhousing %}
-    <option>{{ obj.obj_build_housing }}</option>
-{% endfor %}
-</datalist>
-{% endif %}
-{% if obj_par %}
-<div class="new_ticket_row inline"><input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="9" autocomplete="off"
-{% if par_value %}value="{{par_value}}"{% endif %}></div>
-<datalist id="obj_par">
-{% for par in obj_par %}
-    <option>{{ par.obj_par }}</option>
-{% endfor %}
-</datalist>
-{% endif %}
+<fieldset class="new_ticket_fs"><legend>Выберите адрес обращения</legend>
+    <div class="new_ticket_row inline">
+        <input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="15" autocomplete="off" {% if str_value %}value="{{str_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_str">
+        {% for street_name in obj_str %}
+            <option>{{ street_name }}</option>
+        {% endfor %}
+        </datalist>
 
-{% if obj_type %}
-<div class="new_ticket_row inline"><input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="10" autocomplete="off"
-></div>
-<datalist id="obj_type">
-{% for obj in obj_type %}
-    <option>{{ obj.type_name }}</option>
-{% endfor %}
-</datalist>
-{% else %}
-<span class="no_data">Нет данных о типе лифта по этому адресу</span>
-{% endif %}
+    <div class="new_ticket_row inline">
+        <input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="5" autocomplete="off" {% if build_value %}value="{{build_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_build">
+        {% for obj in obj_build %}
+            <option>{{ obj.obj_build }}</option>
+        {% endfor %}
+        </datalist>
 
-<div class="help_message new_ticket_row inline">{% if help_message %}<span>{{ help_message }}</span>{% endif %}
-{% if error_message %}<span class="error_message">{{ error_message }}</span>{% endif %}</div>
+    {% if obj_buildhousing %}
+    <div class="new_ticket_row inline">
+        <input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="7" autocomplete="off" {% if build_housing_value %}value="{{build_housing_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_buildhousing">
+        {% for obj in obj_buildhousing %}
+            <option>{{ obj.obj_build_housing }}</option>
+        {% endfor %}
+        </datalist>
+    {% endif %}
 
-<input type="text" name="ticket_sender" id="ticket_sender" placeholder="Заявитель" 
-{% if sender_value %}value="{{ sender_value }}"{% endif %}>
+    {% if obj_par %}
+    <div class="new_ticket_row inline">
+        <input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="9" autocomplete="off" {% if par_value %}value="{{par_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_par">
+        {% for par in obj_par %}
+            <option>{{ par.obj_par }}</option>
+        {% endfor %}
+        </datalist>
+    {% endif %}
+
+    {% if obj_type %}
+    <div class="new_ticket_row inline">
+        <input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="10" autocomplete="off">
+    </div>
+        <datalist id="obj_type">
+        {% for obj in obj_type %}
+        <option>{{ obj.type_name }}</option>
+        {% endfor %}
+        </datalist>
+    {% else %}
+        <span class="no_data">Нет данных о типе лифта</span>
+    {% endif %}
+
+    <div class="help_message new_ticket_row inline">
+        {% if help_message %}<span>{{ help_message }}</span>{% endif %}
+        {% if error_message %}<span class="error_message">{{ error_message }}</span>{% endif %}
+    </div>
+
+    <input type="text" name="ticket_sender" id="ticket_sender" placeholder="Заявитель" {% if sender_value %}value="{{ sender_value }}"{% endif %}>
 </fieldset>
 
-<fieldset class="new_ticket_fs">
-<legend>Состав заявки</legend>
-<div class="new_ticket_row inline"><input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label></div>
-<div class="new_ticket_row inline"><input list="ticket_type" name="ticket_type" id="tickettype" placeholder="Тип заявки" size="10" autocomplete="off" required
-{% if type_value %}value="{{ type_value }}"{% endif %}></div>
-<datalist id="ticket_type">
-{% for type in ticket_type %}
-    <option>{{ type.type_name }}</option>
-{% endfor %}
-</datalist>
+<fieldset class="new_ticket_fs"><legend>Состав заявки</legend>
+    <div class="new_ticket_row inline">
+        <input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label>
+    </div>
+    <div class="new_ticket_row inline">
+        <input list="ticket_type" name="ticket_type" id="tickettype" placeholder="Тип заявки" size="10" autocomplete="off" required {% if type_value %}value="{{ type_value }}"{% endif %}>
+    </div>
+        <datalist id="ticket_type">
+        {% for type in ticket_type %}
+            <option>{{ type.type_name }}</option>
+        {% endfor %}
+        </datalist>
 
-<div class="new_content_wrap">
-<textarea name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content"></textarea></div>
+    <div class="new_content_wrap">
+        <textarea name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content"></textarea>
+    </div>
 </fieldset>
-<div class="button"><input id="send_button" class="send_button" type="submit" value="Создать заявку"></div> 
+
+<div class="button">
+    <input id="send_button" class="send_button" type="submit" value="Создать заявку">
+</div>
 
 </form>
-<a href="javascript: void(0)" class="fur" id="fur">Причины</a>
+    <a href="javascript: void(0)" class="fur" id="fur">Причины</a>
 
-<div class="fur_block" id="fur_block" hidden>
-{% for group in FUR|dictsort:"id" %}
-    <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
-    <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
-    {% for reason in group.fureason_set.all %}
-        <li>{{ reason }}</li>
-    {% endfor %}
-    </ul>
-{% empty %}
-    Пока ничего нет но надо придумать как именно выбрать или собрать данные и заполнить их в административном интерфейсе</br>
-{% endfor %}
-</div>
-
-</div>
-</div>
+    <div class="fur_block" id="fur_block" hidden>
+        {% for group in FUR|dictsort:"id" %}
+            <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
+            <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
+            {% for reason in group.fureason_set.all %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+            </ul>
+        {% empty %}
+            Пока ничего нет</br>
+        {% endfor %}
+    </div>
 
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/filter_jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 
-</html>
+{% endblock %}

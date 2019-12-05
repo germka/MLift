@@ -34,13 +34,14 @@ body {
     letter-spacing: .02em;
     font-weight: 400;
     box-sizing: border-box;
-    top: 18px
+    top: 18px;
 }
 
 .page_title {
     height: 100%;
     max-width: 70%;
     display: inline-block;
+    float: left;
 }
 
 .user_menu {
@@ -50,11 +51,10 @@ body {
     width: fit-content;
     min-width: 100px;
     height: 100%;
-
 }
 
 .header_logout, .header_user {
-    top: 20px;
+    top: 29px;
     position: relative;
 }
 

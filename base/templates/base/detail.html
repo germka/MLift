@@ -1,40 +1,62 @@
-{% include "base/header.html" with page_name='' page_type='detail' %}
-{% include "base/mainmenu.html" with new='true' index='true' %}
+{% extends "base/content_page.html" %}
 
-<div class="demo-ribbon"></div> 
-<div class="content_wrap">
-<div class="index_table" id="index_table">
+{% block header %}Заявка №{{ticket.id}}{% endblock %}
+
+{% block top_menu %}{% include "base/top_menu.html" with new='true' index='true' %}{% endblock %}
+
+{% block content %}
+
 <div class="new_ticket_header">
-{% if request.META.HTTP_REFERER != request.build_absolute_uri %}
-<a href="{{ request.META.HTTP_REFERER }}" class="turn_back">Вернуться назад</a>
-{% endif %}
+    {% if request.META.HTTP_REFERER != request.build_absolute_uri %}
+        <a href="{{ request.META.HTTP_REFERER }}" class="turn_back">Вернуться назад</a>
+    {% endif %}
 </div>
 
-<div class="detail_ticket_row"><span class="detail_name">Адрес заявки</span>
-<span class="detail_info">
-{{ ticket.ticket_str }}, дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.
-</span>
-<span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
+<div class="detail_ticket_row">
+    <span class="detail_name">Адрес заявки</span>
+    <span class="detail_info">{{ ticket.ticket_str }}, дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.</span>
+    <span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
 </div>
-<div class="detail_ticket_row"><span class="detail_name">Открыта: </span><span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} [{{ ticket.ticket_date|time:"H:i" }}]</span>
-<span class="detail_ticket_type">{% if ticket.ticket_sender %}Заявитель: {{ ticket.ticket_sender }}{% endif %}</span>
+<div class="detail_ticket_row">
+    <span class="detail_name">Открыта: </span>
+    <span class="detail_info">{{ ticket.ticket_user.first_name }} {{ ticket.ticket_user.last_name }} [{{ ticket.ticket_date|time:"H:i" }}]</span>
+    <span class="detail_ticket_type">{% if ticket.ticket_sender %}Заявитель: {{ ticket.ticket_sender }}{% endif %}</span>
 </div>
-<div class="detail_ticket_row"><span class="detail_name">Статус: </span><span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }} {% if ticket.close_time %} [{{ ticket.close_time|time:"H:i" }}] {% endif %} {% endif %}</span></div>
-<div class="detail_ticket_row"><span class="detail_name">Время простоя: </span><span class="detail_info">
-{% if ticket.ticket_duration %}
-    {% if ticket.duration_time %}
-        {{ ticket.duration_time }}
+<div class="detail_ticket_row">
+    <span class="detail_name">Статус: </span>
+    <span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }} {% if ticket.close_time %} [{{ ticket.close_time|time:"H:i" }}] {% endif %} {% endif %}</span>
+</div>
+<div class="detail_ticket_row">
+    <span class="detail_name">Время простоя: </span>
+    <span class="detail_info">
+    {% if ticket.ticket_duration %}
+        {% if ticket.duration_time %}
+            {{ ticket.duration_time }}
+        {% endif %}
+    {% else %}
+        {{ ticket.ticket_date|timesince }}
     {% endif %}
-{% else %}
-    {{ ticket.ticket_date|timesince }}
-{% endif %}</span></div>
+    </span>
+</div>
 
 {% if ticket.ticket_status.id == 1 %}
-<form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
+    <form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
 {% csrf_token %}
 
-{% if exact_message %}<div class="detail_ticket_row"><span class="detail_name"></span><span class="detail_info"> {{ exact_message }} </span></div>{% endif %}
-{% if exact_preview.obj_number %}<div class="detail_ticket_row"><span class="detail_name">Номер лифта: </span><span class="detail_info"> {{ exact_preview.obj_number }} </span></div>{% endif %}
+{% if exact_message %}
+<div class="detail_ticket_row">
+    <span class="detail_name"></span>
+    <span class="detail_info">{{ exact_message }}</span>
+</div>
+{% endif %}
+
+{% if exact_preview.obj_number %}
+<div class="detail_ticket_row">
+    <span class="detail_name">Номер лифта: </span>
+    <span class="detail_info"> {{ exact_preview.obj_number }} </span>
+</div>
+{% endif %}
+
 {% if exact_preview.id %}<input type="hidden" name="ticket_obj" value="{{ exact_preview.id }}">{% endif %}
 
 {% if object_exact %}
@@ -42,8 +64,10 @@
         {{ object_exact.obj_type }}
     {% else %}
     <div class="detail_ticket_row">
-    {% if exact_message %}<span class="detail_name">{{ exact_message }}</span>{% endif %}
-    <span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomlete="off"></span>
+        {% if exact_message %}
+            <span class="detail_name">{{ exact_message }}</span>
+        {% endif %}
+        <span class="detail_info"><input list="object_exact" name="obj_exact" placeholder="Тип лифта" size="20" autocomplete="off"></span>
         <datalist id="object_exact">
         {% for obj in object_exact %}
             <option>{{ obj.obj_type }}</option>
@@ -67,62 +91,74 @@
     <div class="ticket_close"><input type="submit" id="ticket_close_button" value="Закрыть заявку" class="ticket_close_button send_button"></div>
 {% endif %}
 
-{% if error_message %}<div class="detail_ticket_row error_message"><span>{{ error_message }}</span></div>{% endif %}
+{% if error_message %}
+<div class="detail_ticket_row error_message">
+    <span>{{ error_message }}</span>
+</div>
+{% endif %}
+
 </form>
 {% endif %}
 
 {% if ticket.ticket_worker %}
-<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name">Исполнитель: </span><span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker.full_name }}</span></div>
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row">
+    <span class="detail_name">Исполнитель: </span>
+    <span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker.full_name }}</span>
+</div>
 {% endif %}
 
-<div id="ticket_content_row" class="ticket_content_row detail_ticket_row"><span class="detail_name" style="position:absolute">Причина: </span>
-
-<div class="detail_ticket_content"><textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">
-{% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}
-</textarea></div>
+<div id="ticket_content_row" class="ticket_content_row detail_ticket_row">
+    <span class="detail_name" style="position:absolute">Причина: </span>
+    <div class="detail_ticket_content">
+        <textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">
+        {% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}
+        </textarea>
+    </div>
 </div>
 
 <a href="javascript: void(0)" class="fur" id="fur">Причины</a>
 
 <div class="fur_block" id="fur_block" hidden>
     {% for group in FUR|dictsort:"id" %}
-<a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
+    <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
     <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
         {% for reason in group.fureason_set.all %}
             <li>{{ reason }}</li>
         {% endfor %}
     </ul>
     {% empty %}
-        Пока ничего нет но надо придумать как именно выбрать или собрать данные и заполнить их в административном интерфейсе</br>
+        Пока ничего нет</br>
     {% endfor %}
 </div>
 
-<div class="comments"><span class="detail_name">Комментарии:</span>
-<div>
-{% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
-    <div class="comment_row"><span class="comment_num">№{{ forloop.counter }}</span>
-    {% if comment.comment_date %}<span class="comment_date">[{{ comment.comment_date }}]</span>{% endif %}
-    {% if comment.comment_user %}<span class="comment_user">{{ comment.comment_user }} написал(a):</span>{% endif %}
-    </br>
-    {% if comment.comment_content %}<span class="comment_content">{{ comment.comment_content }}</span>{% endif %}
-    {% if message %}{% if forloop.last %}<div class="comment_add_message">{{ message }}</div>{% endif %}{% endif %}
-    </div>
-{% empty %}
-    <span class="no_data">Пока нет ни одного комментария</p>
-{% endfor %}
-<a href="#" class="fur" id="comment_form_show">комментировать</a>
+<div class="comments">
+    <span class="detail_name">Комментарии:</span>
+    <div>
+        {% for comment in ticket.comments_set.all|dictsort:"comment_date" %}
+            <div class="comment_row"><span class="comment_num">№{{ forloop.counter }}</span>
+                {% if comment.comment_date %}<span class="comment_date">[{{ comment.comment_date }}]</span>{% endif %}
+                {% if comment.comment_user %}<span class="comment_user">{{ comment.comment_user }} написал(a):</span>{% endif %}
+                </br>
+                {% if comment.comment_content %}<span class="comment_content">{{ comment.comment_content }}</span>{% endif %}
+                {% if message %}{% if forloop.last %}<div class="comment_add_message">{{ message }}</div>{% endif %}{% endif %}
+            </div>
+        {% empty %}
+            <span class="no_data">Пока нет ни одного комментария</p>
+        {% endfor %}
+    <a href="#" class="fur" id="comment_form_show">комментировать</a>
 </div>
 
 <form id="new_comment_form" action="{% url 'base:ticket_detail' ticket.id %}" method="post" class="new_comment_form" {% if not message %}hidden{% endif %}>
-{% if error_message %}<div class="error_message">{{ error_message }}</div>{% endif %}
-{% csrf_token %}
-<div class="comment_content_wrap"><textarea name="comment_content" required placeholder="Содержание комментария" cols="50" rows="4" class="new_comment_content"></textarea></div>
-<input class="send_button" type="submit" value="Отправить комментарий">
+    {% if error_message %}<div class="error_message">{{ error_message }}</div>{% endif %}
+    {% csrf_token %}
+    <div class="comment_content_wrap">
+        <textarea name="comment_content" required placeholder="Содержание комментария" cols="50" rows="4" class="new_comment_content"></textarea>
+    </div>
+    <input class="send_button" type="submit" value="Отправить комментарий">
 </form>
 
 </div>
-</div>
-</div>
+
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/button.js' %}"></script>
@@ -130,4 +166,4 @@
 <script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/fur.js' %}"></script>
 
-</html>
+{% endblock %}

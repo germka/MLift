@@ -1,0 +1,29 @@
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+{% load static %}
+<link rel="stylesheet" href="{% static 'base/menu.css' %}">
+
+<nav>
+  <ul id="main">
+    <li><a href="{% url 'admin:index' %}" target="_blank" class="" title="Управление базой данных">{% if request.user.is_staff %}<span class="full-width">Администрирование</span>{% endif %}</a></li>
+    {% if index %}<li><a href="{% url 'base:ticket_index' %}" class="" title="Список заявок"><span class="full-width">Список заявок</span></a></li>{% endif %}
+    {% if new %}<li><a href="{% url 'base:new_ticket' %}" class="" title="Создать новую заявку"><span class="full-width">Создать заявку</span></a></li>{% endif %}
+    {% if filter %}<li title="Сортировка заявок"><div class="filter_sidebar"><span class="full-width">Фильтры</span>
+    <ul class="drop">
+    <div>
+        <li><a href="{% url 'base:ticket_index' %}" title="Сортировка заявок по дате">Дата</a></li>
+        <li><a href="{% url 'base:index_filter' 'status' %}" title="Сортировка заявок по статусу">Статус</a></li>
+        <li><a href="{% url 'base:index_filter' 'area' %}" title="Сортировка заявок по району">Район</a></li>
+        <li><a href="{% url 'base:index_filter' 'str' %}" title="Сортировка заявок по улице">Улица</a></li>
+        <li><input class="index_str_filter" list="index_str_filter" id="str_filter" name="index_str_filter" placeholder="Выберите улицу" autocomplete="of" size=""></li>
+        <datalist id="index_str_filter">
+        {% for str in str_filter|dictsort:"street" %}
+        <option>{{ str.street }}</option>
+        {% endfor %}
+        </datalist>
+    </div>
+    </ul>
+    </li>
+    {% endif %}
+    <div id="marker"></div>
+  </ul>
+</nav>

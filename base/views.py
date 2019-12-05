@@ -24,9 +24,11 @@ def logout_base(request):
 
 
 @login_required(login_url=login_page)
-def ticket_index(request, index_filter=None):
+def ticket_index(request, index_filter=None, filter_str=None):
     if request.user.is_authenticated:
         context = {
+            'str_filter': ObjStr.objects.all(),
+            'test': filter_str,
         }
         if not index_filter:
             ticket_query = Ticket.objects.order_by('-ticket_date')
@@ -35,8 +37,11 @@ def ticket_index(request, index_filter=None):
             ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str__area', '-id')
             context['splitter'] = "area"
         elif index_filter == "str":
-            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
-            context['splitter'] = "str"
+            if filter_str:
+                ticket_query = Ticket.objects.filter(ticket_str__street__contains=filter_str).order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
+            else:
+                ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
+                context['splitter'] = "str"
         elif index_filter == "status":
             ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_status', '-id')
             context['splitter'] = "status"

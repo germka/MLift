@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="ROBOTS" content="ALL" />
+    <meta name="MSSmartTagsPreventParsing" content="true" />
+    <meta name="Copyright" content="germka" />
+    <title>{% block title %} Мастер-Лифт {% endblock%}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'base/style.css' %}">
+</head>
+
+<!--HEADER-->
+<header class="header">
+    <div class="header_midle">
+    <div class="page_title"><span class="header_text">{% block header %}{% endblock %}
+    </span>
+    </div>
+
+    <div class="top_menu">
+    {% block top_menu %}
+        {% include "base/top_menu.html" %}
+    {% endblock %}
+    </div>
+
+    {% if usermenu != "false" %}
+    <div class="user_menu">
+        <span class="header_user">{{ request.user.get_full_name }}</span>
+        <a href="{% url 'base:logout' %}"><span class="header_logout">Выход</span></a>
+    </div>
+    {% endif %}
+    </div>
+</header>
+<!--END HEADER-->
+
+<!--CONTENT-->
+<div class="demo-ribbon"></div>
+<div class="content_wrap">
+<div class="index_table">
+{% block content %}
+{% endblock %}
+</div>
+{% block paginator %}{% endblock %}
+</div>
+</div>
+<!--END CONTENT-->
+

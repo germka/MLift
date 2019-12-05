@@ -27,6 +27,9 @@
 {% endif %}
 </span></div>
 {% if usermenu != "false" %}
+<div class="top_menu">
+{% include "base/top_menu.html" %}
+</div>
 <div class="user_menu"> <span class="header_user">{{ request.user.get_full_name }} </span>
 <a href="{% url 'base:logout' %}"><span class="header_logout">Выход</span></a>
 </div>
