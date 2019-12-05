@@ -1,6 +1,7 @@
-$(window).on('load', function() {
-    $('.anchor').click(function() {
-        $('.active').removeClass('active');
-        $(this).addClass('active');
-    });
-});
+window.onload = function () {
+filters = document.getElementById("str_filter")
+    filters.onclick = function() {
+        block = document.getElementById("filters")
+        block.style.visibility = "visible"
+    };
+};

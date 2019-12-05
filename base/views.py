@@ -400,11 +400,3 @@ def ticket_close(request, ticket_id):
         return render(request, 'base/detail.html', context)
     else:
         return HttpResponseRedirect(reverse('base:login'))
-
-
-@login_required(login_url=login_page)
-def dublicate(request):
-    context = {
-        'objects':Object.objects.filter(obj_in_service=True).order_by('obj_type').order_by('obj_par').order_by('obj_build').order_by('obj_build_housing').order_by('obj_str'),
-    }
-    return render(request, 'base/debug.html', context)

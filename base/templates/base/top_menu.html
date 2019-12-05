@@ -8,7 +8,7 @@
     {% if index %}<li><a href="{% url 'base:ticket_index' %}" class="" title="Список заявок"><span class="full-width">Список заявок</span></a></li>{% endif %}
     {% if new %}<li><a href="{% url 'base:new_ticket' %}" class="" title="Создать новую заявку"><span class="full-width">Создать заявку</span></a></li>{% endif %}
     {% if filter %}<li title="Сортировка заявок"><div class="filter_sidebar"><span class="full-width">Фильтры</span>
-    <ul class="drop">
+    <ul class="drop" id="filters">
     <div>
         <li><a href="{% url 'base:ticket_index' %}" title="Сортировка заявок по дате">Дата</a></li>
         <li><a href="{% url 'base:index_filter' 'status' %}" title="Сортировка заявок по статусу">Статус</a></li>
@@ -27,3 +27,4 @@
     <div id="marker"></div>
   </ul>
 </nav>
+<script type="text/javascript" src="{% static 'base/menu.js' %}"></script>

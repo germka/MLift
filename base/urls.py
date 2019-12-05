@@ -16,6 +16,4 @@ urlpatterns = [
     path('newticket/', views.new_ticket, name='new_ticket'),
     # Закрытие заявки
     path('<int:ticket_id>/closed/', views.ticket_close, name='ticket_close'),
-    # du
-    path('dublicate/', views.dublicate, name='dublicate'),
 ]
