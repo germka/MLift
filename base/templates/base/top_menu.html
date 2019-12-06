@@ -4,10 +4,10 @@
 
 <nav>
   <ul id="main">
-    <li><a href="{% url 'admin:index' %}" target="_blank" class="" title="Управление базой данных">{% if request.user.is_staff %}<span class="full-width">Администрирование</span>{% endif %}</a></li>
+    {% if request.user.is_staff %}<li><a href="{% url 'admin:index' %}" target="_blank" class="" title="Управление базой данных"><span class="full-width">Администрирование</span></a></li>{% endif %}
     {% if index %}<li><a href="{% url 'base:ticket_index' %}" class="" title="Список заявок"><span class="full-width">Список заявок</span></a></li>{% endif %}
     {% if new %}<li><a href="{% url 'base:new_ticket' %}" class="" title="Создать новую заявку"><span class="full-width">Создать заявку</span></a></li>{% endif %}
-    {% if filter %}<li title="Сортировка заявок"><div class="filter_sidebar"><span class="full-width">Фильтры</span>
+    {% if filter %}<li title="Сортировка заявок" id="filters_menu"><div class="filter_sidebar"><span class="full-width">Фильтры</span>
     <ul class="drop" id="filters">
     <div>
         <li><a href="{% url 'base:ticket_index' %}" title="Сортировка заявок по дате">Дата</a></li>

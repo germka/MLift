@@ -1,6 +1,6 @@
 {% extends "base/content_page.html" %}
 
-{% block header %}Заявка №{{ticket.id}}{% endblock %}
+{% block header %}Заявка №{{ticket.id}} от {{ ticket.ticket_date }}{% endblock %}
 
 {% block top_menu %}{% include "base/top_menu.html" with new='true' index='true' %}{% endblock %}
 
@@ -161,7 +161,6 @@
 
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="{% static 'base/button.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/menu.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/fur.js' %}"></script>

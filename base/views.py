@@ -28,7 +28,6 @@ def ticket_index(request, index_filter=None, filter_str=None):
     if request.user.is_authenticated:
         context = {
             'str_filter': ObjStr.objects.all(),
-            'test': filter_str,
         }
         if not index_filter:
             ticket_query = Ticket.objects.order_by('-ticket_date')
@@ -39,6 +38,7 @@ def ticket_index(request, index_filter=None, filter_str=None):
         elif index_filter == "str":
             if filter_str:
                 ticket_query = Ticket.objects.filter(ticket_str__street__contains=filter_str).order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
+                context['splitter'] = "str"
             else:
                 ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
                 context['splitter'] = "str"
