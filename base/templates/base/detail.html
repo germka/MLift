@@ -78,7 +78,8 @@
 {% endif %}
 
 {% if workers %}
-    <div class="detail_ticket_row"><span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomplete="off" required></span>
+    <div class="detail_ticket_row">
+        <span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomplete="off" required></span>
         <datalist id="worker_exact">
         {% for worker in workers %}
             <option>{{ worker.full_name }}</option>
@@ -110,25 +111,36 @@
 <div id="ticket_content_row" class="ticket_content_row detail_ticket_row">
     <span class="detail_name" style="position:absolute">Причина: </span>
     <div class="detail_ticket_content">
-        <textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">
-        {% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}
-        </textarea>
+        <textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">{% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}</textarea>
     </div>
 </div>
 
 <a href="javascript: void(0)" class="fur" id="fur">Причины</a>
 
+
 <div class="fur_block" id="fur_block" hidden>
+
     {% for group in FUR|dictsort:"id" %}
     <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
     <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
-        {% for reason in group.fureason_set.all %}
+        {% for reason in group.fureason_set.all|dictsort:"reason_text" %}
             <li>{{ reason }}</li>
         {% endfor %}
     </ul>
     {% empty %}
         Пока ничего нет</br>
     {% endfor %}
+
+    <input list="FUR_list" id="FUReason" name="FUReason" placeholder="Причина" class="reason_list">
+    <datalist id="FUR_list">
+    {% for group in FUR|dictsort:"id" %}
+        {% for reason in group.fureason_set.all|dictsort:"reason_text" %}
+            <option>{{ reason }}</option>
+        {% endfor %}
+    {% empty %}
+        Пока ничего нет</br>
+    {% endfor %}
+
 </div>
 
 <div class="comments">

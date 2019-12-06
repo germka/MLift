@@ -107,18 +107,29 @@
         {% for group in FUR|dictsort:"id" %}
             <a href="javascript: void(0)" class="reason_group_link" id="group_link_{{ group.id }}"><span class="reason_group">{{ group.id }}. {{ group }}</span></a>
             <ul id="reason_list_{{ group.id }}" class="reason_list" hidden>
-            {% for reason in group.fureason_set.all %}
+            {% for reason in group.fureason_set.all|dictsort:"reason_text" %}
                 <li>{{ reason }}</li>
             {% endfor %}
             </ul>
         {% empty %}
             Пока ничего нет</br>
         {% endfor %}
+
+        <input list="FUR_list" id="FUReason" name="FUReason" placeholder="Причина" class="reason_list">
+        <datalist id="FUR_list">
+        {% for group in FUR|dictsort:"id" %}
+            {% for reason in group.fureason_set.all|dictsort:"reason_text" %}
+                <option>{{ reason }}</option>
+            {% endfor %}
+        {% empty %}
+            Пока ничего нет</br>
+        {% endfor %} 
     </div>
 
 {% load static %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="{% static 'base/filter_jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/fur.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 
 {% endblock %}

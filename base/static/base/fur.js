@@ -19,4 +19,12 @@ $(window).on('load',function() {
             });
         });
     });
+    $('#FUReason').change( function() {
+        if ($("#ticket_content").val().length <= 1) {
+            $("#ticket_content").empty();
+            $("#ticket_content").append($('#FUReason').val());
+        } else {
+            $("#ticket_content").append($('#FUReason').val());
+        };
+    });
 });

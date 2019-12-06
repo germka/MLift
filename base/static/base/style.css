@@ -371,7 +371,7 @@ body {
 
 .fur_block {
     border: 1px dotted gray;
-    width: 80%;
+    width: 78%;
     min-height: 100px;
     padding: 10px;
     margin-top: 10px;
@@ -387,6 +387,10 @@ body {
     text-decoration: dotted underline;
     color: black;
     display: block;
+}
+
+.reason_list {
+    margin: 5px 0;
 }
 
 .detail_name {
