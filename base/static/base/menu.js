@@ -49,7 +49,7 @@ window.onload = function () {
     filters.list.onmouseleave = function() {
         block.style.transform = "translate(0, -100%)";
         block_div.style.transform = "translate(0, -100%)";
-    }*/
+    }
 
     var //Close ticket button position
     button = document.getElementById("ticket_close_button"),
@@ -62,7 +62,7 @@ window.onload = function () {
     };
     if (button && table) {
         button.style.top = (table.offsetHeight - 148 - 160).toString() + 'px';
-    };
+    };*/
 
 };
 

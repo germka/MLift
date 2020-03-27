@@ -14,7 +14,22 @@
 
 <div class="detail_ticket_row">
     <span class="detail_name">Адрес заявки</span>
-    <span class="detail_info">{{ ticket.ticket_str }}, дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта: {{ ticket.ticket_obj_type }}{% endif %}.</span>
+    <span class="detail_info">{{ ticket.ticket_str }}, дом {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, корп. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, парадная {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, тип лифта:{% elif ticket_object.obj_type %}, тип лифта:{% endif %}
+    {%comment%}
+    
+    {%endcomment%}
+    {% if request.user.is_staff or ticket.ticket_status_id != 2 and ticket.ticket_object and objects_list|length > 1 %}
+        <input list="objects" id="change_object" name="change_object" size="15" autocomplete="off" hidden form="edit_ticket_form" class="ticket_editor">
+        <datalist id="objects">
+        {% for object in objects_list %}
+            <option>{{ object.obj_type }}</option>
+        {% endfor %}
+        </datalist>
+        <a href="javascript:void(0)" id="edit_obj" class="edit_ticket_link">{% if ticket.ticket_obj_type %}{{ ticket.ticket_obj_type }}{% else %}{{ticket_object.obj_type}}{% endif %}</a>
+    {% else %}
+        {% if ticket.ticket_obj_type %}{{ ticket.ticket_obj_type }}{% else %}{{ticket_object.obj_type}}{% endif %}
+    {% endif %}
+    </span>
     <span class="detail_ticket_type">{{ ticket.ticket_type }}</span>
 </div>
 <div class="detail_ticket_row">
@@ -24,7 +39,18 @@
 </div>
 <div class="detail_ticket_row">
     <span class="detail_name">Статус: </span>
-    <span class="detail_info">{% if ticket_message %} {{ ticket_message }} {% else %}{{ ticket.ticket_status }} {% if ticket.close_time %} [{{ ticket.close_time|time:"H:i" }}] {% endif %} {% endif %}</span>
+    <span class="detail_info">
+        {% if request.user.is_staff and ticket.ticket_status_id == 2 %}
+            <input type="checkbox" id="open_ticket" name="reopen_ticket" size="15" autocomplete="off" hidden form="edit_ticket_form" class="ticket_editor">
+            <label for="open_ticket" id="open_ticket_label" hidden>Открыть заявку</label>
+            <a href="javascript:void(0)" id="edit_status" class="edit_ticket_link">{% endif %}
+        {% if ticket_message %}{{ ticket_message }}{% else %}{{ ticket.ticket_status }}{% if request.user.is_staff and ticket.ticket_status_id == 2 %}</a>{% endif %}
+        &nbsp
+        {% if request.user.is_staff and ticket.ticket_status_id == 2 %}
+            <input type="datetime-local" name="new_ticket_date" id="ticket_date" value="{{ date_now }}" form="edit_ticket_form" class="ticket_editor" hidden disabled>
+            <a href="javascript:void(0)" id="edit_date" class="edit_ticket_link">{% endif %}
+        {% if ticket.close_time %}[{{ ticket.close_time|time:"H:i" }}] [{{ ticket.close_time|date }}]{% endif %}{% endif %}{% if request.user.is_staff and ticket.ticket_status_id == 2 %}</a>{% endif %}
+    </span>
 </div>
 <div class="detail_ticket_row">
     <span class="detail_name">Время простоя: </span>
@@ -34,12 +60,16 @@
             {{ ticket.duration_time }}
         {% endif %}
     {% else %}
-        {{ ticket.ticket_date|timesince }}
+        {% if ticket.duration_get %}
+            {{ ticket.duration_get }}
+        {% else %}
+            {{ ticket.ticket_date|timesince }}
+        {% endif %} 
     {% endif %}
     </span>
 </div>
 
-{% if ticket.ticket_status.id == 1 %}
+{% if ticket.ticket_status_id != 2 %}
     <form id="ticket_close" action="{% url 'base:ticket_close' ticket.id %}" method="post" class="ticket_close_form">
 {% csrf_token %}
 
@@ -79,6 +109,7 @@
 
 {% if workers %}
     <div class="detail_ticket_row">
+    <span class="delail_name">Исполнитель:</span>
         <span class="detail_info"><input list="worker_exact" name="worker_exact" placeholder="Исполнитель" size="20" autocomplete="off" required></span>
         <datalist id="worker_exact">
         {% for worker in workers %}
@@ -88,9 +119,11 @@
     </div>
 {% endif %}
 
+{% comment %}
 {% if ticket.ticket_status_id != '2' %}
     <div class="ticket_close"><input type="submit" id="ticket_close_button" value="Закрыть заявку" class="ticket_close_button send_button"></div>
 {% endif %}
+{% endcomment %}
 
 {% if error_message %}
 <div class="detail_ticket_row error_message">
@@ -104,14 +137,27 @@
 {% if ticket.ticket_worker %}
 <div id="ticket_content_row" class="ticket_content_row detail_ticket_row">
     <span class="detail_name">Исполнитель: </span>
-    <span id="ticket_content_info" class="ticket_content_info detail_info">{{ ticket.ticket_worker.full_name }}</span>
+    <span id="ticket_content_info" class="ticket_content_info detail_info">
+    {% if request.user.is_staff and ticket.ticket_worker %}
+    <input list="ticket_workers" id="ticket_workers_list" name="new_worker" placeholder="Новый работник" size="20" autocomplete="off" hidden form="edit_ticket_form" class="ticket_editor">
+    <a href="javascript:void(0)" id="edit_worker" class="edit_ticket_link">{{ ticket.ticket_worker.full_name }}</a>
+        <datalist id="ticket_workers">
+        {% for worker in workers %}
+            <option>{{ worker.full_name }}</option>
+        {% endfor %}
+        </datalist>
+    {% else %}
+        {{ ticket.ticket_worker.full_name }}
+    {% endif %}
+    </span>
 </div>
 {% endif %}
 
 <div id="ticket_content_row" class="ticket_content_row detail_ticket_row">
     <span class="detail_name" style="position:absolute">Причина: </span>
     <div class="detail_ticket_content">
-        <textarea form="ticket_close" class="detail_info" name="ticket_content" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">{% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}</textarea>
+        <textarea form="{% if request.user.is_staff %}edit_ticket_form{% else %}ticket_close{% endif %}" class="detail_info" name="{% if request.user.is_staff %}new_content{% else %}ticket_content{% endif %}" id="ticket_content" placeholder="{{ content_value|default:"Текст заявки" }}" cols="80" rows="4" autocomplete="off" class="new_ticket_content">{% if ticket.ticket_content %}{{ ticket.ticket_content }}{% endif %}</textarea>
+        <a href="javascript:void(0)" id="reset_content" class="edit_ticket_link reset_content">Отменить изменения</a>
     </div>
 </div>
 
@@ -169,6 +215,16 @@
     <input class="send_button" type="submit" value="Отправить комментарий">
 </form>
 
+{% if request.user.is_staff %}
+<form id="edit_ticket_form" action="{% url 'base:ticket_edit' ticket.id %}" method="post" class="ticket_editor_form">
+{% csrf_token %}
+<input type="submit" id="save_ticket" value="Сохранить изменения" class="send_button save_button">
+</form>
+{% endif %}
+
+{% if ticket.ticket_status_id != 2 %}
+    <div style="position:relative"><input type="submit" id="close_ticket" value="Закрыть заявку" class="send_button" form="ticket_close"></div>
+{% endif %}
 </div>
 
 {% load static %}
@@ -176,5 +232,8 @@
 <script type="text/javascript" src="{% static 'base/menu.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/list.js' %}"></script>
 <script type="text/javascript" src="{% static 'base/fur.js' %}"></script>
+{% if request.user.is_staff %}
+<script type="text/javascript" src="{% static 'base/ticket_editor.js' %}"></script>
+{% endif %}
 
 {% endblock %}

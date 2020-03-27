@@ -21,13 +21,13 @@
             {% elif splitter == "str" %}<span  class="index_row_item">{{ ticket.ticket_str }}</span>
             {% elif splitter == "status" %}<span  class="index_row_item">{{ ticket.ticket_status }}</span>
             {% endif %}
-            <span  class="index_row_item">{{ ticket.ticket_date.date }}</span>
+            <span  class="index_row_item">{{ ticket.ticket_date_tz.date }}</span>
             {% if not forloop %}{% resetcycle rowtype %}{% endif %}
         </div>
         {% endifchanged %}
         <div class="ticket_row_{{ forloop.counter }} ticket_row {{ rowtype }}">
             <a href="{% url 'base:ticket_detail' ticket.id %}" title="Открыть заявку №{{ticket.id}}">
-            <span  class="ticket_date index_row_item"> {{ ticket.ticket_date|time:"H:i" }}{% if ticket.close_time %}/{{ ticket.close_time|time:"H:i" }}{% endif %}</span>
+            <span  class="ticket_date index_row_item"> {{ ticket.ticket_date_tz|time:"H:i" }}{% if ticket.close_time %}/{{ ticket.close_time|time:"H:i" }}{% endif %}</span>
             </a>
             <a href="{% url 'base:ticket_detail' ticket.id %}" title="Открыть заявку №{{ticket.id}}">
             <span class="ticket_adress index_row_item">{{ ticket.ticket_str }}, д. {{ ticket.ticket_build }}{% if ticket.ticket_build_housing %}, к. {{ ticket.ticket_build_housing }}{% endif %}{% if ticket.ticket_par %}, пар. {{ ticket.ticket_par }}{% endif %}{% if ticket.ticket_obj_type %}, {{ ticket.ticket_obj_type|truncatechars:14 }}{% else %}, {{ ticket.ticket_object.obj_type|truncatechars:14|default_if_none:"неопределен" }}{% endif %}</span>

@@ -69,12 +69,30 @@ class ObjManufacturer(models.Model):
         verbose_name_plural = "02. Заводы производители"
 
 
+class ObjParField(models.IntegerField):
+    def to_python(self, value, alter):
+        if value is None:
+            return value
+        try:
+            if alter:
+                return chr(value+1039)
+            else:
+                return int(value)
+        except (TypeError, ValueError):
+            raise exceptions.ValidationError(
+                self.error_messages['invalid'],
+                code='invalid',
+                params={'value': value},
+            )
+
+
 class Object(models.Model):
     obj_area = models.ForeignKey(ObjArea, on_delete=models.DO_NOTHING, null=True, verbose_name='Район')
     obj_str = models.ForeignKey(ObjStr, on_delete=models.DO_NOTHING, verbose_name='Улица')
     obj_build = models.CharField('Дом', max_length=15, null=True)
     obj_build_housing = models.CharField('Корпус', max_length=10, null=True, blank=True)
-    obj_par = models.IntegerField('Номер парадной', null=True, blank=True)
+    obj_par_alter = models.BooleanField('Литеральный номер парадной', default=False)
+    obj_par = ObjParField('Номер парадной', null=True, blank=True)
     obj_number = models.CharField('Номер лифта', max_length=15, null=True, blank=True)
     obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True, blank=True)
     obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, null=True, verbose_name='Тип лифта', blank=True)
@@ -138,17 +156,21 @@ class Ticket(models.Model):
 
     def duration_get(self):
         ticket_duration=timezone.now().astimezone() - self.ticket_date
-        return ticket_duration
+        if ticket_duration.days > 7:
+            return str(ticket_duration).split(".")[0].replace("days", "Дней").replace("day", "День")
 
     @property
     def duration_time(self):
-        return str(self.ticket_duration).split(".")[0].replace("days", "Дней")
+        return str(self.ticket_duration).split(".")[0].replace("days", "Дней").replace("day", "День")
 
     @property
     def close_time(self):
         if self.ticket_duration:
             closed = self.ticket_date + self.ticket_duration
             return closed
+    @property
+    def ticket_date_tz(self):
+        return self.ticket_date.astimezone()
 
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)

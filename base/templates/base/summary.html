@@ -1,0 +1,208 @@
+{% extends "base/content_page.html" %}
+
+{% block title %}Отчет по адресу{% endblock %}
+{% block header %}Отчет о заявках{% endblock %}
+
+{% block top_menu %}{% include "base/top_menu.html" with index='true' %}{% endblock %}
+
+{% block content %}
+
+<div class="new_ticket_header">
+{% if ticket_summary %}
+<a href="javascript: void(0)" id="summary_form_check" class="index_no_filter">Показать/скрыть форму</a>
+{% endif %}
+</div>
+<div class="tabs" {% if ticket_summary %}hidden{% endif %} id="tabs">
+    <input type="radio" name="inset" value="" id="tab_1" {% if request.path == '/summary/address/' or '/summary/' %}checked{% endif %}>
+    <label for="tab_1">По владельцу</label>
+
+    <input type="radio" name="inset" value="" id="tab_2" {% if request.path == '/summary/area/' %}checked{% endif %}>
+    <label for="tab_2">По району</label>
+
+    <input type="radio" name="inset" value="" id="tab_3" {% if request.path == '/summary/status/' %}checked{% endif %}>
+    <label for="tab_3">По статусу</label>
+
+    <input type="date" id="date_now" value="{{ date_now }}" hidden>
+
+<div id="t1">
+<form id="new_ticket_form" action="{% url 'base:ticket_summary' 'address' %}" method="post" class="new_ticket_form">
+{% csrf_token %}
+<fieldset class="new_ticket_fs"><legend>Отчет по владельцу</legend>
+    <div class="new_ticket_row inline">
+        <input list="manage_comp" name="manage_comp" id="managecomp" placeholder="Владелец" size="40" autocomplete="off" value="{{ obj_managecomp }}">
+        <datalist id="manage_comp">
+        {% for comp in manage_comp %}
+            <option>{{ comp.comp_name }}</option>
+        {% endfor %}
+        </datalist>
+    </div>
+</fieldset>
+
+<fieldset class="new_ticket_fs"><legend>Отчет по адресу</legend>
+    <div class="new_ticket_row inline">
+        <input list="obj_str" name="obj_str" id="str" placeholder="Улица" size="15" autocomplete="off" {% if str_value %}value="{{str_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_str">
+        {% for street_name in obj_str %}
+            <option>{{ street_name }}</option>
+        {% endfor %}
+        </datalist>
+
+    <div class="new_ticket_row inline">
+        <input list="obj_build" name="obj_build" id="build" placeholder="Дом" size="5" autocomplete="off" {% if build_value %}value="{{build_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_build">
+        {% for obj in obj_build %}
+            <option>{{ obj.obj_build }}</option>
+        {% endfor %}
+        </datalist>
+
+    {% if obj_buildhousing %}
+    <div class="new_ticket_row inline">
+        <input list="obj_buildhousing" name="obj_buildhousing" id="build_housing" placeholder="Корпус" size="7" autocomplete="off" {% if build_housing_value %}value="{{build_housing_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_buildhousing">
+        {% for obj in obj_buildhousing %}
+            <option>{{ obj.obj_build_housing }}</option>
+        {% endfor %}
+        </datalist>
+    {% endif %}
+
+    {% if obj_par %}
+    <div class="new_ticket_row inline">
+        <input list="obj_par" name="obj_par" id="par" placeholder="Парадная" size="9" autocomplete="off" {% if par_value %}value="{{par_value}}"{% endif %}>
+    </div>
+        <datalist id="obj_par">
+        {% for par in obj_par %}
+            <option>{{ par.obj_par }}</option>
+        {% endfor %}
+        </datalist>
+    {% endif %}
+
+    {% if obj_type %}
+    <div class="new_ticket_row inline">
+        <input list="obj_type" name="obj_type" id="type" placeholder="Тип лифта" size="10" autocomplete="off">
+    </div>
+        <datalist id="obj_type">
+        {% for obj in obj_type %}
+        <option>{{ obj.type_name }}</option>
+        {% endfor %}
+        </datalist>
+    {% else %}
+        <span class="no_data">Нет данных о типе лифта</span>
+    {% endif %}
+
+    <div class="help_message new_ticket_row inline">
+        {% if help_message %}<span>{{ help_message }}</span>{% endif %}
+        {% if error_message %}<span class="error_message">{{ error_message }}</span>{% endif %}
+    </div>
+</fieldset>
+
+<fieldset class="new_ticket_fs"><legend>Диапазон дат</legend>
+    <div class="new_ticket_row">
+        <input type="checkbox" id="date_start_checker" name="date_checker" {% if date_start %}checked{% endif %}> 
+        <label for="date_start_checker">С даты:&nbsp</label>
+        <input type="date" name="ticket_date_start" id="ticket_date_start" value="{% if not date_start %}{{ first_date|date:"Y-m-d" }}{% else %}{{ date_start }}{% endif %}"  min="2019-11-29" max="{{ date_now }}" class="date_select">
+    </div>
+    <div class="new_ticket_row">
+        <input type="checkbox" id="date_end_checker" name="date_checker" {% if date_end %}checked{% endif %}>
+        <label for="date_end_checker">По дату:</label>
+        <input type="date" name="ticket_date_end" id="ticket_date_end" value="{% if not date_end %}{{ date_now }}{% else %}{{ date_end }}{% endif %}" min="2019-11-29" max="{{ date_now }}" class="date_select">
+    </div>
+</fieldset>
+<div class="button_alt">
+    <input id="area_send_button" class="send_button" type="submit" value="Создать отчет">
+</div>
+</form>
+</div>
+
+<div id="t2">
+<form id="area_summary" action="{% url 'base:ticket_summary' 'area' %}" method="post" class="new_ticket_form">
+{% csrf_token %}
+<fieldset class="new_ticket_fs"><legend>Отчет по району</legend>
+    <div class="new_ticket_row inline">
+        <input list="area" name="tickets_area" id="area_list" placeholder="Район" size="40" autocomplete="off" value="{{ tickets_area }}">
+        <datalist id="area">
+        {% for area in area_list %}
+            <option>{{ area.area_name }}</option>
+        {% endfor %}
+        </datalist>
+    </div>
+    <div class="new_ticket_row">
+        <label for="area_tickets_date">Дата:</label> 
+        <input type="date" name="area_tickets_date" id="area_ticket_date" value="{% if not area_tickets_date %}{{ date_now }}{% else %}{{ area_tickets_date }}{% endif %}"  min="2019-11-29" max="{{ date_now }}" class="date_select"">
+    </div>
+</fieldset>
+    <div class="button_alt">
+        <input id="send_button" class="send_button" type="submit" value="Создать отчет">
+    </div>
+</form>
+</div>
+
+<div id="t3">
+<form id="status_summary" action="{% url 'base:ticket_summary' 'status' %}" method="post" class="new_ticket_form">
+{% csrf_token %}
+<fieldset class="new_ticket_fs"><legend>Статус заявок</legend>
+    <div class="new_ticket_row">
+        {% for status in status_list %}
+            <input type="checkbox" name="{{ status.id }}" id="status_{{ forloop.counter }}" autocomplete="off" {% if status.status in statuses %}checked{% endif %}><label for="status_{{ forloop.counter }}">{{ status.status }}</label>
+        {% endfor %}
+    </div>
+</fieldset>
+
+<fieldset class="new_ticket_fs"><legend>Диапазон дат</legend>
+    <div class="new_ticket_row">
+        <input type="checkbox" id="status_start_checker" name="date_checker" {% if status_date_start %}checked{% endif %}>
+        <label for="status_start_checker">С даты:&nbsp</label>
+        <input type="date" name="status_date_start" id="status_date_start" value="{% if not status_date_start %}{{ date_now }}{% else %}{{ status_date_start }}{% endif %}"  min="2019-11-29" max="{{ date_now }}" class="date_select"">
+    </div>
+    <div class="new_ticket_row">
+        <input type="checkbox" id="status_end_checker" name="date_checker" {% if status_date_end %}checked{% endif %}>
+        <label for="status_end_checker">По дату:</label>
+        <input type="date" name="status_date_end" id="status_date_end" value="{% if not status_date_end %}{{ date_now }}{% else %}{{ status_date_end }}{% endif %}" min="2019-11-29" max="{{ date_now }}" class="date_select">
+    </div>
+</fieldset>
+
+    <div class="button_alt">
+        <input id="send_button" class="send_button" type="submit" value="Создать отчет">
+    </div>
+</form>
+</div>
+</div>
+
+{% if ticket_summary %}
+<table cellpadding="3" class="summary_table" id="summary_table">
+    <tr>
+        <th>Открыта</th>
+        {% if request.path != '/summary/status/' %}
+            <th>Закрыта</th>
+            <th>Простой</th>
+        {% endif %}
+        <th>Адрес</th>
+        <th>Тип</th>
+        <th>Причина</th>
+    </tr>
+    {% for ticket in ticket_summary %}
+    {% cycle 'normal_row' 'dark_row' as rowtype silent %}
+    {% if request.path_info == '/summary/address/' %}{% ifchanged ticket.ticket_date_tz.date %}<tr><th>{{ ticket.ticket_date_tz.date }}</th></tr>{% endifchanged %}{% endif %}
+    {% if request.path_info == '/summary/area/' or request.path_info == '/summary/status/' %}{% ifchanged ticket.ticket_str.area %}<tr><th>{{ ticket.ticket_str.area }}</th></tr>{% endifchanged %}{% endif %}
+    <tr class="{{ rowtype }}">
+        <td>{{ ticket.ticket_date_tz|date:"d:m:Y" }} {{ticket.ticket_date_tz|time:"H:i"}}</td>
+        {% if request.path != '/summary/status/' %}
+            <td>{{ ticket.close_time|date:"d:m:Y" }} {{ ticket.close_time|time:"H:i" }}</td>
+            <td>{{ ticket.duration_time }}</td>
+        {% endif %}
+        <td>{{ ticket.ticket_str }},{% if ticket.ticket_build %} д. {{ ticket.ticket_build }}{% endif %}{% if ticket.ticket_build_housing %} к. {{ ticket.ticket_build_housing }},{% endif %}{% if ticket.ticket_par %} п. {{ ticket.ticket_par }}{% endif %}.</td>
+        <td>{{ ticket.ticket_obj_type }}</td>
+        <td>{{ ticket.ticket_content|truncatechars:40 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% load static %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="{% static 'base/filter_jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'base/summaryform.js' %}"></script>
+
+{% endblock %}

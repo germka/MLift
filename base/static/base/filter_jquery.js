@@ -2,18 +2,23 @@ var Form = {
 
     init: function() {
         var
+        manage_comp = $('#managecomp')
         str = $('#str'),
         build = $('#build'),
         build_housing = $('#build_housing'),
         par = $('#par'),
         type = $('#type'),
         date_checker = $('#date_checker'),
+        date_start_checker = $('#date_start_checker'),
+        date_end_checker = $('#date_end_checker'),
+        status_start_checker = $('#status_start_checker'),
+        status_end_checker = $('#status_end_checker'),
         ticket_date = $('#ticket_date'),
         ticket_content = $('#ticket_content'),
         fur = $('#fur'),
         fur_block = $('#fur_block');
 
-        if ( str.val() != '') {
+        if (str.val() != '') {
             build.prop("disabled",false); 
         } else {
             build.prop("disabled",true);
@@ -72,6 +77,19 @@ var Form = {
         if (date_checker.prop("checked") == false) {
             ticket_date.prop("disabled",true);
         };
+        if (date_start_checker.prop("checked") == false) {
+            $("#ticket_date_start").prop("disabled",true);
+        };
+        if (date_end_checker.prop("checked") == false) {
+            $("#ticket_date_end").prop("disabled",true);
+        };
+        if (status_start_checker.prop("checked") == false) {
+            $("#status_date_start").prop("disabled",true);
+        };
+        if (status_end_checker.prop("checked") == false) {
+            $("#status_date_end").prop("disabled",true);
+        };
+
         if (fur_block.is("input")) {
             fur_block.prop("hidden",true);
     };
@@ -86,8 +104,18 @@ var Form = {
         par = $('#par'),
         type = $('#type'),
         ticket_type = $('#tickettype'),
+        manage_comp = $('#managecomp'),
+        date_start_checker = $('#date_start_checker'),
+        date_end_checker = $('#date_end_checker'),
+        ticket_date_start = $('#ticket_date_start'),
+        ticket_date_end = $('#ticket_date_end'),
         sender = $('#ticket_sender');
 
+        if (manage_comp.is("input")) {
+            if (manage_comp.val() != '') {
+                post_data['manage_comp'] = manage_comp.val();
+            };
+        };
         if ($("#str").val() != '') {
             new_str = $form.find( "input[name='obj_str']" ).val();
             post_data['obj_str'] = new_str;
@@ -106,6 +134,22 @@ var Form = {
             if (par.val()!='') {
                 new_par = $form.find( "input[name='obj_par']" ).val();
                 post_data['obj_par'] = new_par;
+            };
+        };
+        if (date_start_checker.prop("checked")) {
+            if (ticket_date_start.is("input")) {
+                if (ticket_date_start.val()!='') {
+                    new_date_start = $form.find( "input[name='ticket_date_start']" ).val();
+                    post_data['ticket_date_start'] = new_date_start;
+                };
+            };
+        };
+        if (date_end_checker.prop("checked")) {
+            if (ticket_date_end.is("input")) {
+                if (ticket_date_end.val()!='') {
+                    new_date_end = $form.find( "input[name='ticket_date_end']" ).val();
+                    post_data['ticket_date_end'] = new_date_end;
+                };
             };
         };
         if (type.val()!='') {
@@ -133,7 +177,7 @@ var Form = {
             post_data['ticket_sender'] = new_sender;
         };
 
-        post_data['sender'] = 'jQuery'
+        post_data['sender'] = "jQuery";
 
         var posting = $.post( url, post_data );
 
@@ -148,6 +192,24 @@ var Form = {
         if ($("#type").is("input")) {
             $("#type").prop("disabled",true);
             $("#type").val('');
+        };
+
+        if (input_name == "comp") {
+            if ($("#managecomp").val != '') {
+                $("#managecomp").prop("placeholder",$("#managecomp").val());
+                $("#managecomp").val('');
+            } else {
+                $("#managecomp").prop("placeholder","Владелец");
+            };
+        };
+
+        if (input_name == "area") {
+            if ($("#area_list").val != '') {
+                $("#area_list").prop("placeholder",$("#area_list").val());
+                $("#area_list").val('');
+            } else {
+                $("#area_list").prop("placeholder","Район");
+            };
         };
 
         if (input_name == "build" || input_name == "str" || input_name == "build_housing" || input_name == "par") {
@@ -210,9 +272,14 @@ var Form = {
 };
 
 $( document ).ajaxStop(function() {
+
     Form.init();
 
 ///CHANGE
+    $("#managecomp").change(function() {
+        Form.field_clear("str");
+        Form.field_change();
+    });
     $("#str").change(function() {
         Form.field_change();
     });
@@ -232,8 +299,26 @@ $( document ).ajaxStop(function() {
             $("#ticket_date").prop("disabled",true);
         };
     });
+    $("#date_start_checker").on('change', function() {
+        if ($("#date_start_checker").prop("checked")) {
+            $("#ticket_date_start").prop("disabled",false);
+            $("#ticket_date_start").val( $("#date_now").val() );
+        } else {
+            $("#ticket_date_start").prop("disabled",true);
+        };
+    });
+    $("#date_end_checker").on('change', function() {
+        if ($("#date_end_checker").prop("checked")) {
+            $("#ticket_date_end").prop("disabled",false);
+        } else {
+            $("#ticket_date_end").prop("disabled",true);
+        };
+    });
 
 ///CLICK
+    $("#managecomp").on('click', function() {
+        Form.field_clear("comp");
+    })
     $("#str").on('click', function() {
         Form.field_clear("str");
     });
@@ -261,6 +346,10 @@ $(window).on('load',function() {
     Form.init();
 
 ///CHANGE
+    $("#managecomp").change(function() {
+        Form.field_clear("str");
+        Form.field_change();
+    });
     $("#str").change(function() {
         Form.field_change();
     });
@@ -273,7 +362,49 @@ $(window).on('load',function() {
     $("#par").change(function() { 
         Form.field_change();
     });
+    $("#date_checker").on('change', function() {
+        if ($("#date_checker").prop("checked")) {
+            $("#ticket_date").prop("disabled",false);
+        } else {
+            $("#ticket_date").prop("disabled",true);
+        };
+    });
+    $("#date_start_checker").on('change', function() {
+        if ($("#date_start_checker").prop("checked")) {
+            $("#ticket_date_start").prop("disabled",false);
+            old_date = $("#ticket_date_start").val();
+            $("#ticket_date_start").val( $("#date_now").val() );
+        } else {
+            $("#ticket_date_start").prop("disabled",true);
+            $("#ticket_date_start").val(old_date);
+        };
+    });
+    $("#date_end_checker").on('change', function() {
+        if ($("#date_end_checker").prop("checked")) {
+            $("#ticket_date_end").prop("disabled",false);
+        } else {
+            $("#ticket_date_end").prop("disabled",true);
+        };
+    });
+    $("#status_start_checker").on('change', function() {
+        if ($("#status_start_checker").prop("checked")) {
+            $("#status_date_start").prop("disabled",false);
+        } else {
+            $("#status_date_start").prop("disabled",true);
+        };
+    });
+    $("#status_end_checker").on('change', function() {
+        if ($("#status_end_checker").prop("checked")) {
+            $("#status_date_end").prop("disabled",false);
+        } else {
+            $("#status_date_end").prop("disabled",true);
+        };
+    });
+
 ///CLICK
+    $("#managecomp").on('click', function() {
+        Form.field_clear("comp");
+    })
     $("#str").on('click', function() {
         Form.field_clear("str");
     });
@@ -292,5 +423,8 @@ $(window).on('load',function() {
                 $("#ticket_content").val( $("#ticket_content").prop('placeholder') );
             };
         };
+    });
+    $('#area_list').on('click', function() {
+        Form.field_clear("area");
     });
 });

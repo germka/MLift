@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from datetime import datetime
 
 from .models import Ticket, TicketType, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason, Worker
 
@@ -33,26 +34,25 @@ def ticket_index(request, index_filter=None, filter_str=None):
             ticket_query = Ticket.objects.order_by('-ticket_date')
             context['no_filter'] = True
         elif index_filter == "area":
-            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str__area', '-id')
+            ticket_query = Ticket.objects.order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_str__area', '-id')
             context['splitter'] = "area"
         elif index_filter == "str":
             if filter_str:
                 ticket_query = Ticket.objects.filter(ticket_str__street__contains=filter_str).order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
                 context['splitter'] = "str"
             else:
-                ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
+                ticket_query = Ticket.objects.order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
                 context['splitter'] = "str"
         elif index_filter == "status":
-            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_status', '-id')
+            ticket_query = Ticket.objects.order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_status', '-id')
             context['splitter'] = "status"
         elif index_filter == "owner":
-            ticket_query = Ticket.objects.order_by('-ticket_date__month', '-ticket_date__day', 'ticket_object__manage_comp', '-id')
+            ticket_query = Ticket.objects.order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_object__manage_comp', '-id')
             context['splitter'] = "owner"
         elif {'street':index_filter} in ObjStr.objects.all().values('street'):
             ticket_query = Ticket.objects.filter(ticket_str__street__contains=index_filter).order_by('-ticket_date')
         elif {'status':index_filter} in TicketStatus.objects.all().values('status'):
             ticket_query = Ticket.objects.filter(ticket_status__status__contains=index_filter).order_by('-ticket_date')
-
 
         paginator = Paginator(ticket_query, paginator_list_size)
         page = request.GET.get('page')
@@ -69,11 +69,13 @@ def ticket_index(request, index_filter=None, filter_str=None):
 def ticket_detail(request, ticket_id):
     if request.user.is_authenticated:
         ticket = get_object_or_404(Ticket, pk=ticket_id)
+        date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
         context = {
             'ticket': ticket,
             'obj_type': ObjType.objects.all(),
             'workers': Worker.objects.filter(worker_area = ticket.ticket_str.area),
             'FUR': FUR_group.objects.all(),
+            'date_now': date_now,
         }
 
         try:
@@ -87,10 +89,13 @@ def ticket_detail(request, ticket_id):
             ticket_object_exact = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
             if ticket.ticket_build_housing != None and ticket.ticket_build_housing != '':
                 ticket_object_exact = ticket_object_exact.filter(obj_build_housing=ticket.ticket_build_housing)
+            elif ticket.ticket_build_housing == None:
+                ticket_object_exact = ticket_object_exact.filter(obj_build_housing=None) 
             if ticket.ticket_par != None and ticket.ticket_par != '':
                 ticket_object_exact = ticket_object_exact.filter(obj_par=ticket.ticket_par)
             if ticket.ticket_obj_type != None and ticket.ticket_obj_type != '':
                 ticket_object_exact = ticket_object_exact.filter(obj_type=ticket.ticket_obj_type)
+            context['objects_list'] = ticket_object_exact
         except:
             context['error_message'] = "Объект с таким адресом не найден"
         else:
@@ -165,7 +170,7 @@ def new_ticket(request):
             return render(request, 'base/newticket.html', context)
 
         if request.method == 'POST':
-            context['req'] = request.POST
+#            context['req'] = request.POST
             new_objbuildhousing = None
             new_objpar = None
             new_objtype = None
@@ -311,10 +316,6 @@ def new_ticket(request):
                         context['help_message'] = 'Выберите корпус'
                     elif (filter_context.first().obj_par != None or filter_context.values('obj_par').order_by('obj_par').distinct().count() > 1) and not new_objpar:
                         context['help_message'] = 'Выберите парадную'
-#                    elif (filter_context.first().obj_type != None or filter_context.values('obj_type').order_by('obj_type').distinct().count() > 1) and not new_objtype: #Условие что лифт не выбран
-#                        context['help_message'] = 'Выберите тип лифта'
-#                    elif 'ticket_content' not in request.POST or request.POST['ticket_content'] == '':	#--last check
-#                        context['help_message'] = "Введите содержание заявки"
                     elif 'ticket_type' not in request.POST or request.POST['ticket_type'] == '':	#--last check
                         context['help_message'] = "Введите тип заявки"
 
@@ -365,6 +366,8 @@ def ticket_close(request, ticket_id):
                 ticket_obj = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build)
                 if ticket.ticket_build_housing != None:
                     ticket_obj = ticket_obj.filter(obj_build_housing=ticket.ticket_build_housing)
+                else:
+                    ticket_obj = ticket_obj.filter(obj_build_housing=None)
                 if ticket.ticket_par != None:
                     ticket_obj = ticket_obj.filter(obj_par=ticket.ticket_par)
                 if request.POST['obj_exact'] != '':
@@ -375,7 +378,7 @@ def ticket_close(request, ticket_id):
                 try:
                     ticket.ticket_object = ticket_obj.get()
                 except (KeyError, Object.MultipleObjectsReturned):
-                    context['error_message'] = "Срзу несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
+                    context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
                 else:
                     ticket.save()	#--save ticket after chiose
             elif 'ticket_obj' in request.POST:
@@ -397,6 +400,287 @@ def ticket_close(request, ticket_id):
                 ticket.duration_save()
                 context['ticket_message'] = "Заявка успешно закрыта"
 
-        return render(request, 'base/detail.html', context)
+        return HttpResponseRedirect(reverse('base:ticket_detail', args=[ticket_id]))
+#        return render(request, 'base/detail.html', context)
     else:
         return HttpResponseRedirect(reverse('base:login'))
+
+
+@login_required(login_url=login_page)
+def ticket_edit(request, ticket_id):
+    if request.user.is_staff:
+        context = {
+        }
+        try:
+            ticket = Ticket.objects.get(pk=ticket_id)
+        except (KeyError, Ticket.DoesNotExist):
+            context['ticket_message'] = "Ошибка сохранения - заявка не существует"
+        else:
+            if 'change_object' in request.POST and request.POST['change_object'] != '':
+                ticket_object = Object.objects.filter(obj_str=ticket.ticket_str, obj_build=ticket.ticket_build, obj_build_housing=ticket.ticket_build_housing, obj_par=ticket.ticket_par, obj_type__type_name__contains=request.POST['change_object'])
+                try:
+                    new_object = ticket_object.get()
+                except (KeyError, Object.MultipleObjectsReturned):
+                    context['error_message'] = "Несколько лифтов выбрано из базы, требуется корректировка списка лифтов"
+                else:
+                    ticket.ticket_object = new_object
+            if 'reopen_ticket' in request.POST:
+                if request.POST['reopen_ticket'] == 'on':
+                    ticket.ticket_status_id = 1
+                    ticket.ticket_duration = None
+            if 'new_ticket_date' in request.POST:
+                if request.POST['new_ticket_date'] != '':
+                    new_date = request.POST['new_ticket_date']
+                    ticket.ticket_duration = datetime.strptime(new_date, '%Y-%m-%dT%H:%M:%S').astimezone() - ticket.ticket_date
+            if 'new_worker' in request.POST:
+                if request.POST['new_worker'] != '':
+                    full_name = request.POST['new_worker'].split(' ',1)
+                    worker = Worker.objects.filter(first_name__contains=full_name[1], last_name__contains=full_name[0])
+                    ticket.ticket_worker = worker.get()
+            if 'new_content' in request.POST:
+                if request.POST['new_content'] != '':
+                    ticket.ticket_content = request.POST['new_content']
+            ticket.save()
+            context['ticket'] = ticket
+            return HttpResponseRedirect(reverse('base:ticket_detail', args=[ticket_id]))
+
+
+@login_required(login_url=login_page)
+def ticket_summary(request, summary_filter=None, summary_sort=None):
+    if request.user.is_staff:
+        obj_str = ObjStr.objects.order_by('street')
+        date_now = timezone.now().astimezone().strftime("%Y-%m-%d")
+        obj_managecomp = ManageComp.objects.order_by('comp_name')
+        area_list = ObjArea.objects.order_by('area_name')
+        status_list = TicketStatus.objects.all();
+        first_date = Ticket.objects.first().ticket_date.date()
+        context = {
+            'date_now': date_now,
+            'obj_str': obj_str,
+            'manage_comp': obj_managecomp,
+            'area_list': area_list,
+            'status_list': status_list,
+            'first_date': first_date,
+        }
+        if request.method == 'GET':
+            context.update({
+                'obj_build':'None',
+                'obj_buildhousing':'None',
+                'obj_type':'None',
+                'obj_par':'None',
+            })
+            return render(request, 'base/summary.html', context)
+
+        if request.method == 'POST':
+
+#Summary by Obj_managecomp and time period--
+
+            if summary_filter == 'address':
+                new_objbuildhousing = None
+                new_objpar = None
+                new_objtype = None
+#--obj filters
+                filter_context = Object.objects.all()
+
+#--manage_comp handler
+
+                if 'manage_comp' in request.POST:
+                    if request.POST['manage_comp'] != '':
+                        filter_context = filter_context.filter(manage_comp__comp_name = request.POST['manage_comp'])
+                        context['obj_managecomp'] = request.POST['manage_comp']
+                        obj_str = obj_str.filter(street__in=[obj.obj_str for obj in filter_context])
+                        context.update({
+                            'obj_str': obj_str,
+                        })
+
+#--obj_str handler
+
+                if 'obj_str' in request.POST:
+
+                    if request.POST['obj_str'] == '':
+                        context['help_message'] = ""
+                    else:
+                        try:
+                            new_objstr = ObjStr.objects.get(street=request.POST['obj_str'])
+                        except(KeyError, ObjStr.DoesNotExist):
+                            context['error_message'] = "Значение улицы не заполнено"
+                        except(KeyError, MultiValueDictKeyError):
+                            context['error_message'] = "Улица не выбрана"
+                        else:
+                            context['str_value'] = new_objstr
+                            filter_context = filter_context.filter(obj_str=new_objstr)
+                            context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
+
+#--obj_build handler
+
+                if 'obj_build' in request.POST:
+                    if request.POST['obj_build'] == '':
+                        context['help_message'] = "Выберите номер дома"
+                    else:
+                        try:
+                            new_objbuild = request.POST['obj_build']
+                        except (KeyError, MultiValueDictKeyError):
+                            context['error_message'] = "Дом не выбран"
+                        else:
+                            context['build_value'] = new_objbuild
+                            filter_context = filter_context.filter(obj_build=new_objbuild)
+
+#--obj_build_housing check if exists
+
+                obj_buildhousing = filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct() #--obj_buildhousing filtered datalist
+
+                if obj_buildhousing.count()>0:
+                    if obj_buildhousing[0]['obj_build_housing'] == None:
+                        context['obj_buildhousing'] = None
+                    else:
+                        context['obj_buildhousing'] = obj_buildhousing
+
+#--obj_build_housing handler
+
+                if 'obj_buildhousing' in context:
+                    if context['obj_buildhousing'] != None:
+                        if 'obj_buildhousing' in request.POST:
+                            if request.POST['obj_buildhousing'] == '':
+                                context['help_message'] = "Выберите корпус здания"
+                            else:
+                                try:
+                                    new_objbuildhousing = request.POST['obj_buildhousing']
+                                except (KeyError, MultiValueDictKeyError):
+                                    context['error_message'] = "Корпус здания не выбран"
+                                else:
+                                    context['build_housing_value'] = new_objbuildhousing
+                                    filter_context = filter_context.filter(obj_build_housing=new_objbuildhousing)
+                    else:
+                        new_objbuildhousing = None
+
+#--obj_par check if exists
+
+                obj_par = filter_context.values('obj_par').order_by('obj_par').distinct() #--obj_par filtered datalist
+
+                if obj_par.count()>0:
+                    if obj_par[0]['obj_par'] == None:
+                        context['obj_par'] = None
+                    else:
+                        context['obj_par'] = obj_par	#--obj_par datalist
+
+#--obj_par handler
+
+                if 'obj_par' in request.POST:
+                    if request.POST['obj_par'] == '':
+                        context['help_message'] = "Выберите парадную"
+                    else:
+                        try:
+                            new_objpar = request.POST['obj_par']
+                        except (KeyError, MultiValueDictKeyError):
+                            context['error_message'] = "Парадная не выбрана"
+                        else:
+                            if context['obj_par'] != None and new_objpar != 'None' and new_objpar != '':
+                                filter_context = filter_context.filter(obj_par=new_objpar)
+                            context['par_value'] = new_objpar
+
+                obj_type = filter_context.values('obj_type').order_by('obj_type').distinct()	#obj_type filtered datalist
+                if obj_type.count()>0:
+                    if obj_type[0]['obj_type'] == None:
+                        context['obj_type'] = None
+                    else:
+                        context['obj_type'] = ObjType.objects.filter(pk__in=obj_type)
+
+#--obj_type handler
+
+                if 'obj_type' in request.POST:
+                    if request.POST['obj_type'] == '':
+                        context['help_message'] = "Выберите тип лифта"
+                    else:
+                        try:
+                            new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
+                        except(KeyError, ObjType.DoesNotExist):
+                            context['error_message'] = "Значение типа лифта не верно"
+
+
+                if 'ticket_date_start' in request.POST:
+                    ticket_date_start = request.POST['ticket_date_start']
+                    context['date_start'] = ticket_date_start
+                else:
+                    ticket_date_start = first_date
+
+                if 'ticket_date_end' in request.POST:
+                    ticket_date_end = request.POST['ticket_date_end']
+                    context['date_end'] = ticket_date_end
+                else:
+                    ticket_date_end = date_now
+
+#--rerender form for ajax
+
+                if 'sender' in request.POST:
+                    if request.POST['sender'] == 'jQuery':
+                        return render(request, 'base/summary.html', context)
+
+                ticket_summary = Ticket.objects.filter(ticket_date__range=(ticket_date_start,ticket_date_end))
+
+#--manage_comp filter
+
+                if 'manage_comp' in request.POST:
+                    if request.POST['manage_comp'] != '':
+                        context['obj_managecomp'] = request.POST['manage_comp']
+                        filter_context = filter_context.filter(manage_comp__comp_name = request.POST['manage_comp'])
+
+#--obj_address filter
+
+                ticket_summary = ticket_summary.filter(ticket_object__in = [obj.id for obj in filter_context]).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str') #Не выводит заявки с неприкрепленными объектами - большинство открытых, наверное, надо создавать списки по адресам объектов из списка объектов
+                context['ticket_summary'] = ticket_summary
+
+                return render(request, 'base/summary.html', context)
+
+#Summary by ticket_area and one day--
+
+        if summary_filter == 'area':
+
+            if 'tickets_area' in request.POST:
+                if request.POST['tickets_area'] != '':
+                    new_area = request.POST['tickets_area']
+                    context['tickets_area'] = new_area
+                    ticket_summary = Ticket.objects.filter(ticket_str__area__area_name = new_area)
+
+            if 'area_tickets_date' in request.POST:
+                if request.POST['area_tickets_date'] != '':
+                    new_date = request.POST['area_tickets_date']
+                    context['area_tickets_date'] = new_date
+                    if 'tickets_area' in request.POST:
+                        if request.POST['tickets_area'] != '':
+                            ticket_summary = ticket_summary.filter(ticket_date__date = new_date)
+                        else:
+                            ticket_summary = Ticket.objects.filter(ticket_date__date = new_date).order_by('ticket_str__area', 'ticket_date')
+
+            context['ticket_summary'] = ticket_summary
+
+            return render(request, 'base/summary.html', context)
+
+#Summary by ticket_status and time period--
+
+        if summary_filter == 'status':
+
+            statuses = [];
+
+            for tickets_status in TicketStatus.objects.all():
+                if str(tickets_status.id) in request.POST:
+                    statuses.append(tickets_status.status)
+
+            context['statuses'] = statuses
+
+            ticket_summary = Ticket.objects.filter(ticket_status__status__in = statuses).order_by('ticket_str__area','ticket_date')
+
+            if 'status_date_start' in request.POST:
+                status_date_start = request.POST['status_date_start']
+                context['status_date_start'] = status_date_start
+            else:
+                status_date_start = Ticket.objects.first().ticket_date.date()
+
+            if 'status_date_end' in request.POST:
+                status_date_end = request.POST['status_date_end']
+                context['status_date_end'] = status_date_end
+            else:
+                status_date_end = date_now
+
+            context['ticket_summary'] = ticket_summary
+
+            return render(request, 'base/summary.html', context)
