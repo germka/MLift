@@ -3,7 +3,7 @@
 {% block title %}Создание заявки{% endblock %}
 {% block header %}Создание заявки{% endblock %}
 
-{% block top_menu %}{% include "base/top_menu.html" with index='true' %}{% endblock %}
+{% block top_menu %}{% include "base/top_menu.html" with index='true' summary='true' %}{% endblock %}
 
 {% block content %}
 
@@ -80,7 +80,7 @@
 
 <fieldset class="new_ticket_fs"><legend>Состав заявки</legend>
     <div class="new_ticket_row inline">
-        <input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label>
+        <input type="datetime-local" name="ticket_date" id="ticket_date" value="{{ date_now }}" max="{{ date_now }}"> <input type="checkbox" id="date_checker" name="date_checker"><label for="date_checker">Выбрать время самостоятельно</label>
     </div>
     <div class="new_ticket_row inline">
         <input list="ticket_type" name="ticket_type" id="tickettype" placeholder="Тип заявки" size="10" autocomplete="off" required {% if type_value %}value="{{ type_value }}"{% endif %}>

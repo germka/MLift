@@ -3,7 +3,7 @@
 {% block title %}Отчет по адресу{% endblock %}
 {% block header %}Отчет о заявках{% endblock %}
 
-{% block top_menu %}{% include "base/top_menu.html" with index='true' %}{% endblock %}
+{% block top_menu %}{% include "base/top_menu.html" with index='true' filter='true' %}{% endblock %}
 
 {% block content %}
 
@@ -111,7 +111,12 @@
     </div>
 </fieldset>
 <div class="button_alt">
+    <div class="csv-checker">
+    <input type="checkbox" id="csv_checker1" name="csv_checker">
+    <label for="csv_checker1">Сохранить отчет в файл</label>
+    </div>
     <input id="area_send_button" class="send_button" type="submit" value="Создать отчет">
+
 </div>
 </form>
 </div>
@@ -134,6 +139,10 @@
     </div>
 </fieldset>
     <div class="button_alt">
+        <div class="csv-checker">
+        <input type="checkbox" id="csv_checker2" name="csv_checker">
+        <label for="csv_checker2">Сохранить отчет в файл</label>
+        </div>
         <input id="send_button" class="send_button" type="submit" value="Создать отчет">
     </div>
 </form>
@@ -164,6 +173,10 @@
 </fieldset>
 
     <div class="button_alt">
+        <div class="csv-checker">
+        <input type="checkbox" id="csv_checker3" name="csv_checker">
+        <label for="csv_checker3">Сохранить отчет в файл</label>
+        </div>
         <input id="send_button" class="send_button" type="submit" value="Создать отчет">
     </div>
 </form>
@@ -176,8 +189,8 @@
         <th>Открыта</th>
         {% if request.path != '/summary/status/' %}
             <th>Закрыта</th>
-            <th>Простой</th>
         {% endif %}
+        <th>Простой</th>
         <th>Адрес</th>
         <th>Тип</th>
         <th>Причина</th>
@@ -187,10 +200,12 @@
     {% if request.path_info == '/summary/address/' %}{% ifchanged ticket.ticket_date_tz.date %}<tr><th>{{ ticket.ticket_date_tz.date }}</th></tr>{% endifchanged %}{% endif %}
     {% if request.path_info == '/summary/area/' or request.path_info == '/summary/status/' %}{% ifchanged ticket.ticket_str.area %}<tr><th>{{ ticket.ticket_str.area }}</th></tr>{% endifchanged %}{% endif %}
     <tr class="{{ rowtype }}">
-        <td>{{ ticket.ticket_date_tz|date:"d:m:Y" }} {{ticket.ticket_date_tz|time:"H:i"}}</td>
+        <td>{{ ticket.ticket_date_tz|date:"d.m.Y" }} {{ticket.ticket_date_tz|time:"H:i"}}</td>
         {% if request.path != '/summary/status/' %}
-            <td>{{ ticket.close_time|date:"d:m:Y" }} {{ ticket.close_time|time:"H:i" }}</td>
+            <td>{{ ticket.close_time|date:"d.m.Y" }} {{ ticket.close_time|time:"H:i" }}</td>
             <td>{{ ticket.duration_time }}</td>
+        {% else %}
+            <td>{{ ticket.ticket_date|timesince }}</td>
         {% endif %}
         <td>{{ ticket.ticket_str }},{% if ticket.ticket_build %} д. {{ ticket.ticket_build }}{% endif %}{% if ticket.ticket_build_housing %} к. {{ ticket.ticket_build_housing }},{% endif %}{% if ticket.ticket_par %} п. {{ ticket.ticket_par }}{% endif %}.</td>
         <td>{{ ticket.ticket_obj_type }}</td>

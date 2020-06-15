@@ -91,8 +91,8 @@ class Object(models.Model):
     obj_str = models.ForeignKey(ObjStr, on_delete=models.DO_NOTHING, verbose_name='Улица')
     obj_build = models.CharField('Дом', max_length=15, null=True)
     obj_build_housing = models.CharField('Корпус', max_length=10, null=True, blank=True)
-    obj_par_alter = models.BooleanField('Литеральный номер парадной', default=False)
-    obj_par = ObjParField('Номер парадной', null=True, blank=True)
+    obj_par_alter = models.BooleanField('Литеральный номер парадной', default=False, null=True, blank=True)
+    obj_par = models.IntegerField('Номер парадной', null=True, blank=True) #Тут было ObjParField но нужно доделать альтернативные имена парадных
     obj_number = models.CharField('Номер лифта', max_length=15, null=True, blank=True)
     obj_factory_number = models.CharField('Заводской номер', max_length=15, null=True, blank=True)
     obj_type = models.ForeignKey(ObjType, on_delete=models.DO_NOTHING, null=True, verbose_name='Тип лифта', blank=True)

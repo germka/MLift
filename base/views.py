@@ -1,15 +1,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 #from django.views import generic
+
+#!--index
 from django.core.paginator import Paginator
 #from django.template import loader
 
+#!--summary
+import csv
+
+#!--common
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from django.utils import timezone
 from datetime import datetime
 
 from .models import Ticket, TicketType, TicketStatus, Object, ObjArea, ObjStr, ObjType, ManageComp, FUR_group, FUReason, Worker
@@ -38,7 +44,7 @@ def ticket_index(request, index_filter=None, filter_str=None):
             context['splitter'] = "area"
         elif index_filter == "str":
             if filter_str:
-                ticket_query = Ticket.objects.filter(ticket_str__street__contains=filter_str).order_by('-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
+                ticket_query = Ticket.objects.filter(ticket_str__street__contains=filter_str).order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
                 context['splitter'] = "str"
             else:
                 ticket_query = Ticket.objects.order_by('-ticket_date__year', '-ticket_date__month', '-ticket_date__day', 'ticket_str', '-id')
@@ -93,8 +99,9 @@ def ticket_detail(request, ticket_id):
                 ticket_object_exact = ticket_object_exact.filter(obj_build_housing=None) 
             if ticket.ticket_par != None and ticket.ticket_par != '':
                 ticket_object_exact = ticket_object_exact.filter(obj_par=ticket.ticket_par)
-            if ticket.ticket_obj_type != None and ticket.ticket_obj_type != '':
-                ticket_object_exact = ticket_object_exact.filter(obj_type=ticket.ticket_obj_type)
+#            if ticket.ticket_obj_type != None and ticket.ticket_obj_type != '':
+#                ticket_object_exact = ticket_object_exact.filter(obj_type=ticket.ticket_obj_type)
+#!-------Зачем я фильтровал по типу при составлении списка альтернативных типов?
             context['objects_list'] = ticket_object_exact
         except:
             context['error_message'] = "Объект с таким адресом не найден"
@@ -629,6 +636,23 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 ticket_summary = ticket_summary.filter(ticket_object__in = [obj.id for obj in filter_context]).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str') #Не выводит заявки с неприкрепленными объектами - большинство открытых, наверное, надо создавать списки по адресам объектов из списка объектов
                 context['ticket_summary'] = ticket_summary
 
+                if 'csv_checker' in request.POST:
+                    if request.POST['csv_checker'] == 'on':
+
+                        response = HttpResponse(content_type='text/csv', charset="1251")
+                        response['Content-Disposition'] = 'attachment; filename="summary_address_%s.csv"' % (timezone.now().strftime('%d.%m.%Y %H:%M:%S'))
+
+                        writer = csv.writer(response, dialect='excel', delimiter=';')
+                        writer.writerow(['Открыта','Закрыта','Продолжительность','Район','Улица','Строение','Корпус','Парадная','Тип лифта','Содержание заявки'])
+                        for ticket in ticket_summary:
+                            if ticket.close_time:
+                                close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
+                            else:
+                                close_time = ''
+                            writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+
+                        return response
+
                 return render(request, 'base/summary.html', context)
 
 #Summary by ticket_area and one day--
@@ -652,6 +676,22 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             ticket_summary = Ticket.objects.filter(ticket_date__date = new_date).order_by('ticket_str__area', 'ticket_date')
 
             context['ticket_summary'] = ticket_summary
+
+            if 'csv_checker' in request.POST:
+                if request.POST['csv_checker'] == 'on':
+                    response = HttpResponse(content_type='text/csv', charset="1251")
+                    response['Content-Disposition'] = 'attachment; filename="summary_area_%s.csv"' % (timezone.now().strftime('%d.%m.%Y %H:%M:%S'))
+
+                    writer = csv.writer(response, dialect='excel', delimiter=';')
+                    writer.writerow(['Открыта','Закрыта','Продолжительность','Район','Улица','Строение','Корпус','Парадная','Тип лифта','Содержание заявки'])
+                    for ticket in ticket_summary:
+                        if ticket.close_time:
+                            close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
+                        else:
+                            close_time = ''
+                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+
+                    return response
 
             return render(request, 'base/summary.html', context)
 
@@ -682,5 +722,21 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 status_date_end = date_now
 
             context['ticket_summary'] = ticket_summary
+
+            if 'csv_checker' in request.POST:
+                if request.POST['csv_checker'] == 'on':
+                    response = HttpResponse(content_type='text/csv', charset="1251")
+                    response['Content-Disposition'] = 'attachment; filename="summary_status_%s.csv"' % (timezone.now().strftime('%d.%m.%Y %H:%M:%S'))
+
+                    writer = csv.writer(response, dialect='excel', delimiter=';')
+                    writer.writerow(['Открыта','Закрыта','Простой','Район','Улица','Строение','Корпус','Парадная','Тип лифта','Причина'])
+                    for ticket in ticket_summary:
+                        if ticket.close_time:
+                            close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
+                        else:
+                            close_time = ''
+                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_get(),ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+
+                    return response
 
             return render(request, 'base/summary.html', context)

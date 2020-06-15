@@ -585,6 +585,10 @@ body {
 #tab_2:checked ~ #t2,
 #tab_3:checked ~ #t3 { display: block; }
 
+.csv-checker {
+    position: absolute;
+}
+
 @media screen and (max-width: 1386px) {
 
 .index_table {
