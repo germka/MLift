@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 
 #!--summary
 import csv
+from django.db.models import Q
 
 #!--common
 from django.contrib.auth.decorators import login_required
@@ -633,7 +634,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
 
 #--obj_address filter
 
-                ticket_summary = ticket_summary.filter(ticket_object__in = [obj.id for obj in filter_context]).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str') #Не выводит заявки с неприкрепленными объектами - большинство открытых, наверное, надо создавать списки по адресам объектов из списка объектов
+                ticket_summary = ticket_summary.filter(Q(ticket_object__in = [obj.id for obj in filter_context]) | Q(ticket_object = None)).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str') #Не выводит заявки с неприкрепленными объектами - большинство открытых, наверное, надо создавать списки по адресам объектов из списка объектов
                 context['ticket_summary'] = ticket_summary
 
                 if 'csv_checker' in request.POST:
@@ -649,7 +650,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                                 close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
                             else:
                                 close_time = ''
-                            writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+                            writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_obj_type,ticket.ticket_content])
 
                         return response
 
@@ -689,7 +690,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
                         else:
                             close_time = ''
-                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_time,ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_obj_type,ticket.ticket_content])
 
                     return response
 
@@ -735,7 +736,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             close_time = ticket.close_time.strftime('%d.%m.%Y %H:%M:%S')
                         else:
                             close_time = ''
-                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_get(),ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_type,ticket.ticket_content])
+                        writer.writerow([ticket.ticket_date.strftime('%d.%m.%Y %H:%M:%S'),close_time,ticket.duration_get(),ticket.ticket_str.area,ticket.ticket_str,ticket.ticket_build,ticket.ticket_build_housing,ticket.ticket_par,ticket.ticket_obj_type,ticket.ticket_content])
 
                     return response
 

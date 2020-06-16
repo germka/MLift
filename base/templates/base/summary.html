@@ -203,12 +203,21 @@
         <td>{{ ticket.ticket_date_tz|date:"d.m.Y" }} {{ticket.ticket_date_tz|time:"H:i"}}</td>
         {% if request.path != '/summary/status/' %}
             <td>{{ ticket.close_time|date:"d.m.Y" }} {{ ticket.close_time|time:"H:i" }}</td>
-            <td>{{ ticket.duration_time }}</td>
+            {% if ticket.duration_time != "None" %}
+                <td>{{ ticket.duration_time }}
+            {% else %}
+                <td>{{ ticket.ticket_date|timesince }}
+            {% endif %}
+            </td>
         {% else %}
-            <td>{{ ticket.ticket_date|timesince }}</td>
+            {% if ticket.duration_time != "None" %}
+                <td>{{ ticket.duration_time|default_if_none:"" }}</td>
+            {% else %}
+                <td>{{ ticket.ticket_date|timesince }}</td>
+            {% endif %}
         {% endif %}
         <td>{{ ticket.ticket_str }},{% if ticket.ticket_build %} д. {{ ticket.ticket_build }}{% endif %}{% if ticket.ticket_build_housing %} к. {{ ticket.ticket_build_housing }},{% endif %}{% if ticket.ticket_par %} п. {{ ticket.ticket_par }}{% endif %}.</td>
-        <td>{{ ticket.ticket_obj_type }}</td>
+        <td>{{ ticket.ticket_obj_type|default_if_none:"" }}</td>
         <td>{{ ticket.ticket_content|truncatechars:40 }}</td>
     </tr>
     {% endfor %}
