@@ -156,8 +156,10 @@ class Ticket(models.Model):
 
     def duration_get(self):
         ticket_duration=timezone.now().astimezone() - self.ticket_date
-        if ticket_duration.days > 7:
+        if ticket_duration.days > 0:
             return str(ticket_duration).split(".")[0].replace("days", "Дней").replace("day", "День")
+        else:
+            return str(ticket_duration).split(".")[0]
 
     @property
     def duration_time(self):

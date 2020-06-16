@@ -634,7 +634,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
 
 #--obj_address filter
 
-                ticket_summary = ticket_summary.filter(Q(ticket_object__in = [obj.id for obj in filter_context]) | Q(ticket_object = None)).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str') #Не выводит заявки с неприкрепленными объектами - большинство открытых, наверное, надо создавать списки по адресам объектов из списка объектов
+                ticket_summary = ticket_summary.filter(Q(ticket_object__in = [obj.id for obj in filter_context]) | Q(ticket_object = None)).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str')
                 context['ticket_summary'] = ticket_summary
 
                 if 'csv_checker' in request.POST:
