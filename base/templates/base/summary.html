@@ -36,6 +36,10 @@
         {% endfor %}
         </datalist>
     </div>
+    <div class="detail_ticket_type">
+    <input type="checkbox" id="declineact" name="declineact" {% if declineact %}checked{% endif %}>
+    <label for="declineact">Акт снижения</label>
+    </div>
 </fieldset>
 
 <fieldset class="new_ticket_fs"><legend>Отчет по адресу</legend>
@@ -114,6 +118,7 @@
     <div class="csv-checker">
     <input type="checkbox" id="csv_checker1" name="csv_checker">
     <label for="csv_checker1">Сохранить отчет в файл</label>
+    
     </div>
     <input id="area_send_button" class="send_button" type="submit" value="Создать отчет">
 
@@ -182,6 +187,8 @@
 </form>
 </div>
 </div>
+
+{{ test }}<br/> {{ test2 }}
 
 {% if ticket_summary %}
 <table cellpadding="3" class="summary_table" id="summary_table">

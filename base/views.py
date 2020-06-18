@@ -304,7 +304,7 @@ def new_ticket(request):
             else:
                 new_date = timezone.now().astimezone()	#--set current date
 
-    #--making ticket
+    #--make new ticket
 
             if 'obj_str' in request.POST:
                 if request.POST['obj_str'] != '':
@@ -489,11 +489,17 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 new_objtype = None
 #--obj filters
                 filter_context = Object.objects.all()
+                ticket_filter = Ticket.objects.filter(ticket_object = None)
 
 #--manage_comp handler
 
                 if 'manage_comp' in request.POST:
                     if request.POST['manage_comp'] != '':
+                        ticket_filter.filter()
+
+                        obj_list = Object.objects.filter(obj_str__in = [ticket.ticket_str for ticket in ticket_filter], obj_build__in = [ticket.ticket_build for ticket in ticket_filter]).filter(manage_comp__comp_name = request.POST['manage_comp']) #Список подходящих объектов для открытых заявок, составленный по всем заявкам без прикрепленных объектов и фильтрованный по выбранной управляющей компании
+                        ticket_filter = ticket_filter.filter(ticket_str__in = [obj.obj_str for obj in obj_list], ticket_build__in = [obj.obj_build for obj in obj_list]) #Список открытых заявок соответствующих выбранной управляющей компании
+
                         filter_context = filter_context.filter(manage_comp__comp_name = request.POST['manage_comp'])
                         context['obj_managecomp'] = request.POST['manage_comp']
                         obj_str = obj_str.filter(street__in=[obj.obj_str for obj in filter_context])
@@ -504,7 +510,6 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
 #--obj_str handler
 
                 if 'obj_str' in request.POST:
-
                     if request.POST['obj_str'] == '':
                         context['help_message'] = ""
                     else:
@@ -518,6 +523,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             context['str_value'] = new_objstr
                             filter_context = filter_context.filter(obj_str=new_objstr)
                             context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
+                        ticket_filter = ticket_filter.filter(ticket_str__street = request.POST['obj_str'])
 
 #--obj_build handler
 
@@ -532,8 +538,9 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                         else:
                             context['build_value'] = new_objbuild
                             filter_context = filter_context.filter(obj_build=new_objbuild)
+                        ticket_filter = ticket_filter.filter(ticket_build = request.POST['obj_build'])
 
-#--obj_build_housing check if exists
+#--obj_build_housing check for exists
 
                 obj_buildhousing = filter_context.values('obj_build_housing').order_by('obj_build_housing').distinct() #--obj_buildhousing filtered datalist
 
@@ -542,6 +549,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                         context['obj_buildhousing'] = None
                     else:
                         context['obj_buildhousing'] = obj_buildhousing
+
 
 #--obj_build_housing handler
 
@@ -557,11 +565,12 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                                     context['error_message'] = "Корпус здания не выбран"
                                 else:
                                     context['build_housing_value'] = new_objbuildhousing
-                                    filter_context = filter_context.filter(obj_build_housing=new_objbuildhousing)
+                                    filter_context = filter_context.filter(obj_build_housing = request.POST['obj_build_housing'])
+                                    ticket_filter = ticket_filter.filter(ticket_build_housing = request.POST['obj_build_housing'])
                     else:
                         new_objbuildhousing = None
 
-#--obj_par check if exists
+#--obj_par check for exists
 
                 obj_par = filter_context.values('obj_par').order_by('obj_par').distinct() #--obj_par filtered datalist
 
@@ -583,8 +592,11 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             context['error_message'] = "Парадная не выбрана"
                         else:
                             if context['obj_par'] != None and new_objpar != 'None' and new_objpar != '':
-                                filter_context = filter_context.filter(obj_par=new_objpar)
+                                filter_context = filter_context.filter(obj_par=request.POST['obj_par'])
                             context['par_value'] = new_objpar
+                            ticket_filter = ticket_filter.filter(ticket_par = request.POST['obj_par'])
+
+#--obj_type check for exists
 
                 obj_type = filter_context.values('obj_type').order_by('obj_type').distinct()	#obj_type filtered datalist
                 if obj_type.count()>0:
@@ -603,6 +615,9 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             new_objtype = ObjType.objects.get(type_name=request.POST['obj_type'])
                         except(KeyError, ObjType.DoesNotExist):
                             context['error_message'] = "Значение типа лифта не верно"
+                        else:
+                            filter_context = filter_context.filter(obj_type__type_name = request.POST['obj_type'])
+                            ticket_filter = ticket_filter.filter(ticket_obj_type__type_name = request.POST['obj_type'])
 
 
                 if 'ticket_date_start' in request.POST:
@@ -615,7 +630,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                     ticket_date_end = request.POST['ticket_date_end']
                     context['date_end'] = ticket_date_end
                 else:
-                    ticket_date_end = date_now
+                    ticket_date_end = timezone.now().astimezone()
 
 #--rerender form for ajax
 
@@ -634,7 +649,33 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
 
 #--obj_address filter
 
-                ticket_summary = ticket_summary.filter(Q(ticket_object__in = [obj.id for obj in filter_context]) | Q(ticket_object = None)).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str')
+                ticket_summary = ticket_summary.filter(Q(ticket_object__in = [obj.id for obj in filter_context]) | Q(id__in = [t.id for t in ticket_filter])).order_by('ticket_date__year', 'ticket_date__month', 'ticket_date__day', 'ticket_str')
+
+#--decline_act filter
+
+                if 'declineact' in request.POST:
+                    if request.POST['declineact'] == 'on':
+                        context['declineact'] = True
+                        ticket_summary = ticket_summary.filter(Q(ticket_duration__gte = timezone.timedelta( days = 1 )) | Q(ticket_duration = None))
+                        for ticket in ticket_summary:
+                            if ticket.ticket_object != None:
+                                if ticket.ticket_duration != None:
+                                    if ticket.ticket_object.manage_comp != None:
+                                        if ticket.ticket_duration < ticket.ticket_object.manage_comp.decline_period:
+                                            ticket_summary = ticket_summary.exclude(id = ticket.id)
+                                    else:
+                                        ticket_summary = ticket_summary.exclude(id = ticket.id)
+                                else:
+                                    if ticket.ticket_object.manage_comp != None:
+                                        if ticket.ticket_date > (timezone.now().astimezone() - ticket.ticket_object.manage_comp.decline_period):
+                                            ticket_summary = ticket_summary.exclude(id = ticket.id)
+                                    else:
+                                        ticket_summary = ticket_summary.exclude(id = ticket.id)
+                            else:
+                                obj_list = Object.objects.filter(obj_str = ticket.ticket_str, obj_build = ticket.ticket_build, obj_build_housing = ticket.ticket_build_housing, obj_par = ticket.ticket_par)
+                                if ticket.ticket_date > (timezone.now().astimezone() - obj_list[0].manage_comp.decline_period):
+                                    ticket_summary = ticket_summary.exclude(id = ticket.id)
+
                 context['ticket_summary'] = ticket_summary
 
                 if 'csv_checker' in request.POST:
@@ -720,7 +761,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 status_date_end = request.POST['status_date_end']
                 context['status_date_end'] = status_date_end
             else:
-                status_date_end = date_now
+                status_date_end = timezone.now().astimezone()
 
             context['ticket_summary'] = ticket_summary
 

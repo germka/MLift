@@ -34,7 +34,7 @@
             </a>
             <a href="{% url 'base:ticket_detail' ticket.id %}" title="Тип/Причина/Исполнитель заявки">
             <span class="ticket_type index_row_item">{{ ticket.ticket_type.type_name }}</span>
-            <span class="ticket_content index_row_item">{{ ticket.ticket_content|truncatechars:36 }} 
+            <span class="ticket_content index_row_item">{{ ticket.content_normalize|truncatechars:36 }} 
             {% if ticket.comments_set.count > 0 %}
                 <span class="ticket_comment_count" title="Количество комментариев">({{ticket.comments_set.count}})</span>
             {% endif %}

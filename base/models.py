@@ -26,6 +26,7 @@ class TicketType(models.Model):
 
 class ManageComp(models.Model):
     comp_name = models.CharField('Обслуживающая компания', max_length=100)
+    decline_period = models.DurationField('Период простоя до акта снижения', default=timezone.timedelta(days = 1), null=True, blank=True)
     def __str__(self):
         return '%s' % (self.comp_name)
     class Meta:
@@ -154,6 +155,7 @@ class Ticket(models.Model):
             self.ticket_duration = (timezone.now().astimezone() - self.ticket_date)
             self.save()
 
+    @property
     def duration_get(self):
         ticket_duration=timezone.now().astimezone() - self.ticket_date
         if ticket_duration.days > 0:
@@ -173,6 +175,13 @@ class Ticket(models.Model):
     @property
     def ticket_date_tz(self):
         return self.ticket_date.astimezone()
+
+    @property
+    def content_normalize(self):
+        if self.ticket_content.isupper() and len(self.ticket_content) > 5:
+            return self.ticket_content.capitalize()
+        else:
+            return self.ticket_content
 
     def status(self):
         status = TicketStatus.objects.get(pk=self.ticket_status.id)
