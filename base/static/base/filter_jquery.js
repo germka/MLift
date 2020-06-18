@@ -110,7 +110,7 @@ var Form = {
         ticket_date_start = $('#ticket_date_start'),
         ticket_date_end = $('#ticket_date_end'),
         sender = $('#ticket_sender'),
-        dicline = $('#declineact');
+        decline = $('#declineact');
 
         if (manage_comp.is("input")) {
             if (manage_comp.val() != '') {
@@ -178,7 +178,7 @@ var Form = {
             post_data['ticket_sender'] = new_sender;
         };
         if (decline.prop("checked")) {
-            post_data['declineact'] = "True";
+            post_data['declineact'] = "on";
         };
 
         post_data['sender'] = "jQuery";

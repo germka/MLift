@@ -632,6 +632,11 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 else:
                     ticket_date_end = timezone.now().astimezone()
 
+
+                if 'declineact' in request.POST:
+                    if request.POST['declineact'] == 'on':
+                        context['declineact'] = True
+
 #--rerender form for ajax
 
                 if 'sender' in request.POST:
