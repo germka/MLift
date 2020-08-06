@@ -241,6 +241,9 @@ def new_ticket(request):
                 if 'obj_buildhousing' in request.POST:
                     if request.POST['obj_buildhousing'] == '':
                         context['help_message'] = "Выберите корпус здания"
+                    elif request.POST['obj_buildhousing'] == 'Нет':
+                        filter_context = filter_context.filter(obj_build_housing = None)
+                        context['build_housing_value'] = request.POST['obj_buildhousing']
                     else:
                         try:
                             new_objbuildhousing = request.POST['obj_buildhousing']
@@ -251,6 +254,7 @@ def new_ticket(request):
                             filter_context = filter_context.filter(obj_build_housing=new_objbuildhousing)
             else:
                 new_objbuildhousing = None
+            context['test'] = filter_context
 
     #--obj_par check if exists
 
@@ -521,9 +525,9 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             context['error_message'] = "Улица не выбрана"
                         else:
                             context['str_value'] = new_objstr
-                            filter_context = filter_context.filter(obj_str=new_objstr)
+                            filter_context = filter_context.filter(obj_str = new_objstr)
+                            ticket_filter = ticket_filter.filter(ticket_str__street = new_objstr)
                             context['obj_build'] = filter_context.values('obj_build').order_by('obj_build').distinct()	#--obj_build datalist
-                        ticket_filter = ticket_filter.filter(ticket_str__street = request.POST['obj_str'])
 
 #--obj_build handler
 
@@ -537,8 +541,8 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             context['error_message'] = "Дом не выбран"
                         else:
                             context['build_value'] = new_objbuild
-                            filter_context = filter_context.filter(obj_build=new_objbuild)
-                        ticket_filter = ticket_filter.filter(ticket_build = request.POST['obj_build'])
+                            filter_context = filter_context.filter(obj_build = new_objbuild)
+                            ticket_filter = ticket_filter.filter(ticket_build =  new_objbuild)
 
 #--obj_build_housing check for exists
 
@@ -565,8 +569,8 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                                     context['error_message'] = "Корпус здания не выбран"
                                 else:
                                     context['build_housing_value'] = new_objbuildhousing
-                                    filter_context = filter_context.filter(obj_build_housing = request.POST['obj_build_housing'])
-                                    ticket_filter = ticket_filter.filter(ticket_build_housing = request.POST['obj_build_housing'])
+                                    filter_context = filter_context.filter(obj_build_housing = new_objbuildhousing)
+                                    ticket_filter = ticket_filter.filter(ticket_build_housing = new_objbuildhousing)
                     else:
                         new_objbuildhousing = None
 
@@ -592,9 +596,10 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                             context['error_message'] = "Парадная не выбрана"
                         else:
                             if context['obj_par'] != None and new_objpar != 'None' and new_objpar != '':
-                                filter_context = filter_context.filter(obj_par=request.POST['obj_par'])
+                                filter_context = filter_context.filter(obj_par = new_objpar)
+                                ticket_filter = ticket_filter.filter(ticket_par = new_objpar)
                             context['par_value'] = new_objpar
-                            ticket_filter = ticket_filter.filter(ticket_par = request.POST['obj_par'])
+
 
 #--obj_type check for exists
 
@@ -616,8 +621,8 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                         except(KeyError, ObjType.DoesNotExist):
                             context['error_message'] = "Значение типа лифта не верно"
                         else:
-                            filter_context = filter_context.filter(obj_type__type_name = request.POST['obj_type'])
-                            ticket_filter = ticket_filter.filter(ticket_obj_type__type_name = request.POST['obj_type'])
+                            filter_context = filter_context.filter(obj_type__type_name = new_objtype)
+                            ticket_filter = ticket_filter.filter(ticket_obj_type__type_name = new_objtype)
 
 
                 if 'ticket_date_start' in request.POST:
@@ -661,7 +666,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                 if 'declineact' in request.POST:
                     if request.POST['declineact'] == 'on':
                         context['declineact'] = True
-                        ticket_summary = ticket_summary.filter(Q(ticket_duration__gte = timezone.timedelta( days = 1 )) | Q(ticket_duration = None))
+#                        ticket_summary = ticket_summary.filter(Q(ticket_duration__gte = timezone.timedelta( days = 1 )) | Q(ticket_duration = None)) #!--Тестовое ограничение
                         for ticket in ticket_summary:
                             if ticket.ticket_object != None:
                                 if ticket.ticket_duration != None:

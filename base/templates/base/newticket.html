@@ -41,7 +41,7 @@
     </div>
         <datalist id="obj_buildhousing">
         {% for obj in obj_buildhousing %}
-            <option>{{ obj.obj_build_housing }}</option>
+            <option>{{ obj.obj_build_housing|default_if_none:"Нет"}}</option>
         {% endfor %}
         </datalist>
     {% endif %}
@@ -52,7 +52,7 @@
     </div>
         <datalist id="obj_par">
         {% for par in obj_par %}
-            <option>{{ par.obj_par }}</option>
+            <option>{{ par.obj_par|default_if_none:"Нет" }}</option>
         {% endfor %}
         </datalist>
     {% endif %}
@@ -63,7 +63,7 @@
     </div>
         <datalist id="obj_type">
         {% for obj in obj_type %}
-        <option>{{ obj.type_name }}</option>
+        <option>{{ obj.type_name|default_if_none:"Нет" }}</option>
         {% endfor %}
         </datalist>
     {% else %}

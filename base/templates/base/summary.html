@@ -10,6 +10,7 @@
 <div class="new_ticket_header">
 {% if ticket_summary %}
 <a href="javascript: void(0)" id="summary_form_check" class="index_no_filter">Показать/скрыть форму</a>
+<a href="javascript:window.print()" class="print_button">Распечатать отчет</a>
 {% endif %}
 </div>
 <div class="tabs" {% if ticket_summary %}hidden{% endif %} id="tabs">
@@ -188,11 +189,33 @@
 </div>
 </div>
 
-{{ test }}<br/> {{ test2 }}
-
 {% if ticket_summary %}
+
+<div class="print_header">
+Отчет по 
+{% if obj_managecomp %}</br>Управляющая компания: {{ obj_managecomp }} </br> {% endif %}
+{% if str_value %}Улица: {{ str_value }} </br>
+    {% if build_value %}Дом: {{ build_value }} </br>
+        {% if build_housing_value %}Корпус: {{ build_housing_value }} </br>
+            {% if par_value %}Парадная: {{ par_value }} </br>
+                {% if type_value %}Тип: {{ type_value }} </br>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% if date_start %}с {{ date_start }} {% endif %}
+{% if date_end %}по {{ date_end }} {% endif %}
+
+{% if tickets_area %}району: {{tickets_area}} за {{area_tickets_date}} {% endif %}
+
+{% if statuses %} статусу {{statuses}} {% if status_date_start %} c {{ status_date_start }} {% else %} с самого начала{% endif %} по {% if status_date_end %} {{ status_date_end }} {% else %} {% now "SHORT_DATETIME_FORMAT" %} {% endif %}
+{% endif %}
+</div>
+
 <table cellpadding="3" class="summary_table" id="summary_table">
     <tr>
+        <th>№</th>
         <th>Открыта</th>
         {% if request.path != '/summary/status/' %}
             <th>Закрыта</th>
@@ -201,12 +224,14 @@
         <th>Адрес</th>
         <th>Тип</th>
         <th>Причина</th>
+        <th>Исполнитель</th>
     </tr>
     {% for ticket in ticket_summary %}
     {% cycle 'normal_row' 'dark_row' as rowtype silent %}
-    {% if request.path_info == '/summary/address/' %}{% ifchanged ticket.ticket_date_tz.date %}<tr><th>{{ ticket.ticket_date_tz.date }}</th></tr>{% endifchanged %}{% endif %}
-    {% if request.path_info == '/summary/area/' or request.path_info == '/summary/status/' %}{% ifchanged ticket.ticket_str.area %}<tr><th>{{ ticket.ticket_str.area }}</th></tr>{% endifchanged %}{% endif %}
+    {% if request.path_info == '/summary/address/' %}{% ifchanged ticket.ticket_date_tz.date %}<tr><th></th><th>{{ ticket.ticket_date_tz.date }}</th></tr>{% endifchanged %}{% endif %}
+    {% if request.path_info == '/summary/area/' or request.path_info == '/summary/status/' %}{% ifchanged ticket.ticket_str.area %}<tr><th></th><th>{{ ticket.ticket_str.area }}</th></tr>{% endifchanged %}{% endif %}
     <tr class="{{ rowtype }}">
+        <td>{{ forloop.counter }}</td>
         <td>{{ ticket.ticket_date_tz|date:"d.m.Y" }} {{ticket.ticket_date_tz|time:"H:i"}}</td>
         {% if request.path != '/summary/status/' %}
             <td>{{ ticket.close_time|date:"d.m.Y" }} {{ ticket.close_time|time:"H:i" }}</td>
@@ -226,6 +251,7 @@
         <td>{{ ticket.ticket_str }},{% if ticket.ticket_build %} д. {{ ticket.ticket_build }}{% endif %}{% if ticket.ticket_build_housing %} к. {{ ticket.ticket_build_housing }},{% endif %}{% if ticket.ticket_par %} п. {{ ticket.ticket_par }}{% endif %}.</td>
         <td>{{ ticket.ticket_obj_type|default_if_none:"" }}</td>
         <td>{{ ticket.ticket_content|truncatechars:40 }}</td>
+        <td>{{ ticket.ticket_worker.full_name }}</td>
     </tr>
     {% endfor %}
 </table>
