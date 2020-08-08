@@ -80,7 +80,7 @@ def ticket_detail(request, ticket_id):
         context = {
             'ticket': ticket,
             'obj_type': ObjType.objects.all(),
-            'workers': Worker.objects.filter(worker_area = ticket.ticket_str.area),
+            'workers': Worker.objects.filter(active=True).filter(worker_area = ticket.ticket_str.area),
             'FUR': FUR_group.objects.all(),
             'date_now': date_now,
         }
@@ -100,9 +100,6 @@ def ticket_detail(request, ticket_id):
                 ticket_object_exact = ticket_object_exact.filter(obj_build_housing=None) 
             if ticket.ticket_par != None and ticket.ticket_par != '':
                 ticket_object_exact = ticket_object_exact.filter(obj_par=ticket.ticket_par)
-#            if ticket.ticket_obj_type != None and ticket.ticket_obj_type != '':
-#                ticket_object_exact = ticket_object_exact.filter(obj_type=ticket.ticket_obj_type)
-#!-------Зачем я фильтровал по типу при составлении списка альтернативных типов?
             context['objects_list'] = ticket_object_exact
         except:
             context['error_message'] = "Объект с таким адресом не найден"

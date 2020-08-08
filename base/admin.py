@@ -103,8 +103,8 @@ class FUReasonAdmin(admin.ModelAdmin):
 
 
 class WorkerAdmin(admin.ModelAdmin):
-    list_display = ('last_name','first_name','optional_name','worker_area',)
-    list_filter = ['worker_area',]
+    list_display = ('last_name','first_name','optional_name','worker_area','active')
+    list_filter = ['worker_area','active']
 
 
 class FUReasonInLine(admin.TabularInline):
