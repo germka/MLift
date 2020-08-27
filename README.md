@@ -10,3 +10,4 @@
 ![Screenshot](main.png)
 ![Screenshot](newTicket.png)
 ![Screenshot](summary.png)
+![Screenshot](ticketDetail.png)
