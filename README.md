@@ -5,3 +5,8 @@
 #
 # coded by germka
 # email: germka@gmail.com
+#
+# Screenshots
+![Screenshot](main.png)
+![Screenshot](newTicket.png)
+![Screenshot](summary.png)
