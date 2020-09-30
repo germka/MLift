@@ -11,9 +11,9 @@ class CommentsInLine(admin.TabularInline):
 
 
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('ticket_date','ticket_content', 'status')
-    list_filter = ['ticket_date']
-    search_fields = ['ticket_content']
+    list_display = ('id','ticket_date','ticket_content', 'status', 'ticket_type')
+    list_filter = ['ticket_date','ticket_type','ticket_status']
+    search_fields = ['ticket_content','id']
     fieldsets = [
         (None, {'fields':
             [

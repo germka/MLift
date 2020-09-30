@@ -222,7 +222,7 @@
 </form>
 {% endif %}
 
-{% if ticket.ticket_status_id != 2 %}
+{% if ticket.ticket_status_id != 2 and request.user.groups.first.id != 2 %}
     <div style="position:relative"><input type="submit" id="close_ticket" value="Закрыть заявку" class="send_button" form="ticket_close"></div>
 {% endif %}
 </div>

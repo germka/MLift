@@ -34,36 +34,6 @@ window.onload = function () {
         };
     };
 
-    /*document.onmouseover = function() {
-        block.style.transform = "translate(0, -100%)";
-        block_div.style.transform = "translate(0, -100%)";
-    };
-    filters.onmouseover = function() {
-        block.style.transform = "translate(0, 0%)";
-        block_div.style.transform = "translate(0, 0%)";
-    };
-    filters_menu.onmouseover = function() {
-        block.style.transform = "translate(0, 0%)";
-        block_div.style.transform = "translate(0, 0%)";
-    };
-    filters.list.onmouseleave = function() {
-        block.style.transform = "translate(0, -100%)";
-        block_div.style.transform = "translate(0, -100%)";
-    }
-
-    var //Close ticket button position
-    button = document.getElementById("ticket_close_button"),
-    table = document.getElementById("index_table"),
-    content_row = document.getElementById("ticket_content_row"),
-    content_info = document.getElementById("ticket_content_info");
-
-    if (content_row && content_info) {
-        content_row.style.minHeight = (content_info.offsetHeight + 8).toString() + 'px';
-    };
-    if (button && table) {
-        button.style.top = (table.offsetHeight - 148 - 160).toString() + 'px';
-    };*/
-
 };
 
 //Comments block hide/show

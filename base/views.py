@@ -456,7 +456,7 @@ def ticket_edit(request, ticket_id):
 
 @login_required(login_url=login_page)
 def ticket_summary(request, summary_filter=None, summary_sort=None):
-    if request.user.is_staff:
+    if request.user.is_staff or request.user.groups.first().id == 2:
         obj_str = ObjStr.objects.order_by('street')
         date_now = timezone.now().astimezone().strftime("%Y-%m-%d")
         obj_managecomp = ManageComp.objects.order_by('comp_name')
