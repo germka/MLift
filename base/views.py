@@ -157,7 +157,7 @@ def new_ticket(request):
         else:
             ticket_number = 0
         date_now = timezone.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S")
-        obj_str = ObjStr.objects.order_by('street')
+        obj_str = [str['obj_str__street'] for str in Object.objects.filter(obj_in_service = True).values('obj_str__street').distinct().order_by('obj_str__street')]
         context = {
             'obj_str': obj_str,
             'ticket_number': ticket_number,
