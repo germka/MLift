@@ -559,6 +559,11 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                         if 'obj_buildhousing' in request.POST:
                             if request.POST['obj_buildhousing'] == '':
                                 context['help_message'] = "Выберите корпус здания"
+                            elif request.POST.get('obj_buildhousing') == 'Нет':
+                                new_objbuildhousing = request.POST['obj_buildhousing']
+                                context['build_housing_value'] = new_objbuildhousing
+                                filter_context = filter_context.filter(obj_build_housing = None)
+                                ticket_filter = ticket_filter.filter(ticket_build_housing = None)
                             else:
                                 try:
                                     new_objbuildhousing = request.POST['obj_buildhousing']
@@ -683,7 +688,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                                 if ticket.ticket_date > (timezone.now().astimezone() - obj_list[0].manage_comp.decline_period):
                                     ticket_summary = ticket_summary.exclude(id = ticket.id)
 
-                context['ticket_summary'] = ticket_summary
+                context['ticket_summary'] = ticket_summary[:1000]
 
                 if 'csv_checker' in request.POST:
                     if request.POST['csv_checker'] == 'on':
@@ -724,7 +729,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
                         else:
                             ticket_summary = Ticket.objects.filter(ticket_date__date = new_date).order_by('ticket_str__area', 'ticket_date')
 
-            context['ticket_summary'] = ticket_summary
+            context['ticket_summary'] = ticket_summary[:1000]
 
             if 'csv_checker' in request.POST:
                 if request.POST['csv_checker'] == 'on':
@@ -770,7 +775,7 @@ def ticket_summary(request, summary_filter=None, summary_sort=None):
             else:
                 status_date_end = timezone.now().astimezone()
 
-            context['ticket_summary'] = ticket_summary
+            context['ticket_summary'] = ticket_summary[:1000]
 
             if 'csv_checker' in request.POST:
                 if request.POST['csv_checker'] == 'on':

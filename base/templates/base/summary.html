@@ -68,7 +68,7 @@
     </div>
         <datalist id="obj_buildhousing">
         {% for obj in obj_buildhousing %}
-            <option>{{ obj.obj_build_housing }}</option>
+            <option>{{ obj.obj_build_housing|default_if_none:'Нет' }}</option>
         {% endfor %}
         </datalist>
     {% endif %}
